@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTik - Video Sharing Platform</title>
+    <meta name="description" content="TikTik - Discover and share amazing videos from creators around the world. Watch, upload, and connect with the community.">
+    <meta property="og:title" content="TikTik - Video Sharing Platform">
+    <meta property="og:description" content="Discover and share amazing videos from creators around the world">
+    <meta property="og:type" content="website">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff0000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="TikTik">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo">
+                <i class="fas fa-play-circle"></i>
+                <span>TikTik</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="search-container">
+                <input type="text" placeholder="Search videos..." class="search-input" id="searchInput">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="icon-btn" id="createBtn" title="Create">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button class="icon-btn" id="themeToggle" title="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="icon-btn" id="adminPanelBtn" title="Admin Panel">
+                <i class="fas fa-cog"></i>
+            </button>
+           <!-- Google Login Button -->
+<button onclick="signInWithGoogle()">Login with Google</button>
+
+<!-- YouTube-Style Profile Dropdown -->
+<div id="profile-container" class="profile-container" style="display: none;">
+  <img id="profile-pic" class="profile-pic" src="" alt="Profile" onclick="toggleProfileMenu()" />
+  <div id="profile-menu" class="profile-menu">
+    <p id="profile-name"></p>
+    <p id="profile-email"></p>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" data-page="trending">
+                <i class="fas fa-fire"></i>
+                <span>Trending</span>
+            </a>
+            <a href="#" class="nav-item" data-page="subscriptions">
+                <i class="fas fa-users"></i>
+                <span>Subscriptions</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <div class="nav-section-title">You</div>
+            <a href="#" class="nav-item" data-page="library">
+                <i class="fas fa-folder-open"></i>
+                <span>Your Channel</span>
+            </a>
+            <a href="#" class="nav-item" data-page="history">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </a>
+            <a href="#" class="nav-item" data-page="liked">
+                <i class="fas fa-thumbs-up"></i>
+                <span>Liked Videos</span>
+            </a>
+            <a href="#" class="nav-item" data-page="watchlater">
+                <i class="fas fa-clock"></i>
+                <span>Watch Later</span>
+            </a>
+            <a href="#" class="nav-item" data-page="downloads">
+                <i class="fas fa-download"></i>
+                <span>Downloads</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <div class="nav-section-title">Explore</div>
+            <a href="#" class="nav-item" data-page="music">
+                <i class="fas fa-music"></i>
+                <span>Music</span>
+            </a>
+            <a href="#" class="nav-item" data-page="sports">
+                <i class="fas fa-futbol"></i>
+                <span>Sports</span>
+            </a>
+            <a href="#" class="nav-item" data-page="gaming">
+                <i class="fas fa-gamepad"></i>
+                <span>Gaming</span>
+            </a>
+            <a href="#" class="nav-item" data-page="news">
+                <i class="fas fa-newspaper"></i>
+                <span>News</span>
+            </a>
+            <a href="#" class="nav-item" data-page="learning">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Learning</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <div class="nav-section-title">More from TikTik</div>
+            <a href="#" class="nav-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="nav-item" data-page="help">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+            </a>
+            <a href="#" class="nav-item" data-page="feedback">
+                <i class="fas fa-flag"></i>
+                <span>Send Feedback</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Home Page -->
+        <div class="page active" id="homePage">
+            <div class="video-grid" id="videoGrid">
+                <!-- Videos will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <!-- Other Pages -->
+        <div class="page" id="trendingPage">
+            <h2>Trending Videos</h2>
+            <div class="video-grid" id="trendingGrid">
+                <!-- Trending videos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="subscriptionsPage">
+            <h2>Subscriptions</h2>
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <p>No subscriptions yet</p>
+                <span>Subscribe to channels to see their latest videos here</span>
+            </div>
+        </div>
+
+        <div class="page" id="libraryPage">
+            <div class="channel-header">
+                <div class="channel-banner">
+                    <img id="channelBanner" src="https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg" alt="Channel Banner">
+                </div>
+                <div class="channel-info-header">
+                    <img class="channel-avatar-large" id="channelAvatar" src="https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg" alt="Channel Avatar">
+                    <div class="channel-details">
+                        <h1 id="channelName">My Channel</h1>
+                        <div class="channel-stats">
+                            <span id="subscriberCount">0 subscribers</span>
+                            <span id="videoCount">0 videos</span>
+                        </div>
+                        <button class="btn btn-primary" id="editChannelBtn">
+                            <i class="fas fa-edit"></i>
+                            Edit Channel
+                        </button>
+                    </div>
+                </div>
+                <div class="channel-tabs">
+                    <button class="channel-tab active" data-tab="videos">Videos</button>
+                    <button class="channel-tab" data-tab="shorts">Shorts</button>
+                    <button class="channel-tab" data-tab="live">Live</button>
+                    <button class="channel-tab" data-tab="playlists">Playlists</button>
+                    <button class="channel-tab" data-tab="about">About</button>
+                </div>
+            </div>
+            
+            <div class="channel-content">
+                <div class="tab-content active" id="videosTab">
+                    <div class="upload-section">
+                        <div class="upload-prompt">
+                            <i class="fas fa-video"></i>
+                            <h3>Upload your first video</h3>
+                            <p>Share your story with the world</p>
+                            <button class="btn btn-primary" id="uploadVideoBtn">
+                                <i class="fas fa-upload"></i>
+                                Upload Video
+                            </button>
+                        </div>
+                    </div>
+                    <div class="my-videos-grid" id="myVideosGrid">
+                        <!-- User's uploaded videos will appear here -->
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="shortsTab">
+                    <div class="upload-section">
+                        <div class="upload-prompt">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h3>Create your first Short</h3>
+                            <p>Make short, engaging vertical videos</p>
+                            <button class="btn btn-primary" id="uploadShortBtn">
+                                <i class="fas fa-video"></i>
+                                Create Short
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="liveTab">
+                    <div class="upload-section">
+                        <div class="upload-prompt">
+                            <i class="fas fa-broadcast-tower"></i>
+                            <h3>Go live</h3>
+                            <p>Stream live to your audience</p>
+                            <button class="btn btn-primary" id="goLiveBtn">
+                                <i class="fas fa-video"></i>
+                                Go Live
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="playlistsTab">
+                    <div class="empty-state">
+                        <i class="fas fa-list"></i>
+                        <p>No playlists yet</p>
+                        <span>Create playlists to organize your videos</span>
+                        <button class="btn btn-primary" id="createPlaylistBtn">
+                            <i class="fas fa-plus"></i>
+                            Create Playlist
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="aboutTab">
+                    <div class="about-section">
+                        <h3>Channel Description</h3>
+                        <p id="channelDescription">Welcome to my channel! Here you'll find amazing content.</p>
+                        
+                        <h3>Channel Details</h3>
+                        <div class="channel-details-grid">
+                            <div class="detail-item">
+                                <strong>Joined:</strong>
+                                <span id="joinDate">Today</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Total views:</strong>
+                                <span id="totalViews">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="historyPage">
+            <h2>Watch History</h2>
+            <div class="video-grid" id="historyGrid">
+                <!-- Watch history will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="likedPage">
+            <h2>Liked Videos</h2>
+            <div class="video-grid" id="likedGrid">
+                <!-- Liked videos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="watchlaterPage">
+            <h2>Watch Later</h2>
+            <div class="empty-state">
+                <i class="fas fa-clock"></i>
+                <p>No videos saved for later</p>
+                <span>Save videos to watch them later</span>
+            </div>
+        </div>
+
+        <div class="page" id="downloadsPage">
+            <h2>Downloads</h2>
+            <div class="empty-state">
+                <i class="fas fa-download"></i>
+                <p>No downloaded videos</p>
+                <span>Download videos to watch offline</span>
+            </div>
+        </div>
+
+        <div class="page" id="musicPage">
+            <h2>Music</h2>
+            <div class="video-grid" id="musicGrid">
+                <!-- Music videos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="sportsPage">
+            <h2>Sports</h2>
+            <div class="video-grid" id="sportsGrid">
+                <!-- Sports videos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="gamingPage">
+            <h2>Gaming</h2>
+            <div class="video-grid" id="gamingGrid">
+                <!-- Gaming videos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="newsPage">
+            <h2>News</h2>
+            <div class="video-grid" id="newsGrid">
+                <!-- News videos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="learningPage">
+            <h2>Learning</h2>
+            <div class="video-grid" id="learningGrid">
+                <!-- Learning videos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="page" id="settingsPage">
+            <h2>Settings</h2>
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h3>Playback Settings</h3>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="autoplayToggle" checked>
+                            Autoplay next video
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            Video quality:
+                            <select id="videoQuality">
+                                <option value="auto">Auto</option>
+                                <option value="1080p">1080p</option>
+                                <option value="720p">720p</option>
+                                <option value="480p">480p</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="helpPage">
+            <h2>Help & Support</h2>
+            <div class="help-container">
+                <div class="help-section">
+                    <h3>Frequently Asked Questions</h3>
+                    <p>Need help using TikTik? Check our help center for answers.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="feedbackPage">
+            <h2>Send Feedback</h2>
+            <div class="feedback-container">
+                <div class="feedback-section">
+                    <h3>Help us improve TikTik</h3>
+                    <p>Your feedback helps us make TikTik better for everyone.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Video Player Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-modal-content">
+            <button class="close-btn" id="closeVideoBtn">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="video-player-container">
+                <video class="video-player" id="videoPlayer" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="video-info">
+                <h3 class="video-title" id="modalVideoTitle"></h3>
+                <div class="video-meta">
+                    <div class="channel-info">
+                        <img class="channel-avatar" id="modalChannelAvatar" src="" alt="Channel Avatar">
+                        <div class="channel-details">
+                            <span class="channel-name" id="modalChannelName"></span>
+                            <span class="video-stats" id="modalVideoStats"></span>
+                        </div>
+                    </div>
+                    <div class="video-actions">
+                        <button class="action-btn like-btn" id="likeBtn">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span id="likeCount">0</span>
+                        </button>
+                        <button class="action-btn dislike-btn" id="dislikeBtn">
+                            <i class="fas fa-thumbs-down"></i>
+                        </button>
+                        <button class="action-btn share-btn" id="shareBtn">
+                            <i class="fas fa-share"></i>
+                            Share
+                        </button>
+                        <button class="action-btn save-btn" id="saveBtn">
+                            <i class="fas fa-bookmark"></i>
+                            Save
+                        </button>
+                        <button class="action-btn download-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </button>
+                    </div>
+                </div>
+                <div class="video-description" id="modalVideoDescription"></div>
+                
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <h4>Comments <span id="commentCount">247</span></h4>
+                        <div class="sort-comments">
+                            <select id="commentSort">
+                                <option value="top">Top comments</option>
+                                <option value="newest">Newest first</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="add-comment">
+                        <img class="user-avatar-small" src="https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg" alt="Your Avatar">
+                        <div class="comment-input-container">
+                            <input type="text" id="commentInput" placeholder="Add a comment..." />
+                            <div class="comment-actions" style="display: none;">
+                                <button class="btn-cancel" id="cancelComment">Cancel</button>
+                                <button class="btn-comment" id="submitComment">Comment</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comments-list" id="commentsList">
+                        <!-- Comments will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            <div class="recommended-videos">
+                <h4>Up Next</h4>
+                <div class="recommended-list" id="recommendedList">
+                    <!-- Recommended videos will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-content">
+            <div class="admin-header">
+                <h3>Admin Panel</h3>
+                <button class="close-btn" id="closeAdminBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="admin-body">
+                <div class="admin-section">
+                    <h4>Theme Settings</h4>
+                    <div class="setting-item">
+                        <label>
+                            <input type="radio" name="theme" value="light" id="lightTheme">
+                            Light Theme
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="radio" name="theme" value="dark" id="darkTheme">
+                            Dark Theme
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="radio" name="theme" value="auto" id="autoTheme">
+                            Auto (System)
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h4>Content Settings</h4>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="autoPlay">
+                            Auto-play videos
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="showDescriptions">
+                            Show video descriptions
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            Videos per page:
+                            <select id="videosPerPage">
+                                <option value="12">12</option>
+                                <option value="20" selected>20</option>
+                                <option value="30">30</option>
+                                <option value="50">50</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h4>Data Management</h4>
+                    <button class="btn btn-warning" id="clearHistoryBtn">
+                        <i class="fas fa-trash"></i>
+                        Clear Watch History
+                    </button>
+                    <button class="btn btn-danger" id="resetSettingsBtn">
+                        <i class="fas fa-undo"></i>
+                        Reset All Settings
+                    </button>
+                </div>
+            </div>
+            <div class="admin-footer">
+                <button class="btn btn-primary" id="saveSettingsBtn">
+                    <i class="fas fa-save"></i>
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <i class="fas fa-spinner fa-spin"></i>
+    </div>
+
+    <!-- Create Menu Modal -->
+    <div class="create-modal" id="createModal">
+        <div class="create-modal-content">
+            <div class="create-header">
+                <h3>Create</h3>
+                <button class="close-btn" id="closeCreateBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="create-options">
+                <div class="create-option" id="uploadVideoOption">
+                    <i class="fas fa-video"></i>
+                    <div class="option-text">
+                        <h4>Upload video</h4>
+                        <p>Share a video with your community</p>
+                    </div>
+                </div>
+                <div class="create-option" id="createShortOption">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div class="option-text">
+                        <h4>Create Short</h4>
+                        <p>Make a short vertical video</p>
+                    </div>
+                </div>
+                <div class="create-option" id="goLiveOption">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <div class="option-text">
+                        <h4>Go live</h4>
+                        <p>Stream live to your audience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Upload Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="upload-modal-content">
+            <div class="upload-header">
+                <h3>Upload Video</h3>
+                <button class="close-btn" id="closeUploadBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="upload-body">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4>Select files to upload</h4>
+                    <p>Or drag and drop video files</p>
+                    <input type="file" id="videoFileInput" accept="video/*" multiple style="display: none;">
+                    <button class="btn btn-primary" onclick="document.getElementById('videoFileInput').click()">
+                        SELECT FILES
+                    </button>
+                </div>
+                <div class="upload-form" id="uploadForm" style="display: none;">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="videoTitle" placeholder="Add a title for your video">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="videoDescription" placeholder="Tell viewers about your video"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Thumbnail</label>
+                        <input type="file" id="thumbnailInput" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="videoCategory">
+                            <option value="general">General</option>
+                            <option value="music">Music</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="sports">Sports</option>
+                            <option value="news">News</option>
+                            <option value="learning">Learning</option>
+                        </select>
+                    </div>
+                    <div class="upload-actions">
+                        <button class="btn btn-secondary" id="cancelUploadBtn">Cancel</button>
+                        <button class="btn btn-primary" id="publishVideoBtn">Publish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Edit Modal -->
+    <div class="channel-edit-modal" id="channelEditModal">
+        <div class="channel-edit-content">
+            <div class="channel-edit-header">
+                <h3>Edit Channel</h3>
+                <button class="close-btn" id="closeChannelEditBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="channel-edit-body">
+                <div class="form-group">
+                    <label>Channel Name</label>
+                    <input type="text" id="editChannelName" placeholder="Enter channel name">
+                </div>
+                <div class="form-group">
+                    <label>Channel Description</label>
+                    <textarea id="editChannelDescription" placeholder="Describe your channel"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Channel Avatar</label>
+                    <input type="file" id="avatarInput" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Channel Banner</label>
+                    <input type="file" id="bannerInput" accept="image/*">
+                </div>
+                <div class="channel-edit-actions">
+                    <button class="btn btn-secondary" id="cancelChannelEditBtn">Cancel</button>
+                    <button class="btn btn-primary" id="saveChannelBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Short Video Modal -->
+    <div class="short-modal" id="shortModal">
+        <div class="short-modal-content">
+            <div class="short-header">
+                <h3>Create Short</h3>
+                <button class="close-btn" id="closeShortBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="short-body">
+                <div class="short-upload-area" id="shortUploadArea">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h4>Upload vertical video</h4>
+                    <p>Select a short vertical video (max 60 seconds)</p>
+                    <input type="file" id="shortFileInput" accept="video/*" style="display: none;">
+                    <button class="btn btn-primary" onclick="document.getElementById('shortFileInput').click()">
+                        SELECT SHORT VIDEO
+                    </button>
+                </div>
+                <div class="short-form" id="shortForm" style="display: none;">
+                    <div class="short-preview">
+                        <video id="shortPreview" controls style="width: 200px; height: 356px; object-fit: cover; border-radius: 8px;"></video>
+                    </div>
+                    <div class="short-details">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="shortTitle" placeholder="Add a catchy title">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="shortDescription" placeholder="Describe your short video"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="shortCategory">
+                                <option value="general">General</option>
+                                <option value="music">Music</option>
+                                <option value="comedy">Comedy</option>
+                                <option value="dance">Dance</option>
+                                <option value="education">Education</option>
+                                <option value="lifestyle">Lifestyle</option>
+                            </select>
+                        </div>
+                        <div class="short-actions">
+                            <button class="btn btn-secondary" id="cancelShortBtn">Cancel</button>
+                            <button class="btn btn-primary" id="publishShortBtn">Publish Short</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Stream Modal -->
+    <div class="live-modal" id="liveModal">
+        <div class="live-modal-content">
+            <div class="live-header">
+                <h3>Go Live</h3>
+                <button class="close-btn" id="closeLiveBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="live-body">
+                <div class="live-setup">
+                    <div class="camera-preview">
+                        <video id="cameraPreview" autoplay muted style="width: 100%; height: 200px; background: #000; border-radius: 8px;"></video>
+                        <div class="camera-controls">
+                            <button class="btn btn-secondary" id="toggleCameraBtn">
+                                <i class="fas fa-video"></i>
+                                Camera
+                            </button>
+                            <button class="btn btn-secondary" id="toggleMicBtn">
+                                <i class="fas fa-microphone"></i>
+                                Microphone
+                            </button>
+                        </div>
+                    </div>
+                    <div class="live-details">
+                        <div class="form-group">
+                            <label>Stream Title</label>
+                            <input type="text" id="liveTitle" placeholder="What's your stream about?">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="liveDescription" placeholder="Tell viewers what to expect"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="liveCategory">
+                                <option value="gaming">Gaming</option>
+                                <option value="music">Music</option>
+                                <option value="talk">Talk Show</option>
+                                <option value="education">Education</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="sports">Sports</option>
+                            </select>
+                        </div>
+                        <div class="live-privacy">
+                            <label>
+                                <input type="radio" name="livePrivacy" value="public" checked>
+                                Public - Anyone can find and watch
+                            </label>
+                            <label>
+                                <input type="radio" name="livePrivacy" value="unlisted">
+                                Unlisted - Only people with link can watch
+                            </label>
+                        </div>
+                        <div class="live-actions">
+                            <button class="btn btn-secondary" id="cancelLiveBtn">Cancel</button>
+                            <button class="btn btn-danger" id="startLiveBtn">
+                                <i class="fas fa-broadcast-tower"></i>
+                                START LIVE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- Toast Notifications -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- 🔽 Firebase SDK और Google Login Code यहां जोड़ें -->
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAY1kqPrI-Sw5LYPfIUoKE45nJ3papGZU8",
+    authDomain: "tiktik-video-2de07.firebaseapp.com",
+    projectId: "tiktik-video-2de07",
+    appId: "1:840826006253:web"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+       document.getElementById("googleLoginBtn").style.display = "none";
+document.getElementById("profile-container").style.display = "flex";
+document.getElementById("profile-pic").src = user.photoURL;
+document.getElementById("profile-name").innerText = user.displayName;
+document.getElementById("profile-email").innerText = user.email;
+localStorage.setItem("user", JSON.stringify(user));
+
+  function logout() {
+    auth.signOut().then(() => {
+      document.getElementById('user-info').innerHTML = '';
+      alert("You are logged out");
+    });
+  }
+</script>
+
+<!-- 🔽 आपकी बाकी स्क्रिप्ट -->
+<script src="script.js"></script>
+</body>
+</html>
+
