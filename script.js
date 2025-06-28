@@ -18,7 +18,7 @@ class TikTikApp {
         this.cameraStream = null;
         this.isCameraOn = false;
         this.isMicOn = false;
-        
+
         // Video data with proper working thumbnail URLs
         this.videos = [
             {
@@ -92,7 +92,7 @@ class TikTikApp {
                 category: 'music'
             }
         ];
-        
+
         this.init();
     }
 
@@ -331,7 +331,7 @@ class TikTikApp {
         const muteBtn = document.getElementById('muteBtn');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeFill = document.getElementById('volumeFill');
-        
+
         // New YouTube-style controls
         const nextVideoBtn = document.getElementById('nextVideoBtn');
         const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
@@ -341,18 +341,18 @@ class TikTikApp {
         const miniplayerBtn = document.getElementById('miniplayerBtn');
         const theaterModeBtn = document.getElementById('theaterModeBtn');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
-        
+
         // Player state controls
         const minimizeBtn = document.getElementById('minimizeBtn');
         const theaterBtn = document.getElementById('theaterBtn');
         const restoreBtn = document.getElementById('restoreBtn');
-        
+
         // Navigation controls
         const prevVideoBtn = document.getElementById('prevVideoBtn');
-        
+
         // Miniplayer controls
         const miniplayerPlayBtn = document.getElementById('miniplayerPlayBtn');
-        
+
         // Play/Pause functionality
         playPauseBtn.addEventListener('click', () => {
             if (videoPlayer.paused) {
@@ -365,41 +365,41 @@ class TikTikApp {
                 miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
         });
-        
+
         miniplayerPlayBtn.addEventListener('click', () => {
             playPauseBtn.click();
         });
-        
+
         // Video player events
         videoPlayer.addEventListener('play', () => {
             playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
             miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
         });
-        
+
         videoPlayer.addEventListener('pause', () => {
             playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
             miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
         });
-        
+
         // Progress bar
         videoPlayer.addEventListener('timeupdate', () => {
             if (videoPlayer.duration) {
                 const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
                 progressFill.style.width = progress + '%';
-                
+
                 const currentTime = this.formatTime(videoPlayer.currentTime);
                 const duration = this.formatTime(videoPlayer.duration);
                 timeDisplay.textContent = `${currentTime} / ${duration}`;
             }
         });
-        
+
         progressBar.addEventListener('click', (e) => {
             const rect = progressBar.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const progress = clickX / rect.width;
             videoPlayer.currentTime = progress * videoPlayer.duration;
         });
-        
+
         // Volume controls
         muteBtn.addEventListener('click', () => {
             if (videoPlayer.muted) {
@@ -412,7 +412,7 @@ class TikTikApp {
                 volumeFill.style.width = '0%';
             }
         });
-        
+
         volumeSlider.addEventListener('click', (e) => {
             const rect = volumeSlider.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -422,7 +422,7 @@ class TikTikApp {
             videoPlayer.muted = false;
             muteBtn.innerHTML = volume > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
         });
-        
+
         // Autoplay toggle
         autoplayToggleBtn.addEventListener('click', () => {
             this.settings.autoPlay = !this.settings.autoPlay;
@@ -430,25 +430,25 @@ class TikTikApp {
             autoplayToggleBtn.title = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
             this.saveSettings();
         });
-        
+
         // Captions toggle
         captionsBtn.addEventListener('click', () => {
             const isActive = captionsBtn.classList.toggle('active');
             document.getElementById('captionsStatus').textContent = isActive ? 'On' : 'Off';
             this.toggleCaptions(isActive);
         });
-        
+
         // Settings dropdown
         settingsBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             settingsDropdown.classList.toggle('active');
         });
-        
+
         // Close settings dropdown when clicking outside
         document.addEventListener('click', () => {
             settingsDropdown.classList.remove('active');
         });
-        
+
         // Settings items
         document.querySelectorAll('.settings-item').forEach(item => {
             item.addEventListener('click', (e) => {
@@ -456,43 +456,43 @@ class TikTikApp {
                 this.handleSettingChange(setting);
             });
         });
-        
+
         // Miniplayer button
         miniplayerBtn.addEventListener('click', () => {
             this.minimizeVideo();
         });
-        
+
         // Theater mode button
         theaterModeBtn.addEventListener('click', () => {
             this.toggleTheaterMode();
         });
-        
+
         // Player state controls
         minimizeBtn.addEventListener('click', () => {
             this.minimizeVideo();
         });
-        
+
         theaterBtn.addEventListener('click', () => {
             this.toggleTheaterMode();
         });
-        
+
         fullscreenBtn.addEventListener('click', () => {
             this.toggleFullscreen();
         });
-        
+
         restoreBtn.addEventListener('click', () => {
             this.restoreVideo();
         });
-        
+
         // Navigation controls
         prevVideoBtn.addEventListener('click', () => {
             this.playPreviousVideo();
         });
-        
+
         nextVideoBtn.addEventListener('click', () => {
             this.playNextVideo();
         });
-        
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (this.currentVideo && document.getElementById('videoModal').classList.contains('active')) {
@@ -550,38 +550,38 @@ class TikTikApp {
         const modal = document.getElementById('videoModal');
         const minimizeBtn = document.getElementById('minimizeBtn');
         const miniplayerTitle = document.getElementById('miniplayerTitle');
-        
+
         if (modal.classList.contains('minimized')) {
             return;
         }
-        
+
         modal.classList.add('minimized');
         minimizeBtn.innerHTML = '<i class="fas fa-expand"></i>';
         minimizeBtn.title = 'Restore';
-        
+
         if (this.currentVideo) {
             miniplayerTitle.textContent = this.currentVideo.title;
         }
-        
+
         this.showToast('Video minimized. Click to restore.', 'info');
     }
 
     restoreVideo() {
         const modal = document.getElementById('videoModal');
         const minimizeBtn = document.getElementById('minimizeBtn');
-        
+
         modal.classList.remove('minimized');
         modal.classList.remove('theater');
         minimizeBtn.innerHTML = '<i class="fas fa-compress"></i>';
         minimizeBtn.title = 'Minimize';
-        
+
         this.showToast('Video restored', 'info');
     }
 
     toggleTheaterMode() {
         const modal = document.getElementById('videoModal');
         const theaterBtn = document.getElementById('theaterBtn');
-        
+
         if (modal.classList.contains('theater')) {
             modal.classList.remove('theater');
             theaterBtn.innerHTML = '<i class="fas fa-expand"></i>';
@@ -598,7 +598,7 @@ class TikTikApp {
 
     toggleFullscreen() {
         const videoPlayer = document.getElementById('videoPlayer');
-        
+
         if (!document.fullscreenElement) {
             videoPlayer.requestFullscreen().catch(err => {
                 this.showToast('Fullscreen not supported', 'error');
@@ -610,7 +610,7 @@ class TikTikApp {
 
     playPreviousVideo() {
         if (!this.currentVideo) return;
-        
+
         const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
         if (currentIndex > 0) {
             const prevVideo = this.videos[currentIndex - 1];
@@ -623,7 +623,7 @@ class TikTikApp {
 
     playNextVideo() {
         if (!this.currentVideo) return;
-        
+
         const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
         if (currentIndex < this.videos.length - 1) {
             const nextVideo = this.videos[currentIndex + 1];
@@ -637,12 +637,12 @@ class TikTikApp {
     switchToVideo(video) {
         const videoPlayer = document.getElementById('videoPlayer');
         const wasPlaying = !videoPlayer.paused;
-        
+
         this.currentVideo = video;
-        
+
         // Update video source
         videoPlayer.src = video.videoUrl;
-        
+
         // Update video info
         document.getElementById('modalVideoTitle').textContent = video.title;
         document.getElementById('modalChannelName').textContent = video.channel;
@@ -651,7 +651,7 @@ class TikTikApp {
         document.getElementById('modalVideoDescription').textContent = video.description;
         document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
         document.getElementById('miniplayerTitle').textContent = video.title;
-        
+
         // Update like button state
         const likeBtn = document.getElementById('likeBtn');
         if (this.likedVideos.includes(video.id)) {
@@ -659,7 +659,7 @@ class TikTikApp {
         } else {
             likeBtn.classList.remove('active');
         }
-        
+
         // Update save button state
         const saveBtn = document.getElementById('saveBtn');
         if (this.savedVideos.includes(video.id)) {
@@ -669,12 +669,12 @@ class TikTikApp {
             saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
             saveBtn.classList.remove('active');
         }
-        
+
         // Auto-play if was playing or autoplay is enabled
         if (wasPlaying || this.settings.autoPlay) {
             videoPlayer.play();
         }
-        
+
         // Load comments and recommendations
         this.loadComments(video.id);
         this.loadRecommendedVideos(video);
@@ -721,9 +721,9 @@ class TikTikApp {
     toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-        
+
         this.sidebarCollapsed = !this.sidebarCollapsed;
-        
+
         if (this.sidebarCollapsed) {
             sidebar.classList.add('collapsed');
         } else {
@@ -735,13 +735,13 @@ class TikTikApp {
         // Remove active class from all nav items and pages
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        
+
         // Add active class to current nav item and page
         document.querySelector(`[data-page="${page}"]`).classList.add('active');
         document.getElementById(`${page}Page`).classList.add('active');
-        
+
         this.currentPage = page;
-        
+
         // Load page content
         switch(page) {
             case 'home':
@@ -792,7 +792,7 @@ class TikTikApp {
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
+
         this.settings.theme = newTheme;
         this.applyTheme();
         this.saveSettings();
@@ -802,9 +802,9 @@ class TikTikApp {
         const theme = this.settings.theme === 'auto' ? 
             (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : 
             this.settings.theme;
-            
+
         document.documentElement.setAttribute('data-theme', theme);
-        
+
         const themeIcon = document.querySelector('#themeToggle i');
         themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
     }
@@ -821,7 +821,7 @@ class TikTikApp {
     updateAdminSettings() {
         // Update theme radio buttons
         document.querySelector(`input[name="theme"][value="${this.settings.theme}"]`).checked = true;
-        
+
         // Update other settings
         document.getElementById('autoPlay').checked = this.settings.autoPlay;
         document.getElementById('showDescriptions').checked = this.settings.showDescriptions;
@@ -831,7 +831,7 @@ class TikTikApp {
     loadHomePage() {
         const grid = document.getElementById('videoGrid');
         grid.innerHTML = '';
-        
+
         // Load videos based on settings
         const videosToShow = this.videos.slice(0, this.settings.videosPerPage);
         videosToShow.forEach(video => {
@@ -843,14 +843,14 @@ class TikTikApp {
     loadTrendingPage() {
         const grid = document.getElementById('trendingGrid');
         grid.innerHTML = '';
-        
+
         // Sort videos by views (mock trending)
         const trendingVideos = [...this.videos].sort((a, b) => {
             const aViews = parseInt(a.views.replace(/[^\d]/g, ''));
             const bViews = parseInt(b.views.replace(/[^\d]/g, ''));
             return bViews - aViews;
         });
-        
+
         trendingVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
             grid.appendChild(videoCard);
@@ -869,7 +869,7 @@ class TikTikApp {
         document.getElementById('channelDescription').textContent = this.channelData.description;
         document.getElementById('joinDate').textContent = this.channelData.joinDate;
         document.getElementById('totalViews').textContent = this.formatNumber(this.channelData.totalViews);
-        
+
         // Load user's videos
         this.loadMyVideos();
     }
@@ -877,12 +877,12 @@ class TikTikApp {
     loadMyVideos() {
         const grid = document.getElementById('myVideosGrid');
         grid.innerHTML = '';
-        
+
         if (this.myVideos.length === 0) {
             // Show upload prompt
             return;
         }
-        
+
         this.myVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
             grid.appendChild(videoCard);
@@ -892,7 +892,7 @@ class TikTikApp {
     loadHistoryPage() {
         const grid = document.getElementById('historyGrid');
         grid.innerHTML = '';
-        
+
         if (this.watchHistory.length === 0) {
             grid.innerHTML = `
                 <div class="empty-state">
@@ -903,7 +903,7 @@ class TikTikApp {
             `;
             return;
         }
-        
+
         this.watchHistory.forEach(videoId => {
             const video = this.videos.find(v => v.id === videoId);
             if (video) {
@@ -916,7 +916,7 @@ class TikTikApp {
     loadLikedPage() {
         const grid = document.getElementById('likedGrid');
         grid.innerHTML = '';
-        
+
         if (this.likedVideos.length === 0) {
             grid.innerHTML = `
                 <div class="empty-state">
@@ -927,7 +927,7 @@ class TikTikApp {
             `;
             return;
         }
-        
+
         this.likedVideos.forEach(videoId => {
             const video = this.videos.find(v => v.id === videoId);
             if (video) {
@@ -940,7 +940,7 @@ class TikTikApp {
     loadMusicPage() {
         const grid = document.getElementById('musicGrid');
         grid.innerHTML = '';
-        
+
         const musicVideos = this.videos.filter(video => video.category === 'music');
         musicVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
@@ -951,7 +951,7 @@ class TikTikApp {
     loadSportsPage() {
         const grid = document.getElementById('sportsGrid');
         grid.innerHTML = '';
-        
+
         const sportsVideos = this.videos.filter(video => video.category === 'sports');
         sportsVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
@@ -962,7 +962,7 @@ class TikTikApp {
     loadGamingPage() {
         const grid = document.getElementById('gamingGrid');
         grid.innerHTML = '';
-        
+
         const gamingVideos = this.videos.filter(video => video.category === 'gaming');
         gamingVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
@@ -973,7 +973,7 @@ class TikTikApp {
     loadNewsPage() {
         const grid = document.getElementById('newsGrid');
         grid.innerHTML = '';
-        
+
         const newsVideos = this.videos.filter(video => video.category === 'news');
         newsVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
@@ -984,7 +984,7 @@ class TikTikApp {
     loadLearningPage() {
         const grid = document.getElementById('learningGrid');
         grid.innerHTML = '';
-        
+
         const learningVideos = this.videos.filter(video => video.category === 'learning');
         learningVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
@@ -1015,7 +1015,7 @@ class TikTikApp {
         // Remove active class from all tabs and contents
         document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.settings-tab-content').forEach(content => content.classList.remove('active'));
-        
+
         // Add active class to selected tab and content
         document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         document.getElementById(`${tabName}-content`).classList.add('active');
@@ -1195,12 +1195,12 @@ class TikTikApp {
             feedbackForm.addEventListener('click', () => {
                 const category = document.getElementById('feedback-category').value;
                 const text = document.getElementById('feedback-text').value.trim();
-                
+
                 if (!text) {
                     this.showToast('Please enter your feedback', 'error');
                     return;
                 }
-                
+
                 this.submitFeedback(category, text);
                 document.getElementById('feedback-text').value = '';
                 this.showToast('Thank you for your feedback!', 'success');
@@ -1257,10 +1257,10 @@ class TikTikApp {
 
         // Notification preferences with advanced controls
         this.setupNotificationControls();
-        
+
         // Accessibility features
         this.setupAccessibilityControls();
-        
+
         // Load saved settings
         this.loadSettingsFromStorage();
     }
@@ -1279,7 +1279,7 @@ class TikTikApp {
             // Store current time and apply quality
             const currentTime = videoPlayer.currentTime;
             const wasPlaying = !videoPlayer.paused;
-            
+
             // Apply quality setting
             videoPlayer.addEventListener('loadedmetadata', () => {
                 videoPlayer.currentTime = currentTime;
@@ -1398,7 +1398,7 @@ class TikTikApp {
             timestamp: new Date().toISOString(),
             userId: 'current-user'
         };
-        
+
         let feedbacks = JSON.parse(localStorage.getItem('tiktik_feedbacks') || '[]');
         feedbacks.push(feedback);
         localStorage.setItem('tiktik_feedbacks', JSON.stringify(feedbacks));
@@ -1440,13 +1440,13 @@ class TikTikApp {
             this.likedVideos = [];
             this.savedVideos = [];
             this.comments = {};
-            
+
             localStorage.removeItem('tiktik_search_history');
             this.saveWatchHistory();
             this.saveLikedVideos();
             this.saveSavedVideos();
             this.saveComments();
-            
+
             this.showToast('All activity deleted', 'success');
         }
     }
@@ -1546,7 +1546,7 @@ class TikTikApp {
         const card = document.createElement('div');
         card.className = 'video-card';
         card.onclick = () => this.openVideoModal(video);
-        
+
         card.innerHTML = `
             <div class="video-thumbnail">
                 <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNDQuNSA5MEwxNjUgMTAyLjU5VjU3LjQxTDE0NC41IDkwWiIgZmlsbD0iIzk0QTNBOCIvPgo8L3N2Zz4K';">
@@ -1561,7 +1561,7 @@ class TikTikApp {
                 <div class="video-stats">${video.views} • ${video.uploadTime}</div>
             </div>
         `;
-        
+
         return card;
     }
 
@@ -1569,10 +1569,10 @@ class TikTikApp {
         this.currentVideo = video;
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
-        
+
         // Update video player
         player.src = video.videoUrl;
-        
+
         // Update video info
         document.getElementById('modalVideoTitle').textContent = video.title;
         document.getElementById('modalChannelName').textContent = video.channel;
@@ -1580,7 +1580,7 @@ class TikTikApp {
         document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
         document.getElementById('modalVideoDescription').textContent = video.description;
         document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
-        
+
         // Update like button state
         const likeBtn = document.getElementById('likeBtn');
         if (this.likedVideos.includes(video.id)) {
@@ -1588,7 +1588,7 @@ class TikTikApp {
         } else {
             likeBtn.classList.remove('active');
         }
-        
+
         // Update save button state
         const saveBtn = document.getElementById('saveBtn');
         if (this.savedVideos.includes(video.id)) {
@@ -1598,15 +1598,15 @@ class TikTikApp {
             saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
             saveBtn.classList.remove('active');
         }
-        
+
         // Load comments
         this.loadComments(video.id);
-        
+
         // Load recommended videos
         this.loadRecommendedVideos(video);
-        
+
         modal.classList.add('active');
-        
+
         // Auto-play if enabled
         if (this.settings.autoPlay) {
             player.play();
@@ -1616,11 +1616,11 @@ class TikTikApp {
     closeVideoModal() {
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
-        
+
         modal.classList.remove('active', 'minimized', 'theater');
         player.pause();
         player.src = '';
-        
+
         // Reset control states
         document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
         document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
@@ -1629,16 +1629,16 @@ class TikTikApp {
         document.getElementById('speedBtn').textContent = '1x';
         document.getElementById('progressFill').style.width = '0%';
         document.getElementById('volumeFill').style.width = '80%';
-        
+
         this.currentVideo = null;
     }
 
     loadComments(videoId) {
         const commentsList = document.getElementById('commentsList');
         const videoComments = this.comments[videoId] || [];
-        
+
         commentsList.innerHTML = '';
-        
+
         if (videoComments.length === 0) {
             commentsList.innerHTML = `
                 <div class="empty-state">
@@ -1648,19 +1648,19 @@ class TikTikApp {
             `;
             return;
         }
-        
+
         videoComments.forEach(comment => {
             const commentElement = this.createCommentElement(comment);
             commentsList.appendChild(commentElement);
         });
-        
+
         document.getElementById('commentCount').textContent = videoComments.length;
     }
 
     createCommentElement(comment) {
         const element = document.createElement('div');
         element.className = 'comment-item';
-        
+
         element.innerHTML = `
             <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
             <div class="comment-content">
@@ -1678,19 +1678,19 @@ class TikTikApp {
                 </div>
             </div>
         `;
-        
+
         return element;
     }
 
     loadRecommendedVideos(currentVideo) {
         const recommendedList = document.getElementById('recommendedList');
         recommendedList.innerHTML = '';
-        
+
         // Get videos from same category or random videos
         const recommendations = this.videos
             .filter(video => video.id !== currentVideo.id)
             .slice(0, 5);
-        
+
         recommendations.forEach(video => {
             const item = document.createElement('div');
             item.className = 'recommended-item';
@@ -1698,7 +1698,7 @@ class TikTikApp {
                 this.closeVideoModal();
                 setTimeout(() => this.openVideoModal(video), 100);
             };
-            
+
             item.innerHTML = `
                 <img class="recommended-thumbnail" src="${video.thumbnail}" alt="${video.title}">
                 <div class="recommended-info">
@@ -1706,18 +1706,18 @@ class TikTikApp {
                     <div class="recommended-stats">${video.channel} • ${video.views}</div>
                 </div>
             `;
-            
+
             recommendedList.appendChild(item);
         });
     }
 
     performSearch() {
         const query = document.getElementById('searchInput').value.trim().toLowerCase();
-        
+
         if (!query) return;
-        
+
         this.showLoading();
-        
+
         // Simulate search delay
         setTimeout(() => {
             const results = this.videos.filter(video => 
@@ -1725,7 +1725,7 @@ class TikTikApp {
                 video.channel.toLowerCase().includes(query) ||
                 video.description.toLowerCase().includes(query)
             );
-            
+
             this.displaySearchResults(results, query);
             this.hideLoading();
         }, 500);
@@ -1734,7 +1734,7 @@ class TikTikApp {
     displaySearchResults(results, query) {
         const grid = document.getElementById('videoGrid');
         grid.innerHTML = '';
-        
+
         if (results.length === 0) {
             grid.innerHTML = `
                 <div class="empty-state">
@@ -1745,12 +1745,12 @@ class TikTikApp {
             `;
             return;
         }
-        
+
         results.forEach(video => {
             const videoCard = this.createVideoCard(video);
             grid.appendChild(videoCard);
         });
-        
+
         // Update page title
         const homeTitle = document.querySelector('#homePage h2');
         if (!homeTitle) {
@@ -1760,7 +1760,7 @@ class TikTikApp {
         } else {
             homeTitle.textContent = `Search results for "${query}"`;
         }
-        
+
         // Navigate to home page to show results
         this.navigateToPage('home');
     }
@@ -1768,24 +1768,24 @@ class TikTikApp {
     addToHistory(video) {
         // Remove if already exists
         this.watchHistory = this.watchHistory.filter(id => id !== video.id);
-        
+
         // Add to beginning
         this.watchHistory.unshift(video.id);
-        
+
         // Keep only last 50 videos
         if (this.watchHistory.length > 50) {
             this.watchHistory = this.watchHistory.slice(0, 50);
         }
-        
+
         this.saveWatchHistory();
     }
 
     toggleLike() {
         if (!this.currentVideo) return;
-        
+
         const likeBtn = document.getElementById('likeBtn');
         const videoId = this.currentVideo.id;
-        
+
         if (this.likedVideos.includes(videoId)) {
             // Unlike
             this.likedVideos = this.likedVideos.filter(id => id !== videoId);
@@ -1797,13 +1797,13 @@ class TikTikApp {
             likeBtn.classList.add('active');
             this.showToast('Added to liked videos', 'success');
         }
-        
+
         this.saveLikedVideos();
     }
 
     toggleDislike() {
         const dislikeBtn = document.getElementById('dislikeBtn');
-        
+
         if (dislikeBtn.classList.contains('active')) {
             dislikeBtn.classList.remove('active');
         } else {
@@ -1817,9 +1817,9 @@ class TikTikApp {
 
     shareVideo() {
         if (!this.currentVideo) return;
-        
+
         const url = `${window.location.origin}?video=${this.currentVideo.id}`;
-        
+
         if (navigator.share) {
             navigator.share({
                 title: this.currentVideo.title,
@@ -1836,10 +1836,10 @@ class TikTikApp {
 
     toggleSave() {
         if (!this.currentVideo) return;
-        
+
         const saveBtn = document.getElementById('saveBtn');
         const videoId = this.currentVideo.id;
-        
+
         if (this.savedVideos.includes(videoId)) {
             // Remove from saved
             this.savedVideos = this.savedVideos.filter(id => id !== videoId);
@@ -1853,15 +1853,15 @@ class TikTikApp {
             saveBtn.classList.add('active');
             this.showToast('Saved to watch later', 'success');
         }
-        
+
         this.saveSavedVideos();
     }
 
     downloadVideo() {
         if (!this.currentVideo) return;
-        
+
         this.showToast('Download started', 'success');
-        
+
         // Simulate download
         const link = document.createElement('a');
         link.href = this.currentVideo.videoUrl;
@@ -1881,9 +1881,9 @@ class TikTikApp {
     submitComment() {
         const commentInput = document.getElementById('commentInput');
         const commentText = commentInput.value.trim();
-        
+
         if (!commentText || !this.currentVideo) return;
-        
+
         const newComment = {
             id: Date.now(),
             author: 'You',
@@ -1892,20 +1892,20 @@ class TikTikApp {
             time: 'now',
             likes: 0
         };
-        
+
         if (!this.comments[this.currentVideo.id]) {
             this.comments[this.currentVideo.id] = [];
         }
-        
+
         this.comments[this.currentVideo.id].unshift(newComment);
         this.saveComments();
-        
+
         // Refresh comments
         this.loadComments(this.currentVideo.id);
-        
+
         // Clear input and hide actions
         this.hideCommentActions();
-        
+
         this.showToast('Comment added', 'success');
     }
 
@@ -1938,12 +1938,12 @@ class TikTikApp {
     handleVideoFileSelect(e) {
         const file = e.target.files[0];
         if (!file) return;
-        
+
         if (!file.type.startsWith('video/')) {
             this.showToast('Please select a video file', 'error');
             return;
         }
-        
+
         document.getElementById('uploadArea').style.display = 'none';
         document.getElementById('uploadForm').style.display = 'block';
         document.getElementById('videoTitle').value = file.name.replace(/\.[^/.]+$/, '');
@@ -1953,12 +1953,12 @@ class TikTikApp {
         const title = document.getElementById('videoTitle').value.trim();
         const description = document.getElementById('videoDescription').value.trim();
         const category = document.getElementById('videoCategory').value;
-        
+
         if (!title) {
             this.showToast('Please enter a title', 'error');
             return;
         }
-        
+
         // Create new video object
         const newVideo = {
             id: Date.now().toString(),
@@ -1974,18 +1974,18 @@ class TikTikApp {
             videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
             category: category
         };
-        
+
         // Add to user's videos
         this.myVideos.push(newVideo);
         this.saveMyVideos();
-        
+
         // Update channel stats
         this.channelData.videoCount = this.myVideos.length;
         this.saveChannelData();
-        
+
         this.closeUploadModal();
         this.showToast('Video uploaded successfully!', 'success');
-        
+
         // Refresh channel page if currently viewing
         if (this.currentPage === 'library') {
             this.loadLibraryPage();
@@ -1994,11 +1994,11 @@ class TikTikApp {
 
     openChannelEditModal() {
         const modal = document.getElementById('channelEditModal');
-        
+
         // Populate current values
         document.getElementById('editChannelName').value = this.channelData.name;
         document.getElementById('editChannelDescription').value = this.channelData.description;
-        
+
         modal.classList.add('active');
     }
 
@@ -2009,19 +2009,19 @@ class TikTikApp {
     saveChannelChanges() {
         const name = document.getElementById('editChannelName').value.trim();
         const description = document.getElementById('editChannelDescription').value.trim();
-        
+
         if (!name) {
             this.showToast('Please enter a channel name', 'error');
             return;
         }
-        
+
         this.channelData.name = name;
         this.channelData.description = description;
-        
+
         this.saveChannelData();
         this.closeChannelEditModal();
         this.showToast('Channel updated successfully!', 'success');
-        
+
         // Refresh if on library page
         if (this.currentPage === 'library') {
             this.loadLibraryPage();
@@ -2032,7 +2032,7 @@ class TikTikApp {
         // Remove active class from all tabs and contents
         document.querySelectorAll('.channel-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
+
         // Add active class to selected tab and content
         document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
         document.getElementById(`${tab}Tab`).classList.add('active');
@@ -2059,16 +2059,16 @@ class TikTikApp {
     handleShortFileSelect(e) {
         const file = e.target.files[0];
         if (!file) return;
-        
+
         if (!file.type.startsWith('video/')) {
             this.showToast('Please select a video file', 'error');
             return;
         }
-        
+
         // Create video preview
         const preview = document.getElementById('shortPreview');
         preview.src = URL.createObjectURL(file);
-        
+
         document.getElementById('shortUploadArea').style.display = 'none';
         document.getElementById('shortForm').style.display = 'flex';
         document.getElementById('shortTitle').value = file.name.replace(/\.[^/.]+$/, '');
@@ -2078,12 +2078,12 @@ class TikTikApp {
         const title = document.getElementById('shortTitle').value.trim();
         const description = document.getElementById('shortDescription').value.trim();
         const category = document.getElementById('shortCategory').value;
-        
+
         if (!title) {
             this.showToast('Please enter a title', 'error');
             return;
         }
-        
+
         // Create new short object
         const newShort = {
             id: Date.now().toString(),
@@ -2100,18 +2100,18 @@ class TikTikApp {
             category: category,
             isShort: true
         };
-        
+
         // Add to user's shorts
         this.myShorts.push(newShort);
         this.saveMyShorts();
-        
+
         // Update channel stats
         this.channelData.videoCount = this.myVideos.length + this.myShorts.length;
         this.saveChannelData();
-        
+
         this.closeShortModal();
         this.showToast('Short published successfully!', 'success');
-        
+
         // Refresh channel page if currently viewing
         if (this.currentPage === 'library') {
             this.loadLibraryPage();
@@ -2161,12 +2161,12 @@ class TikTikApp {
 
     toggleCamera() {
         if (!this.cameraStream) return;
-        
+
         const videoTracks = this.cameraStream.getVideoTracks();
         videoTracks.forEach(track => {
             track.enabled = !track.enabled;
         });
-        
+
         this.isCameraOn = !this.isCameraOn;
         const btn = document.getElementById('toggleCameraBtn');
         btn.innerHTML = this.isCameraOn ? '<i class="fas fa-video"></i> Camera' : '<i class="fas fa-video-slash"></i> Camera';
@@ -2174,12 +2174,12 @@ class TikTikApp {
 
     toggleMicrophone() {
         if (!this.cameraStream) return;
-        
+
         const audioTracks = this.cameraStream.getAudioTracks();
         audioTracks.forEach(track => {
             track.enabled = !track.enabled;
         });
-        
+
         this.isMicOn = !this.isMicOn;
         const btn = document.getElementById('toggleMicBtn');
         btn.innerHTML = this.isMicOn ? '<i class="fas fa-microphone"></i> Microphone' : '<i class="fas fa-microphone-slash"></i> Microphone';
@@ -2190,12 +2190,12 @@ class TikTikApp {
         const description = document.getElementById('liveDescription').value.trim();
         const category = document.getElementById('liveCategory').value;
         const privacy = document.querySelector('input[name="livePrivacy"]:checked').value;
-        
+
         if (!title) {
             this.showToast('Please enter a stream title', 'error');
             return;
         }
-        
+
         // Create new live stream object
         const newLiveStream = {
             id: Date.now().toString(),
@@ -2210,14 +2210,14 @@ class TikTikApp {
             viewers: 0,
             isLive: true
         };
-        
+
         // Add to live streams
         this.liveStreams.push(newLiveStream);
         this.saveLiveStreams();
-        
+
         this.closeLiveModal();
         this.showToast('Live stream started successfully!', 'success');
-        
+
         // In a real app, this would connect to a streaming server
         setTimeout(() => {
             this.showToast('Live stream ended', 'info');
@@ -2228,7 +2228,7 @@ class TikTikApp {
         this.watchHistory = [];
         this.saveWatchHistory();
         this.showToast('Watch history cleared', 'success');
-        
+
         if (this.currentPage === 'history') {
             this.loadHistoryPage();
         }
@@ -2353,7 +2353,7 @@ class TikTikApp {
 
     toggleCaptions(show) {
         const videoPlayer = document.getElementById('videoPlayer');
-        
+
         if (show) {
             // Enable captions/subtitles
             if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
@@ -2372,7 +2372,7 @@ class TikTikApp {
             this.showToast('Captions disabled', 'info');
         }
     }
-    
+
     handleSettingChange(setting) {
         switch(setting) {
             case 'quality':
@@ -2386,7 +2386,7 @@ class TikTikApp {
                 break;
         }
     }
-    
+
     showQualityMenu() {
         const qualities = ['Auto', '2160p', '1440p', '1080p', '720p', '480p', '360p', '240p'];
         this.showSubMenu('Quality', qualities, 'Auto', (quality) => {
@@ -2394,7 +2394,7 @@ class TikTikApp {
             this.setVideoQuality(quality);
         });
     }
-    
+
     showSpeedMenu() {
         const speeds = ['0.25', '0.5', '0.75', 'Normal', '1.25', '1.5', '1.75', '2'];
         this.showSubMenu('Playback speed', speeds, 'Normal', (speed) => {
@@ -2402,7 +2402,7 @@ class TikTikApp {
             this.setPlaybackSpeed(speed);
         });
     }
-    
+
     showCaptionsMenu() {
         const options = ['Off', 'English', 'Hindi', 'Spanish', 'French'];
         this.showSubMenu('Subtitles/CC', options, 'Off', (option) => {
@@ -2410,7 +2410,7 @@ class TikTikApp {
             this.setCaptionLanguage(option);
         });
     }
-    
+
     showSubMenu(title, options, current, callback) {
         const dropdown = document.getElementById('settingsDropdown');
         dropdown.innerHTML = `
@@ -2425,7 +2425,7 @@ class TikTikApp {
                 </div>
             `).join('')}
         `;
-        
+
         dropdown.querySelectorAll('[data-value]').forEach(item => {
             item.addEventListener('click', () => {
                 callback(item.dataset.value);
@@ -2433,18 +2433,18 @@ class TikTikApp {
             });
         });
     }
-    
+
     setVideoQuality(quality) {
         this.showToast(`Video quality set to ${quality}`, 'info');
     }
-    
+
     setPlaybackSpeed(speed) {
         const videoPlayer = document.getElementById('videoPlayer');
         const speedValue = speed === 'Normal' ? 1 : parseFloat(speed);
         videoPlayer.playbackRate = speedValue;
         this.showToast(`Playback speed set to ${speed}`, 'info');
     }
-    
+
     setCaptionLanguage(language) {
         if (language === 'Off') {
             this.toggleCaptions(false);
@@ -2460,9 +2460,9 @@ class TikTikApp {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
-        
+
         container.appendChild(toast);
-        
+
         // Auto remove after 3 seconds
         setTimeout(() => {
             toast.remove();
@@ -2478,10 +2478,157 @@ class TikTikApp {
     }
 }
 
+// Profile dropdown toggle function
+  function toggleProfileMenu() {
+    const menu = document.getElementById('profile-menu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Click outside to close dropdown
+  document.addEventListener('click', function(event) {
+    const container = document.getElementById('profile-container');
+    const menu = document.getElementById('profile-menu');
+    if (!container.contains(event.target)) {
+      menu.style.display = 'none';
+    }
+  });
+
+  // Profile menu functions
+  function switchAccount() {
+    alert('Switch Account feature - You can add multiple accounts here');
+    toggleProfileMenu();
+  }
+
+  function openTikTikStudio() {
+    alert('Opening TikTik Studio - Content creation and analytics dashboard');
+    toggleProfileMenu();
+  }
+
+  function openCreatorAcademy() {
+    alert('Opening Creator Academy - Learn content creation tips and tricks');
+    toggleProfileMenu();
+  }
+
+  function openPurchases() {
+    alert('Opening Purchases and Memberships - Manage your subscriptions');
+    toggleProfileMenu();
+  }
+
+  function openYourData() {
+    alert('Opening Your Data in TikTik - Download or delete your data');
+    toggleProfileMenu();
+  }
+
+  function openAppearance() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+
+    // Update theme icon
+    const themeIcon = document.querySelector('#themeToggle i');
+    themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+
+    alert(`Appearance changed to ${newTheme} theme`);
+    toggleProfileMenu();
+  }
+
+  function openLanguage() {
+    alert('Language Settings - Choose your preferred language');
+    toggleProfileMenu();
+  }
+
+  function openRestrictedMode() {
+    alert('Restricted Mode - Filter potentially mature content');
+    toggleProfileMenu();
+  }
+
+  function openLocation() {
+    alert('Location Settings - Set your country/region');
+    toggleProfileMenu();
+  }
+
+  function openKeyboardShortcuts() {
+    alert('Keyboard Shortcuts:\n\nSpace - Play/Pause\nArrow Left - Seek backward\nArrow Right - Seek forward\nM - Mute/Unmute\nF - Fullscreen\nT - Theater mode\nI - Miniplayer');
+    toggleProfileMenu();
+  }
+
+  function openSettings() {
+    // Navigate to settings page
+    if (window.tiktikApp) {
+      window.tiktikApp.navigateToPage('settings');
+    }
+    toggleProfileMenu();
+  }
+
+  function openHelp() {
+    // Navigate to help page
+    if (window.tiktikApp) {
+      window.tiktikApp.navigateToPage('help');
+    }
+    toggleProfileMenu();
+  }
+
+  function sendFeedback() {
+    // Navigate to feedback page
+    if (window.tiktikApp) {
+      window.tiktikApp.navigateToPage('feedback');
+    }
+    toggleProfileMenu();
+  }
+
+// Google Sign-in and Sign-out functionality
+function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  firebase.auth().signInWithPopup(provider)
+    .then((result) => {
+      const user = result.user;
+
+      // UI Update
+        document.getElementById("googleLoginBtn").style.display = "none";
+        document.getElementById("profile-container").style.display = "flex";
+        document.getElementById("profile-pic").src = user.photoURL;
+        document.getElementById("profile-avatar").src = user.photoURL;
+        document.getElementById("profile-name").innerText = user.displayName;
+        document.getElementById("profile-email").innerText = user.email;
+
+      console.log("Sign-in successful:", user);
+    }).catch((error) => {
+      console.error("Error signing in:", error);
+    });
+}
+
+function signOut() {
+  firebase.auth().signOut()
+    .then(() => {
+      // Sign-out successful.
+      console.log("Sign-out successful");
+
+      // UI update
+      document.getElementById("googleLoginBtn").style.display = "block";
+      document.getElementById("profile-container").style.display = "none";
+    }).catch((error) => {
+      // An error happened.
+      console.error("Error signing out:", error);
+    });
+}
+
+// Check if user is already signed-in
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+      document.getElementById("googleLoginBtn").style.display = "none";
+      document.getElementById("profile-container").style.display = "flex";
+      document.getElementById("profile-pic").src = user.photoURL;
+      document.getElementById("profile-avatar").src = user.photoURL;
+      document.getElementById("profile-name").innerText = user.displayName;
+      document.getElementById("profile-email").innerText = user.email;
+    }
+});
+
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.tiktikApp = new TikTikApp();
-    
+
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
