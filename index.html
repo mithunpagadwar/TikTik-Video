@@ -175,179 +175,135 @@
             </div>
         </div>
 
-        <div class="page" id="libraryPage">
-            <div class="channel-header">
-                <div class="channel-banner">
-                    <img id="channelBanner" src="https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg" alt="Channel Banner">
+       <div class="page" id="libraryPage">
+    <div class="channel-header">
+        <div class="channel-banner">
+            <img id="channelBanner" src="https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg" alt="Channel Banner">
+        </div>
+        <div class="channel-info-header">
+            <img class="channel-avatar-large" id="channelAvatar" src="https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg" alt="Channel Avatar">
+            <div class="channel-details">
+                <h1 id="channelName">My Channel</h1>
+                <div class="channel-stats">
+                    <span id="subscriberCount">0 subscribers</span>
+                    <span id="videoCount">0 videos</span>
                 </div>
-                <div class="channel-info-header">
-                    <img class="channel-avatar-large" id="channelAvatar" src="https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg" alt="Channel Avatar">
-                    <div class="channel-details">
-                        <h1 id="channelName">My Channel</h1>
-                        <div class="channel-stats">
-                            <span id="subscriberCount">0 subscribers</span>
-                            <span id="videoCount">0 videos</span>
-                        </div>
-                        <button class="btn btn-primary" id="editChannelBtn">
-                            <i class="fas fa-edit"></i>
-                            Edit Channel
-                        </button>
-                    </div>
-                </div>
-                <div class="channel-tabs">
-                    <button class="channel-tab active" data-tab="videos">Videos</button>
-                    <button class="channel-tab" data-tab="shorts">Shorts</button>
-                    <button class="channel-tab" data-tab="live">Live</button>
-                    <button class="channel-tab" data-tab="playlists">Playlists</button>
-                    <button class="channel-tab" data-tab="about">About</button>
+                <button class="btn btn-primary" id="editChannelBtn">
+                    <i class="fas fa-edit"></i>
+                    Edit Channel
+                </button>
+            </div>
+        </div>
+
+        <!-- Upload Controls Start -->
+        <div class="channel-upload-controls" style="padding: 1em;">
+            <h3>अपना चैनल कस्टमाइज़ करें</h3>
+
+            <div>
+                <label for="avatarUpload">चैनल लोगो (Avatar) चुनें:</label>
+                <input type="file" id="avatarUpload" accept="image/*">
+            </div>
+
+            <div style="margin-top: 10px;">
+                <label for="bannerUpload">चैनल बैनर चुनें:</label>
+                <input type="file" id="bannerUpload" accept="image/*">
+            </div>
+
+            <div style="margin-top: 10px;">
+                <label for="videoFileInput">वीडियो फाइल चुनें:</label>
+                <input type="file" id="videoFileInput" accept="video/*">
+                <video id="previewVideo" controls style="display:none; margin-top:10px; max-width:100%;"></video>
+            </div>
+        </div>
+        <!-- Upload Controls End -->
+
+        <div class="channel-tabs">
+            <button class="channel-tab active" data-tab="videos">Videos</button>
+            <button class="channel-tab" data-tab="shorts">Shorts</button>
+            <button class="channel-tab" data-tab="live">Live</button>
+            <button class="channel-tab" data-tab="playlists">Playlists</button>
+            <button class="channel-tab" data-tab="about">About</button>
+        </div>
+    </div>
+
+    <div class="channel-content">
+        <div class="tab-content active" id="videosTab">
+            <div class="upload-section">
+                <div class="upload-prompt">
+                    <i class="fas fa-video"></i>
+                    <h3>Upload your first video</h3>
+                    <p>Share your story with the world</p>
+                    <button class="btn btn-primary" id="uploadVideoBtn">
+                        <i class="fas fa-upload"></i>
+                        Upload Video
+                    </button>
                 </div>
             </div>
-            
-            <div class="channel-content">
-                <div class="tab-content active" id="videosTab">
-                    <div class="upload-section">
-                        <div class="upload-prompt">
-                            <i class="fas fa-video"></i>
-                            <h3>Upload your first video</h3>
-                            <p>Share your story with the world</p>
-                            <button class="btn btn-primary" id="uploadVideoBtn">
-                                <i class="fas fa-upload"></i>
-                                Upload Video
-                            </button>
-                        </div>
-                    </div>
-                    <div class="my-videos-grid" id="myVideosGrid">
-                        <!-- User's uploaded videos will appear here -->
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="shortsTab">
-                    <div class="upload-section">
-                        <div class="upload-prompt">
-                            <i class="fas fa-mobile-alt"></i>
-                            <h3>Create your first Short</h3>
-                            <p>Make short, engaging vertical videos</p>
-                            <button class="btn btn-primary" id="uploadShortBtn">
-                                <i class="fas fa-video"></i>
-                                Create Short
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="liveTab">
-                    <div class="upload-section">
-                        <div class="upload-prompt">
-                            <i class="fas fa-broadcast-tower"></i>
-                            <h3>Go live</h3>
-                            <p>Stream live to your audience</p>
-                            <button class="btn btn-primary" id="goLiveBtn">
-                                <i class="fas fa-video"></i>
-                                Go Live
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="playlistsTab">
-                    <div class="empty-state">
-                        <i class="fas fa-list"></i>
-                        <p>No playlists yet</p>
-                        <span>Create playlists to organize your videos</span>
-                        <button class="btn btn-primary" id="createPlaylistBtn">
-                            <i class="fas fa-plus"></i>
-                            Create Playlist
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="aboutTab">
-                    <div class="about-section">
-                        <h3>Channel Description</h3>
-                        <p id="channelDescription">Welcome to my channel! Here you'll find amazing content.</p>
-                        
-                        <h3>Channel Details</h3>
-                        <div class="channel-details-grid">
-                            <div class="detail-item">
-                                <strong>Joined:</strong>
-                                <span id="joinDate">Today</span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Total views:</strong>
-                                <span id="totalViews">0</span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="my-videos-grid" id="myVideosGrid">
+                <!-- User's uploaded videos will appear here -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="shortsTab">
+            <div class="upload-section">
+                <div class="upload-prompt">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Create your first Short</h3>
+                    <p>Make short, engaging vertical videos</p>
+                    <button class="btn btn-primary" id="uploadShortBtn">
+                        <i class="fas fa-video"></i>
+                        Create Short
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="historyPage">
-            <h2>Watch History</h2>
-            <div class="video-grid" id="historyGrid">
-                <!-- Watch history will be loaded here -->
+        <div class="tab-content" id="liveTab">
+            <div class="upload-section">
+                <div class="upload-prompt">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <h3>Go live</h3>
+                    <p>Stream live to your audience</p>
+                    <button class="btn btn-primary" id="goLiveBtn">
+                        <i class="fas fa-video"></i>
+                        Go Live
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="page" id="likedPage">
-            <h2>Liked Videos</h2>
-            <div class="video-grid" id="likedGrid">
-                <!-- Liked videos will be loaded here -->
-            </div>
-        </div>
-
-        <div class="page" id="watchlaterPage">
-            <h2>Watch Later</h2>
+        <div class="tab-content" id="playlistsTab">
             <div class="empty-state">
-                <i class="fas fa-clock"></i>
-                <p>No videos saved for later</p>
-                <span>Save videos to watch them later</span>
+                <i class="fas fa-list"></i>
+                <p>No playlists yet</p>
+                <span>Create playlists to organize your videos</span>
+                <button class="btn btn-primary" id="createPlaylistBtn">
+                    <i class="fas fa-plus"></i>
+                    Create Playlist
+                </button>
             </div>
         </div>
 
-        <div class="page" id="downloadsPage">
-            <h2>Downloads</h2>
-            <div class="empty-state">
-                <i class="fas fa-download"></i>
-                <p>No downloaded videos</p>
-                <span>Download videos to watch offline</span>
-            </div>
-        </div>
+        <div class="tab-content" id="aboutTab">
+            <div class="about-section">
+                <h3>Channel Description</h3>
+                <p id="channelDescription">Welcome to my channel! Here you'll find amazing content.</p>
 
-        <div class="page" id="musicPage">
-            <h2>Music</h2>
-            <div class="video-grid" id="musicGrid">
-                <!-- Music videos will be loaded here -->
+                <h3>Channel Details</h3>
+                <div class="channel-details-grid">
+                    <div class="detail-item">
+                        <strong>Joined:</strong>
+                        <span id="joinDate">Today</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Total views:</strong>
+                        <span id="totalViews">0</span>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="page" id="sportsPage">
-            <h2>Sports</h2>
-            <div class="video-grid" id="sportsGrid">
-                <!-- Sports videos will be loaded here -->
-            </div>
-        </div>
-
-        <div class="page" id="gamingPage">
-            <h2>Gaming</h2>
-            <div class="video-grid" id="gamingGrid">
-                <!-- Gaming videos will be loaded here -->
-            </div>
-        </div>
-
-        <div class="page" id="newsPage">
-            <h2>News</h2>
-            <div class="video-grid" id="newsGrid">
-                <!-- News videos will be loaded here -->
-            </div>
-        </div>
-
-        <div class="page" id="learningPage">
-            <h2>Learning</h2>
-            <div class="video-grid" id="learningGrid">
-                <!-- Learning videos will be loaded here -->
-            </div>
-        </div>
+    </div>
+</div>
 
         <div class="page" id="settingsPage">
             <h2>Settings</h2>
