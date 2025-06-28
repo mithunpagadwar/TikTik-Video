@@ -1721,6 +1721,65 @@ body {
     font-size: 14px;
 }
 
+.channel-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.subscribe-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.subscribe-btn:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.subscribe-btn.subscribed {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.subscribe-btn.subscribed:hover {
+    background-color: var(--bg-secondary);
+}
+
+.bell-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.bell-btn:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.bell-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.bell-btn.active:hover {
+    background-color: var(--accent-hover);
+}
+
 .channel-tabs {
     display: flex;
     border-bottom: 1px solid var(--border-color);
