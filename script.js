@@ -270,24 +270,6 @@ class TikTikApp {
             this.closeUploadModal();
         });
 
-        // Subscribe and Bell buttons
-        document.getElementById('subscribeBtn').addEventListener('click', () => {
-            this.toggleSubscribe();
-        });
-
-        document.getElementById('bellBtn').addEventListener('click', () => {
-            this.toggleNotifications();
-        });
-
-        // Modal Subscribe and Bell buttons
-        document.getElementById('modalSubscribeBtn').addEventListener('click', () => {
-            this.toggleModalSubscribe();
-        });
-
-        document.getElementById('modalBellBtn').addEventListener('click', () => {
-            this.toggleModalNotifications();
-        });
-
         // Channel edit modal
         document.getElementById('editChannelBtn').addEventListener('click', () => {
             this.openChannelEditModal();
@@ -796,138 +778,6 @@ class TikTikApp {
         }
     }
 
-    toggleSubscribe() {
-        const subscribeBtn = document.getElementById('subscribeBtn');
-        const bellBtn = document.getElementById('bellBtn');
-        const subscriberCount = document.getElementById('subscriberCount');
-
-        const isSubscribed = subscribeBtn.classList.contains('subscribed');
-
-        if (isSubscribed) {
-            // Unsubscribe
-            subscribeBtn.classList.remove('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-            bellBtn.classList.remove('active');
-            bellBtn.style.display = 'none';
-
-            // Update subscriber count
-            let currentCount = parseInt(this.channelData.subscribers) || 0;
-            this.channelData.subscribers = Math.max(0, currentCount - 1);
-            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
-
-            this.showToast('Unsubscribed successfully', 'info');
-        } else {
-            // Subscribe
-            subscribeBtn.classList.add('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
-            bellBtn.style.display = 'flex';
-
-            // Update subscriber count
-            let currentCount = parseInt(this.channelData.subscribers) || 0;
-            this.channelData.subscribers = currentCount + 1;
-            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
-
-            this.showToast('Subscribed successfully! 🎉', 'success');
-        }
-
-        this.saveChannelData();
-    }
-
-    toggleNotifications() {
-        const bellBtn = document.getElementById('bellBtn');
-        const subscribeBtn = document.getElementById('subscribeBtn');
-
-        // Only allow notification toggle if subscribed
-        if (!subscribeBtn.classList.contains('subscribed')) {
-            this.showToast('Please subscribe first to enable notifications', 'warning');
-            return;
-        }
-
-        const isActive = bellBtn.classList.contains('active');
-
-        if (isActive) {
-            bellBtn.classList.remove('active');
-            bellBtn.title = 'Turn on notifications';
-            this.showToast('Notifications turned off', 'info');
-        } else {
-            bellBtn.classList.add('active');
-            bellBtn.title = 'Turn off notifications';
-            this.showToast('Notifications turned on! 🔔', 'success');
-
-            // Request notification permission if not granted
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        new Notification('TikTik Notifications', {
-                            body: 'You will now receive notifications from this channel!',
-                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
-                        });
-                    }
-                });
-            }
-        }
-    }
-
-    toggleModalSubscribe() {
-        const subscribeBtn = document.getElementById('modalSubscribeBtn');
-        const bellBtn = document.getElementById('modalBellBtn');
-
-        const isSubscribed = subscribeBtn.classList.contains('subscribed');
-
-        if (isSubscribed) {
-            // Unsubscribe
-            subscribeBtn.classList.remove('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-            bellBtn.classList.remove('active');
-            bellBtn.style.display = 'none';
-
-            this.showToast('Unsubscribed successfully', 'info');
-        } else {
-            // Subscribe
-            subscribeBtn.classList.add('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
-            bellBtn.style.display = 'flex';
-
-            this.showToast('Subscribed successfully! 🎉', 'success');
-        }
-    }
-
-    toggleModalNotifications() {
-        const bellBtn = document.getElementById('modalBellBtn');
-        const subscribeBtn = document.getElementById('modalSubscribeBtn');
-
-        // Only allow notification toggle if subscribed
-        if (!subscribeBtn.classList.contains('subscribed')) {
-            this.showToast('Please subscribe first to enable notifications', 'warning');
-            return;
-        }
-
-        const isActive = bellBtn.classList.contains('active');
-
-```text
-        if (isActive) {
-            bellBtn.classList.remove('active');
-            bellBtn.title = 'Turn on notifications';
-            this.showToast('Notifications turned off', 'info');
-        } else {
-            bellBtn.classList.add('active');
-            bellBtn.title = 'Turn off notifications';
-            this.showToast('Notifications turned on! 🔔', 'success');
-
-            // Request notification permission if not granted
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        new Notification('TikTik Notifications', {
-                            body: 'You will now receive notifications from this channel!',
-                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
-                        });
-                    }
-                });
-            }
-        }
-    }
-
     navigateToPage(page) {
         // Remove active class from all nav items and pages
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -1105,6 +955,7 @@ class TikTikApp {
             const video = this.videos.find(v => v.id === videoId);
             if (video) {
                 const videoCard = this.createVideoCard(video);
+```text
                 grid.appendChild(videoCard);
             }
         });
@@ -1768,7 +1619,7 @@ class TikTikApp {
         this.currentVideoIndex = this.currentPlaylist.findIndex(v => v.id === video.id);
         this.isShuffleOn = false;
         this.isRepeatOn = false;
-
+        
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
 
@@ -1782,16 +1633,6 @@ class TikTikApp {
         document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
         document.getElementById('modalVideoDescription').textContent = video.description;
         document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
-
-        // Initialize modal subscribe and bell buttons
-        const modalSubscribeBtn = document.getElementById('modalSubscribeBtn');
-        const modalBellBtn = document.getElementById('modalBellBtn');
-
-        // Reset subscribe button state
-        modalSubscribeBtn.classList.remove('subscribed');
-        modalSubscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-        modalBellBtn.style.display = 'none';
-        modalBellBtn.classList.remove('active');
 
         // Update like button state
         const likeBtn = document.getElementById('likeBtn');
@@ -1816,7 +1657,7 @@ class TikTikApp {
 
         // Load recommended videos
         this.loadRecommendedVideos(video);
-
+        
         // Load playlist
         this.loadVideoPlaylist();
 
@@ -1833,7 +1674,8 @@ class TikTikApp {
         const player = document.getElementById('videoPlayer');
 
         modal.classList.remove('active', 'minimized', 'theater');
-        player.pause();        player.src = '';
+        player.pause();
+        player.src = '';
 
         // Reset control states
         document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
@@ -1928,18 +1770,18 @@ class TikTikApp {
     loadVideoPlaylist() {
         const playlistContent = document.getElementById('playlistContent');
         const playlistInfo = document.getElementById('playlistInfo');
-
+        
         playlistContent.innerHTML = '';
-
+        
         // Update playlist info
         playlistInfo.textContent = `${this.currentVideoIndex + 1} / ${this.currentPlaylist.length}`;
-
+        
         // Load playlist items
         this.currentPlaylist.forEach((video, index) => {
             const item = document.createElement('div');
             item.className = `playlist-item ${index === this.currentVideoIndex ? 'current' : ''}`;
             item.onclick = () => this.playVideoFromPlaylist(index);
-
+            
             item.innerHTML = `
                 <div class="playlist-item-index">${index + 1}</div>
                 <img class="playlist-thumbnail" src="${video.thumbnail}" alt="${video.title}">
@@ -1950,10 +1792,10 @@ class TikTikApp {
                     <p class="playlist-item-stats">${video.views}</p>
                 </div>
             `;
-
+            
             playlistContent.appendChild(item);
         });
-
+        
         // Scroll current video into view
         setTimeout(() => {
             const currentItem = playlistContent.querySelector('.playlist-item.current');
@@ -1965,7 +1807,7 @@ class TikTikApp {
 
     playVideoFromPlaylist(index) {
         if (index < 0 || index >= this.currentPlaylist.length) return;
-
+        
         const video = this.currentPlaylist[index];
         this.currentVideoIndex = index;
         this.switchToVideo(video);
@@ -1974,9 +1816,9 @@ class TikTikApp {
 
     playNextVideo() {
         if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-
+        
         let nextIndex;
-
+        
         if (this.isShuffleOn) {
             // Random next video
             do {
@@ -1984,7 +1826,7 @@ class TikTikApp {
             } while (nextIndex === this.currentVideoIndex && this.currentPlaylist.length > 1);
         } else {
             nextIndex = this.currentVideoIndex + 1;
-
+            
             if (nextIndex >= this.currentPlaylist.length) {
                 if (this.isRepeatOn) {
                     nextIndex = 0;
@@ -1994,16 +1836,16 @@ class TikTikApp {
                 }
             }
         }
-
+        
         this.playVideoFromPlaylist(nextIndex);
         this.showToast('Playing next video', 'info');
     }
 
     playPreviousVideo() {
         if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-
+        
         let prevIndex = this.currentVideoIndex - 1;
-
+        
         if (prevIndex < 0) {
             if (this.isRepeatOn) {
                 prevIndex = this.currentPlaylist.length - 1;
@@ -2012,7 +1854,7 @@ class TikTikApp {
                 return;
             }
         }
-
+        
         this.playVideoFromPlaylist(prevIndex);
         this.showToast('Playing previous video', 'info');
     }
@@ -2021,7 +1863,7 @@ class TikTikApp {
         this.isShuffleOn = !this.isShuffleOn;
         const shuffleBtn = document.getElementById('shuffleBtn');
         shuffleBtn.classList.toggle('active', this.isShuffleOn);
-
+        
         this.showToast(this.isShuffleOn ? 'Shuffle enabled' : 'Shuffle disabled', 'info');
     }
 
@@ -2029,7 +1871,7 @@ class TikTikApp {
         this.isRepeatOn = !this.isRepeatOn;
         const repeatBtn = document.getElementById('repeatBtn');
         repeatBtn.classList.toggle('active', this.isRepeatOn);
-
+        
         this.showToast(this.isRepeatOn ? 'Repeat enabled' : 'Repeat disabled', 'info');
     }
 
@@ -2037,15 +1879,15 @@ class TikTikApp {
         this.settings.autoPlay = !this.settings.autoPlay;
         const autoplayToggle = document.getElementById('playlistAutoplayToggle');
         const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
-
+        
         autoplayToggle.classList.toggle('active', this.settings.autoPlay);
         if (autoplayToggleBtn) {
             autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
         }
-
+        
         const playlistInfo = document.getElementById('playlistInfo');
         playlistInfo.textContent = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
-
+        
         this.saveSettings();
         this.showToast(this.settings.autoPlay ? 'Autoplay enabled' : 'Autoplay disabled', 'info');
     }
@@ -2589,10 +2431,6 @@ class TikTikApp {
     saveSettings() {
         localStorage.setItem('tiktik_settings', JSON.stringify(this.settings));
         this.showToast('Settings saved', 'success');
-    }
-
-    saveChannelData() {
-        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
     }
 
     // Data persistence methods
@@ -3178,18 +3016,6 @@ class TikTikApp {
 
     replyToComment(commentId) {
         this.showToast('Comment reply feature coming soon', 'info');
-    }
-
-    deleteComment(commentId) {
-        if (confirm('Are you sure you want to delete this comment?')) {
-            // Find and delete comment
-            Object.keys(this.comments).forEach(videoId => {
-                this.comments[videoId] = this.comments[videoId].filter(comment => comment.id !== commentId);
-            });
-            this.saveComments();
-            this.loadStudioComments();
-            this.showToast('Comment deleted successfully', 'success');
-        }
     }
 }
 
