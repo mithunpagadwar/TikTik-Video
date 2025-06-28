@@ -59,9 +59,103 @@
 <div id="profile-container" class="profile-container" style="display: none;">
   <img id="profile-pic" class="profile-pic" src="" alt="Profile" onclick="toggleProfileMenu()" />
   <div id="profile-menu" class="profile-menu">
-    <p id="profile-name"></p>
-    <p id="profile-email"></p>
-    <button onclick="logout()">Logout</button>
+    <div class="profile-section">
+      <div class="profile-info">
+        <img id="profile-avatar" class="profile-avatar" src="" alt="Profile" />
+        <div class="profile-details">
+          <p id="profile-name" class="profile-name"></p>
+          <p id="profile-email" class="profile-email"></p>
+          <a href="#" class="profile-link">Create a channel</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="menu-divider"></div>
+    
+    <div class="menu-item" onclick="window.open('https://accounts.google.com', '_blank')">
+      <i class="fab fa-google"></i>
+      <span>Google Account</span>
+    </div>
+    
+    <div class="menu-item" onclick="switchAccount()">
+      <i class="fas fa-users"></i>
+      <span>Switch account</span>
+    </div>
+    
+    <div class="menu-item" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Sign out</span>
+    </div>
+    
+    <div class="menu-divider"></div>
+    
+    <div class="menu-item" onclick="openTikTikStudio()">
+      <i class="fas fa-video"></i>
+      <span>TikTik Studio</span>
+    </div>
+    
+    <div class="menu-item" onclick="openCreatorAcademy()">
+      <i class="fas fa-graduation-cap"></i>
+      <span>Creator Academy</span>
+    </div>
+    
+    <div class="menu-divider"></div>
+    
+    <div class="menu-item" onclick="openPurchases()">
+      <i class="fas fa-shopping-bag"></i>
+      <span>Purchases and memberships</span>
+    </div>
+    
+    <div class="menu-item" onclick="openYourData()">
+      <i class="fas fa-database"></i>
+      <span>Your data in TikTik</span>
+    </div>
+    
+    <div class="menu-item" onclick="openAppearance()">
+      <i class="fas fa-palette"></i>
+      <span>Appearance: Device theme</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" onclick="openLanguage()">
+      <i class="fas fa-language"></i>
+      <span>Language: English</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" onclick="openRestrictedMode()">
+      <i class="fas fa-shield-alt"></i>
+      <span>Restricted Mode: Off</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" onclick="openLocation()">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>Location: India</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" onclick="openKeyboardShortcuts()">
+      <i class="fas fa-keyboard"></i>
+      <span>Keyboard shortcuts</span>
+    </div>
+    
+    <div class="menu-divider"></div>
+    
+    <div class="menu-item" onclick="openSettings()">
+      <i class="fas fa-cog"></i>
+      <span>Settings</span>
+    </div>
+    
+    <div class="menu-item" onclick="openHelp()">
+      <i class="fas fa-question-circle"></i>
+      <span>Help</span>
+    </div>
+    
+    <div class="menu-item" onclick="sendFeedback()">
+      <i class="fas fa-flag"></i>
+      <span>Send feedback</span>
+    </div>
   </div>
 </div>
         </div>
@@ -1916,13 +2010,139 @@
         </div>
     </main>
 
+    <!-- TikTik Studio Modal -->
+    <div class="studio-modal" id="studioModal">
+        <div class="studio-modal-content">
+            <div class="studio-header">
+                <h2>
+                    <i class="fas fa-video"></i>
+                    TikTik Studio
+                </h2>
+                <button class="close-btn" id="closeStudioBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="studio-nav">
+                <button class="studio-tab active" data-tab="dashboard">Dashboard</button>
+                <button class="studio-tab" data-tab="videos">Videos</button>
+                <button class="studio-tab" data-tab="analytics">Analytics</button>
+                <button class="studio-tab" data-tab="comments">Comments</button>
+                <button class="studio-tab" data-tab="monetization">Monetization</button>
+            </div>
+            
+            <div class="studio-content">
+                <!-- Dashboard Tab -->
+                <div class="studio-tab-content active" id="dashboard-tab">
+                    <div class="studio-stats">
+                        <div class="stat-card">
+                            <h3 id="total-videos-stat">0</h3>
+                            <p>Total Videos</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="total-views-stat">0</h3>
+                            <p>Total Views</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="subscribers-stat">0</h3>
+                            <p>Subscribers</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="total-likes-stat">0</h3>
+                            <p>Total Likes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="studio-section">
+                        <h3>Quick Actions</h3>
+                        <div style="display: flex; gap: 15px;">
+                            <button class="btn btn-primary" onclick="document.getElementById('uploadVideoOption').click()">
+                                <i class="fas fa-upload"></i>
+                                Upload Video
+                            </button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('createShortOption').click()">
+                                <i class="fas fa-mobile-alt"></i>
+                                Create Short
+                            </button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('goLiveOption').click()">
+                                <i class="fas fa-broadcast-tower"></i>
+                                Go Live
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="studio-section">
+                        <h3>Recent Performance</h3>
+                        <div class="analytics-chart">
+                            <p>Analytics chart will be displayed here</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Videos Tab -->
+                <div class="studio-tab-content" id="videos-tab">
+                    <div class="studio-section">
+                        <h3>Your Videos</h3>
+                        <table class="video-management-table">
+                            <thead>
+                                <tr>
+                                    <th>Video</th>
+                                    <th>Title</th>
+                                    <th>Views</th>
+                                    <th>Likes</th>
+                                    <th>Upload Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studio-videos-list">
+                                <!-- Videos will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Analytics Tab -->
+                <div class="studio-tab-content" id="analytics-tab">
+                    <div class="studio-section">
+                        <h3>Channel Analytics</h3>
+                        <div class="analytics-chart">
+                            <p>Detailed analytics coming soon...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comments Tab -->
+                <div class="studio-tab-content" id="comments-tab">
+                    <div class="studio-section">
+                        <h3>Manage Comments</h3>
+                        <div class="comments-management" id="studio-comments-list">
+                            <!-- Comments will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Monetization Tab -->
+                <div class="studio-tab-content" id="monetization-tab">
+                    <div class="studio-section">
+                        <h3>Monetization</h3>
+                        <p>Enable monetization to start earning from your content.</p>
+                        <button class="btn btn-primary">Enable Monetization</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Video Player Modal -->
     <div class="video-modal" id="videoModal">
         <div class="video-modal-content">
             <button class="close-btn" id="closeVideoBtn">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="video-player-container">
+            
+            <div class="video-main-section">
+                <div class="video-player-wrapper">
+                    <div class="video-player-container">
                 <video class="video-player" id="videoPlayer">
                     <source src="" type="video/mp4">
                     Your browser does not support the video tag.
@@ -1949,30 +2169,81 @@
                     </button>
                 </div>
                 
-                <!-- Video Controls -->
+                <!-- Video Controls - YouTube Style -->
                 <div class="video-controls" id="videoControls">
-                    <button class="control-btn" id="playPauseBtn">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    
+                    <!-- Progress bar at top -->
                     <div class="progress-bar" id="progressBar">
                         <div class="progress-fill" id="progressFill"></div>
                     </div>
                     
-                    <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
-                    
-                    <div class="volume-control">
-                        <button class="control-btn" id="muteBtn">
-                            <i class="fas fa-volume-up"></i>
-                        </button>
-                        <div class="volume-slider" id="volumeSlider">
-                            <div class="volume-fill" id="volumeFill"></div>
+                    <!-- Main controls row -->
+                    <div class="controls-row">
+                        <!-- Left side controls -->
+                        <div class="controls-left">
+                            <button class="control-btn large" id="playPauseBtn" title="Play/Pause (k)">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            
+                            <button class="control-btn" id="nextVideoBtn" title="Next video">
+                                <i class="fas fa-step-forward"></i>
+                            </button>
+                            
+                            <div class="volume-control">
+                                <button class="control-btn" id="muteBtn" title="Mute (m)">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <div class="volume-slider" id="volumeSlider">
+                                    <div class="volume-fill" id="volumeFill"></div>
+                                </div>
+                            </div>
+                            
+                            <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                        </div>
+                        
+                        <!-- Right side controls -->
+                        <div class="controls-right">
+                            <div class="autoplay-indicator">
+                                <span>Autoplay</span>
+                                <div class="autoplay-toggle active" id="autoplayToggleBtn" title="Autoplay is on"></div>
+                            </div>
+                            
+                            <button class="control-btn captions-btn" id="captionsBtn" title="Captions (c)">
+                                <i class="fas fa-closed-captioning"></i>
+                            </button>
+                            
+                            <div class="settings-menu">
+                                <button class="control-btn" id="settingsBtn" title="Settings">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <div class="settings-dropdown" id="settingsDropdown">
+                                    <div class="settings-item" data-setting="quality">
+                                        <span>Quality</span>
+                                        <span id="currentQuality">Auto</span>
+                                    </div>
+                                    <div class="settings-item" data-setting="speed">
+                                        <span>Playback speed</span>
+                                        <span id="currentSpeed">Normal</span>
+                                    </div>
+                                    <div class="settings-item" data-setting="captions">
+                                        <span>Subtitles/CC</span>
+                                        <span id="captionsStatus">Off</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="control-btn" id="miniplayerBtn" title="Miniplayer (i)">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                            
+                            <button class="control-btn" id="theaterModeBtn" title="Cinema mode (t)">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            
+                            <button class="control-btn" id="fullscreenBtn" title="Fullscreen (f)">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </button>
                         </div>
                     </div>
-                    
-                    <button class="control-btn" id="speedBtn" title="Playback speed">
-                        1x
-                    </button>
                 </div>
                 
                 <!-- Miniplayer Controls -->
@@ -1985,73 +2256,100 @@
                         <i class="fas fa-expand"></i>
                     </button>
                 </div>
-            </div>
-            <div class="video-info">
-                <h3 class="video-title" id="modalVideoTitle"></h3>
-                <div class="video-meta">
-                    <div class="channel-info">
-                        <img class="channel-avatar" id="modalChannelAvatar" src="" alt="Channel Avatar">
-                        <div class="channel-details">
-                            <span class="channel-name" id="modalChannelName"></span>
-                            <span class="video-stats" id="modalVideoStats"></span>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="action-btn like-btn" id="likeBtn">
-                            <i class="fas fa-thumbs-up"></i>
-                            <span id="likeCount">0</span>
-                        </button>
-                        <button class="action-btn dislike-btn" id="dislikeBtn">
-                            <i class="fas fa-thumbs-down"></i>
-                        </button>
-                        <button class="action-btn share-btn" id="shareBtn">
-                            <i class="fas fa-share"></i>
-                            Share
-                        </button>
-                        <button class="action-btn save-btn" id="saveBtn">
-                            <i class="fas fa-bookmark"></i>
-                            Save
-                        </button>
-                        <button class="action-btn download-btn" id="downloadBtn">
-                            <i class="fas fa-download"></i>
-                            Download
-                        </button>
-                    </div>
                 </div>
-                <div class="video-description" id="modalVideoDescription"></div>
                 
-                <!-- Comments Section -->
-                <div class="comments-section">
-                    <div class="comments-header">
-                        <h4>Comments <span id="commentCount">247</span></h4>
-                        <div class="sort-comments">
-                            <select id="commentSort">
-                                <option value="top">Top comments</option>
-                                <option value="newest">Newest first</option>
-                            </select>
+                <div class="video-info-section">
+                    <div class="video-info">
+                        <h3 class="video-title" id="modalVideoTitle"></h3>
+                        <div class="video-meta">
+                            <div class="channel-info">
+                                <img class="channel-avatar" id="modalChannelAvatar" src="" alt="Channel Avatar">
+                                <div class="channel-details">
+                                    <span class="channel-name" id="modalChannelName"></span>
+                                    <span class="video-stats" id="modalVideoStats"></span>
+                                </div>
+                            </div>
+                            <div class="video-actions">
+                                <button class="action-btn like-btn" id="likeBtn">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span id="likeCount">0</span>
+                                </button>
+                                <button class="action-btn dislike-btn" id="dislikeBtn">
+                                    <i class="fas fa-thumbs-down"></i>
+                                </button>
+                                <button class="action-btn share-btn" id="shareBtn">
+                                    <i class="fas fa-share"></i>
+                                    Share
+                                </button>
+                                <button class="action-btn save-btn" id="saveBtn">
+                                    <i class="fas fa-bookmark"></i>
+                                    Save
+                                </button>
+                                <button class="action-btn download-btn" id="downloadBtn">
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="add-comment">
-                        <img class="user-avatar-small" src="https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg" alt="Your Avatar">
-                        <div class="comment-input-container">
-                            <input type="text" id="commentInput" placeholder="Add a comment..." />
-                            <div class="comment-actions" style="display: none;">
-                                <button class="btn-cancel" id="cancelComment">Cancel</button>
-                                <button class="btn-comment" id="submitComment">Comment</button>
+                        <div class="video-description" id="modalVideoDescription"></div>
+                        
+                        <!-- Comments Section -->
+                        <div class="comments-section">
+                            <div class="comments-header">
+                                <h4>Comments <span id="commentCount">247</span></h4>
+                                <div class="sort-comments">
+                                    <select id="commentSort">
+                                        <option value="top">Top comments</option>
+                                        <option value="newest">Newest first</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="add-comment">
+                                <img class="user-avatar-small" src="https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg" alt="Your Avatar">
+                                <div class="comment-input-container">
+                                    <input type="text" id="commentInput" placeholder="Add a comment..." />
+                                    <div class="comment-actions" style="display: none;">
+                                        <button class="btn-cancel" id="cancelComment">Cancel</button>
+                                        <button class="btn-comment" id="submitComment">Comment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="comments-list" id="commentsList">
+                                <!-- Comments will be loaded here -->
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="comments-list" id="commentsList">
-                        <!-- Comments will be loaded here -->
-                    </div>
                 </div>
             </div>
-            <div class="recommended-videos">
-                <h4>Up Next</h4>
-                <div class="recommended-list" id="recommendedList">
-                    <!-- Recommended videos will be loaded here -->
+            
+            <!-- Video Playlist Sidebar -->
+            <div class="video-playlist-sidebar" id="videoPlaylistSidebar">
+                <div class="playlist-header">
+                    <h4 id="playlistTitle">Up Next</h4>
+                    <p class="playlist-info" id="playlistInfo">Autoplay is on</p>
+                </div>
+                
+                <div class="autoplay-section">
+                    <div class="autoplay-toggle-container">
+                        <span class="autoplay-label">Autoplay</span>
+                        <div class="autoplay-toggle active" id="sidebarAutoplayToggle" title="Autoplay is on"></div>
+                    </div>
+                    <div class="shuffle-controls">
+                        <button class="shuffle-btn" id="shuffleBtn">
+                            <i class="fas fa-random"></i>
+                            Shuffle
+                        </button>
+                        <button class="shuffle-btn" id="repeatBtn">
+                            <i class="fas fa-redo"></i>
+                            Repeat
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="playlist-content" id="playlistContent">
+                    <!-- Playlist items will be loaded here -->
                 </div>
             </div>
         </div>
@@ -2400,6 +2698,12 @@
     messagingSenderId: "840826006253",
     appId: "1:840826006253:web:d4c7f5c8e9b2a3f1e6d8e5"
   };
+
+  // Add authorized domain for Firebase Auth
+  const currentDomain = window.location.hostname;
+  if (currentDomain.includes('replit.dev') || currentDomain.includes('repl.co')) {
+    console.log('Running on Replit domain:', currentDomain);
+  }
 
   // Firebase Initialization
   firebase.initializeApp(firebaseConfig);
