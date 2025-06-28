@@ -171,19 +171,6 @@ class TikTikApp {
             }
         });
 
-        // Auto play next video when current video ends
-        videoPlayer.addEventListener('ended', () => {
-            if (this.settings.autoPlay && this.currentPlaylist && this.currentVideoIndex < this.currentPlaylist.length - 1) {
-                setTimeout(() => {
-                    this.playNextVideo();
-                }, 1000); // 1 second delay before next video
-            } else if (this.settings.autoPlay && this.isRepeatOn) {
-                setTimeout(() => {
-                    this.playVideoFromPlaylist(0);
-                }, 1000);
-            }
-        });
-
         // Video player controls
         this.setupVideoControls();
 
@@ -270,24 +257,6 @@ class TikTikApp {
             this.closeUploadModal();
         });
 
-        // Subscribe and Bell buttons
-        document.getElementById('subscribeBtn').addEventListener('click', () => {
-            this.toggleSubscribe();
-        });
-
-        document.getElementById('bellBtn').addEventListener('click', () => {
-            this.toggleNotifications();
-        });
-
-        // Modal Subscribe and Bell buttons
-        document.getElementById('modalSubscribeBtn').addEventListener('click', () => {
-            this.toggleModalSubscribe();
-        });
-
-        document.getElementById('modalBellBtn').addEventListener('click', () => {
-            this.toggleModalNotifications();
-        });
-
         // Channel edit modal
         document.getElementById('editChannelBtn').addEventListener('click', () => {
             this.openChannelEditModal();
@@ -351,19 +320,6 @@ class TikTikApp {
         });
 
         this.setupAdminControls();
-
-        // TikTik Studio modal
-        document.getElementById('closeStudioBtn').addEventListener('click', () => {
-            this.closeTikTikStudio();
-        });
-
-        // Studio tabs
-        document.querySelectorAll('.studio-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const tabName = e.target.dataset.tab;
-                this.switchStudioTab(tabName);
-            });
-        });
     }
 
     setupVideoControls() {
@@ -579,29 +535,8 @@ class TikTikApp {
                         e.preventDefault();
                         minimizeBtn.click();
                         break;
-                    case 'KeyN':
-                        e.preventDefault();
-                        this.playNextVideo();
-                        break;
-                    case 'KeyP':
-                        e.preventDefault();
-                        this.playPreviousVideo();
-                        break;
                 }
             }
-        });
-
-        // Playlist controls
-        document.getElementById('playlistAutoplayToggle').addEventListener('click', () => {
-            this.togglePlaylistAutoplay();
-        });
-
-        document.getElementById('shuffleBtn').addEventListener('click', () => {
-            this.toggleShuffle();
-        });
-
-        document.getElementById('repeatBtn').addEventListener('click', () => {
-            this.toggleRepeat();
         });
     }
 
@@ -796,137 +731,6 @@ class TikTikApp {
         }
     }
 
-    toggleSubscribe() {
-        const subscribeBtn = document.getElementById('subscribeBtn');
-        const bellBtn = document.getElementById('bellBtn');
-        const subscriberCount = document.getElementById('subscriberCount');
-        
-        const isSubscribed = subscribeBtn.classList.contains('subscribed');
-        
-        if (isSubscribed) {
-            // Unsubscribe
-            subscribeBtn.classList.remove('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-            bellBtn.classList.remove('active');
-            bellBtn.style.display = 'none';
-            
-            // Update subscriber count
-            let currentCount = parseInt(this.channelData.subscribers) || 0;
-            this.channelData.subscribers = Math.max(0, currentCount - 1);
-            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
-            
-            this.showToast('Unsubscribed successfully', 'info');
-        } else {
-            // Subscribe
-            subscribeBtn.classList.add('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
-            bellBtn.style.display = 'flex';
-            
-            // Update subscriber count
-            let currentCount = parseInt(this.channelData.subscribers) || 0;
-            this.channelData.subscribers = currentCount + 1;
-            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
-            
-            this.showToast('Subscribed successfully! 🎉', 'success');
-        }
-        
-        this.saveChannelData();
-    }
-
-    toggleNotifications() {
-        const bellBtn = document.getElementById('bellBtn');
-        const subscribeBtn = document.getElementById('subscribeBtn');
-        
-        // Only allow notification toggle if subscribed
-        if (!subscribeBtn.classList.contains('subscribed')) {
-            this.showToast('Please subscribe first to enable notifications', 'warning');
-            return;
-        }
-        
-        const isActive = bellBtn.classList.contains('active');
-        
-        if (isActive) {
-            bellBtn.classList.remove('active');
-            bellBtn.title = 'Turn on notifications';
-            this.showToast('Notifications turned off', 'info');
-        } else {
-            bellBtn.classList.add('active');
-            bellBtn.title = 'Turn off notifications';
-            this.showToast('Notifications turned on! 🔔', 'success');
-            
-            // Request notification permission if not granted
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        new Notification('TikTik Notifications', {
-                            body: 'You will now receive notifications from this channel!',
-                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
-                        });
-                    }
-                });
-            }
-        }
-    }
-
-    toggleModalSubscribe() {
-        const subscribeBtn = document.getElementById('modalSubscribeBtn');
-        const bellBtn = document.getElementById('modalBellBtn');
-        
-        const isSubscribed = subscribeBtn.classList.contains('subscribed');
-        
-        if (isSubscribed) {
-            // Unsubscribe
-            subscribeBtn.classList.remove('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-            bellBtn.classList.remove('active');
-            bellBtn.style.display = 'none';
-            
-            this.showToast('Unsubscribed successfully', 'info');
-        } else {
-            // Subscribe
-            subscribeBtn.classList.add('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
-            bellBtn.style.display = 'flex';
-            
-            this.showToast('Subscribed successfully! 🎉', 'success');
-        }
-    }
-
-    toggleModalNotifications() {
-        const bellBtn = document.getElementById('modalBellBtn');
-        const subscribeBtn = document.getElementById('modalSubscribeBtn');
-        
-        // Only allow notification toggle if subscribed
-        if (!subscribeBtn.classList.contains('subscribed')) {
-            this.showToast('Please subscribe first to enable notifications', 'warning');
-            return;
-        }
-        
-        const isActive = bellBtn.classList.contains('active');
-        
-        if (isActive) {
-            bellBtn.classList.remove('active');
-            bellBtn.title = 'Turn on notifications';
-            this.showToast('Notifications turned off', 'info');
-        } else {
-            bellBtn.classList.add('active');
-            bellBtn.title = 'Turn off notifications';
-            this.showToast('Notifications turned on! 🔔', 'success');
-            
-            // Request notification permission if not granted
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        new Notification('TikTik Notifications', {
-                            body: 'You will now receive notifications from this channel!',
-                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
-                        });
-                    }
-                });
-            }
-        }
-    }
-
     navigateToPage(page) {
         // Remove active class from all nav items and pages
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -1104,7 +908,6 @@ class TikTikApp {
             const video = this.videos.find(v => v.id === videoId);
             if (video) {
                 const videoCard = this.createVideoCard(video);
-```text
                 grid.appendChild(videoCard);
             }
         });
@@ -1764,11 +1567,6 @@ class TikTikApp {
 
     openVideoModal(video) {
         this.currentVideo = video;
-        this.currentPlaylist = [...this.videos];
-        this.currentVideoIndex = this.currentPlaylist.findIndex(v => v.id === video.id);
-        this.isShuffleOn = false;
-        this.isRepeatOn = false;
-        
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
 
@@ -1806,9 +1604,6 @@ class TikTikApp {
 
         // Load recommended videos
         this.loadRecommendedVideos(video);
-        
-        // Load playlist
-        this.loadVideoPlaylist();
 
         modal.classList.add('active');
 
@@ -1914,131 +1709,6 @@ class TikTikApp {
 
             recommendedList.appendChild(item);
         });
-    }
-
-    loadVideoPlaylist() {
-        const playlistContent = document.getElementById('playlistContent');
-        const playlistInfo = document.getElementById('playlistInfo');
-        
-        playlistContent.innerHTML = '';
-        
-        // Update playlist info
-        playlistInfo.textContent = `${this.currentVideoIndex + 1} / ${this.currentPlaylist.length}`;
-        
-        // Load playlist items
-        this.currentPlaylist.forEach((video, index) => {
-            const item = document.createElement('div');
-            item.className = `playlist-item ${index === this.currentVideoIndex ? 'current' : ''}`;
-            item.onclick = () => this.playVideoFromPlaylist(index);
-            
-            item.innerHTML = `
-                <div class="playlist-item-index">${index + 1}</div>
-                <img class="playlist-thumbnail" src="${video.thumbnail}" alt="${video.title}">
-                <div class="playlist-item-duration">${video.duration}</div>
-                <div class="playlist-item-info">
-                    <h5 class="playlist-item-title">${video.title}</h5>
-                    <p class="playlist-item-channel">${video.channel}</p>
-                    <p class="playlist-item-stats">${video.views}</p>
-                </div>
-            `;
-            
-            playlistContent.appendChild(item);
-        });
-        
-        // Scroll current video into view
-        setTimeout(() => {
-            const currentItem = playlistContent.querySelector('.playlist-item.current');
-            if (currentItem) {
-                currentItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 100);
-    }
-
-    playVideoFromPlaylist(index) {
-        if (index < 0 || index >= this.currentPlaylist.length) return;
-        
-        const video = this.currentPlaylist[index];
-        this.currentVideoIndex = index;
-        this.switchToVideo(video);
-        this.loadVideoPlaylist();
-    }
-
-    playNextVideo() {
-        if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-        
-        let nextIndex;
-        
-        if (this.isShuffleOn) {
-            // Random next video
-            do {
-                nextIndex = Math.floor(Math.random() * this.currentPlaylist.length);
-            } while (nextIndex === this.currentVideoIndex && this.currentPlaylist.length > 1);
-        } else {
-            nextIndex = this.currentVideoIndex + 1;
-            
-            if (nextIndex >= this.currentPlaylist.length) {
-                if (this.isRepeatOn) {
-                    nextIndex = 0;
-                } else {
-                    this.showToast('Playlist ended', 'info');
-                    return;
-                }
-            }
-        }
-        
-        this.playVideoFromPlaylist(nextIndex);
-        this.showToast('Playing next video', 'info');
-    }
-
-    playPreviousVideo() {
-        if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-        
-        let prevIndex = this.currentVideoIndex - 1;
-        
-        if (prevIndex < 0) {
-            if (this.isRepeatOn) {
-                prevIndex = this.currentPlaylist.length - 1;
-            } else {
-                this.showToast('This is the first video', 'info');
-                return;
-            }
-        }
-        
-        this.playVideoFromPlaylist(prevIndex);
-        this.showToast('Playing previous video', 'info');
-    }
-
-    toggleShuffle() {
-        this.isShuffleOn = !this.isShuffleOn;
-        const shuffleBtn = document.getElementById('shuffleBtn');
-        shuffleBtn.classList.toggle('active', this.isShuffleOn);
-        
-        this.showToast(this.isShuffleOn ? 'Shuffle enabled' : 'Shuffle disabled', 'info');
-    }
-
-    toggleRepeat() {
-        this.isRepeatOn = !this.isRepeatOn;
-        const repeatBtn = document.getElementById('repeatBtn');
-        repeatBtn.classList.toggle('active', this.isRepeatOn);
-        
-        this.showToast(this.isRepeatOn ? 'Repeat enabled' : 'Repeat disabled', 'info');
-    }
-
-    togglePlaylistAutoplay() {
-        this.settings.autoPlay = !this.settings.autoPlay;
-        const autoplayToggle = document.getElementById('playlistAutoplayToggle');
-        const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
-        
-        autoplayToggle.classList.toggle('active', this.settings.autoPlay);
-        if (autoplayToggleBtn) {
-            autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
-        }
-        
-        const playlistInfo = document.getElementById('playlistInfo');
-        playlistInfo.textContent = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
-        
-        this.saveSettings();
-        this.showToast(this.settings.autoPlay ? 'Autoplay enabled' : 'Autoplay disabled', 'info');
     }
 
     performSearch() {
@@ -2582,10 +2252,6 @@ class TikTikApp {
         this.showToast('Settings saved', 'success');
     }
 
-    saveChannelData() {
-        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
-    }
-
     // Data persistence methods
     loadSettings() {
         const saved = localStorage.getItem('tiktik_settings');
@@ -2810,366 +2476,6 @@ class TikTikApp {
     hideLoading() {
         document.getElementById('loadingSpinner').classList.remove('active');
     }
-
-    openTikTikStudio() {
-        document.getElementById('studioModal').classList.add('active');
-        this.loadStudioData();
-        if (typeof toggleProfileMenu === 'function') {
-            toggleProfileMenu();
-        }
-    }
-
-    closeTikTikStudio() {
-        document.getElementById('studioModal').classList.remove('active');
-    }
-
-    switchStudioTab(tabName) {
-        // Remove active class from all tabs and contents
-        document.querySelectorAll('.studio-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.studio-tab-content').forEach(content => content.classList.remove('active'));
-
-        // Add active class to selected tab and content
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        document.getElementById(`${tabName}-tab`).classList.add('active');
-
-        // Load tab-specific data
-        this.loadStudioTabData(tabName);
-    }
-
-    loadStudioData() {
-        // Update dashboard stats
-        document.getElementById('total-videos-stat').textContent = this.myVideos.length;
-        document.getElementById('total-views-stat').textContent = this.formatNumber(this.channelData.totalViews);
-        document.getElementById('subscribers-stat').textContent = this.formatNumber(this.channelData.subscribers);
-
-        const totalLikes = this.myVideos.reduce((sum, video) => sum + (video.likes || 0), 0);
-        document.getElementById('total-likes-stat').textContent = this.formatNumber(totalLikes);
-    }
-
-    loadStudioTabData(tabName) {
-        switch(tabName) {
-            case 'videos':
-                this.loadStudioVideos();
-                break;
-            case 'comments':
-                this.loadStudioComments();
-                break;
-            case 'analytics':
-                this.loadStudioAnalytics();
-                break;
-            case 'monetization':
-                this.loadStudioMonetization();
-                break;
-        }
-    }
-
-    loadStudioVideos() {
-        const videosList = document.getElementById('studio-videos-list');
-        videosList.innerHTML = '';
-
-        if (this.myVideos.length === 0) {
-            videosList.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        No videos uploaded yet. Start creating content!
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        this.myVideos.forEach((video, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>
-                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail-small">
-                </td>
-                <td>
-                    <div style="max-width: 200px;">
-                        <strong>${video.title}</strong>
-                        <br>
-                        <small style="color: var(--text-secondary);">${video.description || 'No description'}</small>
-                    </div>
-                </td>
-                <td>${video.views}</td>
-                <td>${this.formatNumber(video.likes || 0)}</td>
-                <td>${video.uploadTime}</td>
-                <td>
-                    <div class="video-actions">
-                        <button class="action-btn-small edit" onclick="app.editVideo('${video.id}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn-small delete" onclick="app.deleteVideo('${video.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            videosList.appendChild(row);
-        });
-    }
-
-    loadStudioComments() {
-        const commentsList = document.getElementById('studio-comments-list');
-        commentsList.innerHTML = '';
-
-        const allComments = [];
-        Object.keys(this.comments).forEach(videoId => {
-            const video = this.myVideos.find(v => v.id === videoId);
-            if (video && this.comments[videoId]) {
-                this.comments[videoId].forEach(comment => {
-                    allComments.push({
-                        ...comment,
-                        videoTitle: video.title,
-                        videoId: videoId
-                    });
-                });
-            }
-        });
-
-        if (allComments.length === 0) {
-            commentsList.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                    No comments on your videos yet.
-                </div>
-            `;
-            return;
-        }
-
-        allComments.forEach(comment => {
-            const commentDiv = document.createElement('div');
-            commentDiv.className = 'comment-item-studio';
-            commentDiv.innerHTML = `
-                <div class="comment-content-studio">
-                    <div class="comment-author-studio">${comment.author}</div>
-                    <div class="comment-text-studio">${comment.text}</div>
-                    <small style="color: var(--text-muted);">On: ${comment.videoTitle}</small>
-                </div>
-                <div class="comment-actions-studio">
-                    <button class="action-btn-small" onclick="app.replyToComment('${comment.id}')">
-                        <i class="fas fa-reply"></i>
-                    </button>
-                    <button class="action-btn-small delete" onclick="app.deleteComment('${comment.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            commentsList.appendChild(commentDiv);
-        });
-    }
-
-    loadStudioAnalytics() {
-        // Analytics functionality would be implemented here
-        console.log('Loading analytics data...');
-    }
-
-    loadStudioMonetization() {
-        // Monetization functionality would be implemented here
-        console.log('Loading monetization data...');
-    }
-
-    editVideo(videoId) {
-        this.showToast('Video editing feature coming soon', 'info');
-    }
-
-    deleteVideo(videoId) {
-        if (confirm('Are you sure you want to delete this video?')) {
-            this.myVideos = this.myVideos.filter(video => video.id !== videoId);
-            this.saveMyVideos();
-            this.loadStudioVideos();
-            this.showToast('Video deleted successfully', 'success');
-        }
-    }
-
-    replyToComment(commentId) {
-        this.showToast('Comment reply feature coming soon', 'info');
-    }
-
-    deleteComment(commentId) {
-        if (confirm('Are you sure you want to delete this comment?')) {
-            // Find and delete comment
-            Object.keys(this.comments).forEach(videoId => {
-                this.comments[videoId] = this.comments[videoId].filter(comment => comment.id !== commentId);
-            });
-            this.saveComments();
-            this.loadStudioComments();
-            this.showToast('Comment deleted successfully', 'success');
-        }
-    }
-
-    openTikTikStudio() {
-        document.getElementById('studioModal').classList.add('active');
-        this.loadStudioData();
-        if (typeof toggleProfileMenu === 'function') {
-            toggleProfileMenu();
-        }
-    }
-
-    closeTikTikStudio() {
-        document.getElementById('studioModal').classList.remove('active');
-    }
-
-    switchStudioTab(tabName) {
-        // Remove active class from all tabs and contents
-        document.querySelectorAll('.studio-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.studio-tab-content').forEach(content => content.classList.remove('active'));
-
-        // Add active class to selected tab and content
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        document.getElementById(`${tabName}-tab`).classList.add('active');
-
-        // Load tab-specific data
-        this.loadStudioTabData(tabName);
-    }
-
-    loadStudioData() {
-        // Update dashboard stats
-        document.getElementById('total-videos-stat').textContent = this.myVideos.length;
-        document.getElementById('total-views-stat').textContent = this.formatNumber(this.channelData.totalViews);
-        document.getElementById('subscribers-stat').textContent = this.formatNumber(this.channelData.subscribers);
-
-        const totalLikes = this.myVideos.reduce((sum, video) => sum + (video.likes || 0), 0);
-        document.getElementById('total-likes-stat').textContent = this.formatNumber(totalLikes);
-    }
-
-    loadStudioTabData(tabName) {
-        switch(tabName) {
-            case 'videos':
-                this.loadStudioVideos();
-                break;
-            case 'comments':
-                this.loadStudioComments();
-                break;
-            case 'analytics':
-                this.loadStudioAnalytics();
-                break;
-            case 'monetization':
-                this.loadStudioMonetization();
-                break;
-        }
-    }
-
-    loadStudioVideos() {
-        const videosList = document.getElementById('studio-videos-list');
-        videosList.innerHTML = '';
-
-        if (this.myVideos.length === 0) {
-            videosList.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        No videos uploaded yet. Start creating content!
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        this.myVideos.forEach((video, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>
-                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail-small">
-                </td>
-                <td>
-                    <div style="max-width: 200px;">
-                        <strong>${video.title}</strong>
-                        <br>
-                        <small style="color: var(--text-secondary);">${video.description || 'No description'}</small>
-                    </div>
-                </td>
-                <td>${video.views}</td>
-                <td>${this.formatNumber(video.likes || 0)}</td>
-                <td>${video.uploadTime}</td>
-                <td>
-                    <div class="video-actions">
-                        <button class="action-btn-small edit" onclick="app.editVideo('${video.id}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn-small delete" onclick="app.deleteVideo('${video.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            videosList.appendChild(row);
-        });
-    }
-
-    loadStudioComments() {
-        const commentsList = document.getElementById('studio-comments-list');
-        commentsList.innerHTML = '';
-
-        const allComments = [];
-        Object.keys(this.comments).forEach(videoId => {
-            const video = this.myVideos.find(v => v.id === videoId);
-            if (video && this.comments[videoId]) {
-                this.comments[videoId].forEach(comment => {
-                    allComments.push({
-                        ...comment,
-                        videoTitle: video.title,
-                        videoId: videoId
-                    });
-                });
-            }
-        });
-
-        if (allComments.length === 0) {
-            commentsList.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                    No comments on your videos yet.
-                </div>
-            `;
-            return;
-        }
-
-        allComments.forEach(comment => {
-            const commentDiv = document.createElement('div');
-            commentDiv.className = 'comment-item-studio';
-            commentDiv.innerHTML = `
-                <div class="comment-content-studio">
-                    <div class="comment-author-studio">${comment.author}</div>
-                    <div class="comment-text-studio">${comment.text}</div>
-                    <small style="color: var(--text-muted);">On: ${comment.videoTitle}</small>
-                </div>
-                <div class="comment-actions-studio">
-                    <button class="action-btn-small" onclick="app.replyToComment('${comment.id}')">
-                        <i class="fas fa-reply"></i>
-                    </button>
-                    <button class="action-btn-small delete" onclick="app.deleteComment('${comment.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            commentsList.appendChild(commentDiv);
-        });
-    }
-
-    loadStudioAnalytics() {
-        // Analytics functionality would be implemented here
-        console.log('Loading analytics data...');
-    }
-
-    loadStudioMonetization() {
-        // Monetization functionality would be implemented here
-        console.log('Loading monetization data...');
-    }
-
-    editVideo(videoId) {
-        this.showToast('Video editing feature coming soon', 'info');
-    }
-
-    deleteVideo(videoId) {
-        if (confirm('Are you sure you want to delete this video?')) {
-            this.myVideos = this.myVideos.filter(video => video.id !== videoId);
-            this.saveMyVideos();
-            this.loadStudioVideos();
-            this.showToast('Video deleted successfully', 'success');
-        }
-    }
-
-    replyToComment(commentId) {
-        this.showToast('Comment reply feature coming soon', 'info');
-    }
 }
 
 // Profile dropdown toggle function
@@ -3190,6 +2496,11 @@ class TikTikApp {
   // Profile menu functions
   function switchAccount() {
     alert('Switch Account feature - You can add multiple accounts here');
+    toggleProfileMenu();
+  }
+
+  function openTikTikStudio() {
+    alert('Opening TikTik Studio - Content creation and analytics dashboard');
     toggleProfileMenu();
   }
 
@@ -3317,7 +2628,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.tiktikApp = new TikTikApp();
-    window.app = window.tiktikApp;
 
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
