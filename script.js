@@ -279,6 +279,15 @@ class TikTikApp {
             this.toggleNotifications();
         });
 
+        // Modal Subscribe and Bell buttons
+        document.getElementById('modalSubscribeBtn').addEventListener('click', () => {
+            this.toggleModalSubscribe();
+        });
+
+        document.getElementById('modalBellBtn').addEventListener('click', () => {
+            this.toggleModalNotifications();
+        });
+
         // Channel edit modal
         document.getElementById('editChannelBtn').addEventListener('click', () => {
             this.openChannelEditModal();
@@ -827,6 +836,65 @@ class TikTikApp {
     toggleNotifications() {
         const bellBtn = document.getElementById('bellBtn');
         const subscribeBtn = document.getElementById('subscribeBtn');
+        
+        // Only allow notification toggle if subscribed
+        if (!subscribeBtn.classList.contains('subscribed')) {
+            this.showToast('Please subscribe first to enable notifications', 'warning');
+            return;
+        }
+        
+        const isActive = bellBtn.classList.contains('active');
+        
+        if (isActive) {
+            bellBtn.classList.remove('active');
+            bellBtn.title = 'Turn on notifications';
+            this.showToast('Notifications turned off', 'info');
+        } else {
+            bellBtn.classList.add('active');
+            bellBtn.title = 'Turn off notifications';
+            this.showToast('Notifications turned on! 🔔', 'success');
+            
+            // Request notification permission if not granted
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('TikTik Notifications', {
+                            body: 'You will now receive notifications from this channel!',
+                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
+                        });
+                    }
+                });
+            }
+        }
+    }
+
+    toggleModalSubscribe() {
+        const subscribeBtn = document.getElementById('modalSubscribeBtn');
+        const bellBtn = document.getElementById('modalBellBtn');
+        
+        const isSubscribed = subscribeBtn.classList.contains('subscribed');
+        
+        if (isSubscribed) {
+            // Unsubscribe
+            subscribeBtn.classList.remove('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
+            bellBtn.classList.remove('active');
+            bellBtn.style.display = 'none';
+            
+            this.showToast('Unsubscribed successfully', 'info');
+        } else {
+            // Subscribe
+            subscribeBtn.classList.add('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
+            bellBtn.style.display = 'flex';
+            
+            this.showToast('Subscribed successfully! 🎉', 'success');
+        }
+    }
+
+    toggleModalNotifications() {
+        const bellBtn = document.getElementById('modalBellBtn');
+        const subscribeBtn = document.getElementById('modalSubscribeBtn');
         
         // Only allow notification toggle if subscribed
         if (!subscribeBtn.classList.contains('subscribed')) {
