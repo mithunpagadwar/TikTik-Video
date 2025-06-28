@@ -19,192 +19,105 @@ class TikTikApp {
         this.isCameraOn = false;
         this.isMicOn = false;
         
-        // Video data with actual video URLs
+        // Video data with proper working thumbnail URLs
         this.videos = [
             {
                 id: '1',
                 title: 'Amazing Sunset Timelapse - Nature\'s Beauty Unveiled',
                 channel: 'NatureFilms HD',
-                avatar: 'https://pixabay.com/get/gec6e54e2919e4a5d18cbc00c133c485a19179de6a46f131b31ed3cd94c8c8a054fe25ed78a96a3265f0c8cef7e38522c2e91cb914d63f37190e1a3e4013241b7_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
-                duration: '5:24',
+                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=64&h=64&fit=crop&crop=face',
+                thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=320&h=180&fit=crop',
+                duration: '4:23',
                 views: '1.2M views',
                 uploadTime: '2 days ago',
-                likes: 15420,
-                description: 'Watch this breathtaking sunset timelapse captured over the mountains. The golden hour creates magical lighting that transforms the landscape into a work of art.',
+                likes: 24580,
+                description: 'Experience the breathtaking beauty of nature with this stunning sunset timelapse captured over the Pacific Ocean.',
                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                category: 'nature'
+                category: 'general'
             },
             {
                 id: '2',
-                title: 'City Lights at Night - Urban Photography Tips',
-                channel: 'PhotoMaster Pro',
-                avatar: 'https://pixabay.com/get/g2f3bd00b498776f7c22fbbcc5c126c6ef40fae301a35014cc2bf1f104b6789ca01d1994ee29184c9c5651352319b9e57f42f6ce3a16f2aa0a2599c3ef2795080_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/gc46bcb53f99cc1a7dcbfe0fa97f1f89ea4a3aff78acd4cbed36941cc76b8a77bab91b0c5bd33468245fb7c7e08d3ecfee29059dd5fbcb79169641f2c7908f7d0_1280.jpg',
-                duration: '8:15',
-                views: '890K views',
-                uploadTime: '5 days ago',
-                likes: 12350,
-                description: 'Learn professional techniques for capturing stunning city lights at night. This tutorial covers camera settings, composition, and post-processing tips.',
+                title: 'Modern Web Development Tutorial - React & JavaScript',
+                channel: 'CodeMaster',
+                avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face',
+                thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=320&h=180&fit=crop',
+                duration: '45:17',
+                views: '856K views',
+                uploadTime: '1 week ago',
+                likes: 18750,
+                description: 'Learn modern web development with React, JavaScript ES6+, and best practices for building scalable applications.',
                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
                 category: 'learning'
             },
             {
                 id: '3',
-                title: 'Mountain Adventure - Hiking the Great Peaks',
-                channel: 'Adventure Seekers',
-                avatar: 'https://pixabay.com/get/g727b5c506ff678b49c5ad56b7dfbd90d2a044c1fd61d5f1c48760fe86afba1adeede5ac345ed4fd79d591e3e3dcc1a5f1245930860f8237be2afebaef8e9aebb_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/gee140c21f57d0e059681c522073cee7f9cf8701bbb9bea45096b81f3c429490f5dadd27f6fb88d06918a0f35c0084c2b155f80b3cf9c1e582e85e5e6f3de9f9b_1280.jpg',
+                title: 'Epic Gaming Moments - Best Highlights 2024',
+                channel: 'GameWorld Pro',
+                avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face',
+                thumbnail: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=320&h=180&fit=crop',
                 duration: '12:45',
                 views: '2.1M views',
-                uploadTime: '1 week ago',
-                likes: 28970,
-                description: 'Join us on an epic mountain hiking adventure through breathtaking landscapes. Experience the thrill of reaching new heights and discovering hidden gems.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                category: 'sports'
-            },
-            {
-                id: '4',
-                title: 'Abstract Art Visualization - Digital Creativity',
-                channel: 'Digital Art Studio',
-                avatar: 'https://pixabay.com/get/gdd1eb5dec247f02af89031bab0d27a4d5fcf0937eee4294516fe3e27032217410dfacbe5524a30c83ed092ae88e95ecf68db30fd11dd5a10fdbfa19653a5978b_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/g7ad68ce073f5c33ffa357c0b8ffb8d9e9ce7420f8ece89515052e9be1c42e34244938815b59859e67d28e9aa34beac25392340cd990b1a1b8c89e046d30795ba_1280.jpg',
-                duration: '6:30',
-                views: '456K views',
-                uploadTime: '1 day ago',
-                likes: 8920,
-                description: 'Explore the world of abstract digital art through stunning visualizations and creative techniques. Perfect for artists and design enthusiasts.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-                category: 'learning'
-            },
-            {
-                id: '5',
-                title: 'Ocean Waves - Relaxing Nature Sounds',
-                channel: 'Peaceful Moments',
-                avatar: 'https://pixabay.com/get/g0a5da4b16791ee5a080efc068a5a97b5eadc1194838f0aa8ab7aff8602beb52959adb3e71c6324a009335d29593d2178b3ebe319247e071e50815ab190d7664e_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/g2c736471db05f3161ea3fd9781a42a96e9e79523db07155ec05a77a92896f367d73cd460275cba8f1581583d76dfc2f5bbc3a9d453c7ec76d297a0114349da02_1280.jpg',
-                duration: '30:00',
-                views: '3.5M views',
                 uploadTime: '3 days ago',
-                likes: 45120,
-                description: 'Immerse yourself in the calming sounds of ocean waves. Perfect for relaxation, meditation, or as background ambiance for work and study.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-                category: 'music'
-            },
-            {
-                id: '6',
-                title: 'Vintage Photography Techniques',
-                channel: 'RetroShot Academy',
-                avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/g2acd87b5606abd12fdd940fedc6ad1465e1b382e21d29a82469fbbc6b7373aca65c1b20d18b76260f3f253f051ded88bfd2160370491c74bb4f28d5c85618ab3_1280.jpg',
-                duration: '9:42',
-                views: '678K views',
-                uploadTime: '4 days ago',
-                likes: 11230,
-                description: 'Discover the art of vintage photography with classic techniques and modern applications. Learn to create timeless images with nostalgic appeal.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
-                category: 'learning'
-            },
-            {
-                id: '7',
-                title: 'Urban Street Art Documentary',
-                channel: 'Street Culture',
-                avatar: 'https://pixabay.com/get/gec6e54e2919e4a5d18cbc00c133c485a19179de6a46f131b31ed3cd94c8c8a054fe25ed78a96a3265f0c8cef7e38522c2e91cb914d63f37190e1a3e4013241b7_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/gdabda4175df3ffc8fa97883037c1257c71ff3538d88730bdade5be4b780d7dcd74a09d5b6ae17f60f165982744f852efc36cb5a28ef5fb365f8410f675cad28e_1280.jpg',
-                duration: '15:30',
-                views: '1.8M views',
-                uploadTime: '6 days ago',
-                likes: 22140,
-                description: 'Explore the vibrant world of urban street art through the eyes of talented artists. A journey through creativity, culture, and self-expression.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-                category: 'news'
-            },
-            {
-                id: '8',
-                title: 'Minimalist Design Principles',
-                channel: 'Design Theory',
-                avatar: 'https://pixabay.com/get/g2f3bd00b498776f7c22fbbcc5c126c6ef40fae301a35014cc2bf1f104b6789ca01d1994ee29184c9c5651352319b9e57f42f6ce3a16f2aa0a2599c3ef2795080_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/g6a3bfd52a3bb24e45cec35fa0a66864b648b3ada7508b940d145fdb9f142eabf5b71ecac54b3226b9453e1b509d41f39568098161aaf7164554e4140fafe5a7a_1280.jpg',
-                duration: '7:18',
-                views: '534K views',
-                uploadTime: '2 days ago',
-                likes: 9870,
-                description: 'Master the art of minimalist design with these fundamental principles. Learn how less can truly be more in creating impactful visual experiences.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4',
-                category: 'learning'
-            },
-            {
-                id: '9',
-                title: 'Epic Gaming Montage - Best Moments 2024',
-                channel: 'GameMaster Pro',
-                avatar: 'https://pixabay.com/get/g727b5c506ff678b49c5ad56b7dfbd90d2a044c1fd61d5f1c48760fe86afba1adeede5ac345ed4fd79d591e3e3dcc1a5f1245930860f8237be2afebaef8e9aebb_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/g6a3bfd52a3bb24e45cec35fa0a66864b648b3ada7508b940d145fdb9f142eabf5b71ecac54b3226b9453e1b509d41f39568098161aaf7164554e4140fafe5a7a_1280.jpg',
-                duration: '10:35',
-                views: '1.5M views',
-                uploadTime: '1 day ago',
-                likes: 35420,
-                description: 'The best gaming moments from 2024! Epic wins, amazing plays, and unforgettable gaming experiences.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+                likes: 45620,
+                description: 'The most incredible gaming moments and epic wins from top streamers around the world.',
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
                 category: 'gaming'
             },
             {
-                id: '10',
-                title: 'Breaking News: Tech Innovation Summit',
-                channel: 'TechNews Daily',
-                avatar: 'https://pixabay.com/get/gec6e54e2919e4a5d18cbc00c133c485a19179de6a46f131b31ed3cd94c8c8a054fe25ed78a96a3265f0c8cef7e38522c2e91cb914d63f37190e1a3e4013241b7_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/gdabda4175df3ffc8fa97883037c1257c71ff3538d88730bdade5be4b780d7dcd74a09d5b6ae17f60f165982744f852efc36cb5a28ef5fb365f8410f675cad28e_1280.jpg',
-                duration: '8:22',
-                views: '890K views',
-                uploadTime: '3 hours ago',
-                likes: 12890,
-                description: 'Live coverage of the annual Tech Innovation Summit featuring the latest breakthroughs in technology.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4',
-                category: 'news'
+                id: '4',
+                title: 'Healthy Morning Routine - Transform Your Life',
+                channel: 'Wellness Journey',
+                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face',
+                thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=320&h=180&fit=crop',
+                duration: '8:32',
+                views: '745K views',
+                uploadTime: '5 days ago',
+                likes: 12340,
+                description: 'Start your day right with this simple yet effective morning routine that will boost your energy and productivity.',
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+                category: 'general'
             },
             {
-                id: '11',
-                title: 'Relaxing Piano Music - Study & Sleep',
-                channel: 'Peaceful Sounds',
-                avatar: 'https://pixabay.com/get/g0a5da4b16791ee5a080efc068a5a97b5eadc1194838f0aa8ab7aff8602beb52959adb3e71c6324a009335d29593d2178b3ebe319247e071e50815ab190d7664e_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/g2c736471db05f3161ea3fd9781a42a96e9e79523db07155ec05a77a92896f367d73cd460275cba8f1581583d76dfc2f5bbc3a9d453c7ec76d297a0114349da02_1280.jpg',
-                duration: '60:00',
-                views: '2.8M views',
-                uploadTime: '1 week ago',
-                likes: 78540,
-                description: 'Beautiful piano music perfect for studying, sleeping, or relaxation. 1 hour of peaceful melodies.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                id: '5',
+                title: 'Latest Music Hits 2024 - Top Songs Compilation',
+                channel: 'MusicVibes',
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face',
+                thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=320&h=180&fit=crop',
+                duration: '25:18',
+                views: '3.4M views',
+                uploadTime: '1 day ago',
+                likes: 67890,
+                description: 'The hottest music tracks of 2024 featuring popular artists and trending songs.',
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
                 category: 'music'
-            },
-            {
-                id: '12',
-                title: 'Football Highlights - World Cup 2024',
-                channel: 'Sports Central',
-                avatar: 'https://pixabay.com/get/g727b5c506ff678b49c5ad56b7dfbd90d2a044c1fd61d5f1c48760fe86afba1adeede5ac345ed4fd79d591e3e3dcc1a5f1245930860f8237be2afebaef8e9aebb_1280.jpg',
-                thumbnail: 'https://pixabay.com/get/gee140c21f57d0e059681c522073cee7f9cf8701bbb9bea45096b81f3c429490f5dadd27f6fb88d06918a0f35c0084c2b155f80b3cf9c1e582e85e5e6f3de9f9b_1280.jpg',
-                duration: '15:48',
-                views: '4.2M views',
-                uploadTime: '2 days ago',
-                likes: 89750,
-                description: 'Best moments from World Cup 2024 matches. Goals, saves, and incredible plays from the tournament.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-                category: 'sports'
             }
         ];
-
+        
         this.init();
     }
 
     init() {
-        this.applyTheme();
         this.setupEventListeners();
+        this.applyTheme();
         this.loadHomePage();
-        this.setupSearch();
+        this.updateAdminSettings();
     }
 
     setupEventListeners() {
-        // Menu toggle
+        // Sidebar toggle
         document.getElementById('menuBtn').addEventListener('click', () => {
             this.toggleSidebar();
+        });
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = item.dataset.page;
+                if (page) {
+                    this.navigateToPage(page);
+                }
+            });
         });
 
         // Theme toggle
@@ -217,27 +130,14 @@ class TikTikApp {
             this.openAdminPanel();
         });
 
-        // Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = item.dataset.page;
-                this.navigateToPage(page);
-            });
-        });
-
-        // Video modal controls
-        document.getElementById('closeVideoBtn').addEventListener('click', () => {
-            this.closeVideoModal();
-        });
-
-        // Admin modal controls
         document.getElementById('closeAdminBtn').addEventListener('click', () => {
             this.closeAdminPanel();
         });
 
-        // Admin settings
-        this.setupAdminControls();
+        // Video modal
+        document.getElementById('closeVideoBtn').addEventListener('click', () => {
+            this.closeVideoModal();
+        });
 
         // Search functionality
         document.getElementById('searchBtn').addEventListener('click', () => {
@@ -270,6 +170,9 @@ class TikTikApp {
                 this.addToHistory(this.currentVideo);
             }
         });
+
+        // Video player controls
+        this.setupVideoControls();
 
         // Like/Dislike buttons
         document.getElementById('likeBtn').addEventListener('click', () => {
@@ -342,20 +245,19 @@ class TikTikApp {
             this.closeUploadModal();
         });
 
-        document.getElementById('cancelUploadBtn').addEventListener('click', () => {
-            this.closeUploadModal();
+        document.getElementById('videoFileInput').addEventListener('change', (e) => {
+            this.handleVideoFileSelect(e);
         });
 
         document.getElementById('publishVideoBtn').addEventListener('click', () => {
             this.publishVideo();
         });
 
-        // Video file input
-        document.getElementById('videoFileInput').addEventListener('change', (e) => {
-            this.handleVideoFileSelect(e);
+        document.getElementById('cancelUploadBtn').addEventListener('click', () => {
+            this.closeUploadModal();
         });
 
-        // Channel editing
+        // Channel edit modal
         document.getElementById('editChannelBtn').addEventListener('click', () => {
             this.openChannelEditModal();
         });
@@ -364,12 +266,12 @@ class TikTikApp {
             this.closeChannelEditModal();
         });
 
-        document.getElementById('cancelChannelEditBtn').addEventListener('click', () => {
-            this.closeChannelEditModal();
+        document.getElementById('saveChannelBtn').addEventListener('click', () => {
+            this.saveChannelChanges();
         });
 
-        document.getElementById('saveChannelBtn').addEventListener('click', () => {
-            this.saveChannelData();
+        document.getElementById('cancelChannelEditBtn').addEventListener('click', () => {
+            this.closeChannelEditModal();
         });
 
         // Channel tabs
@@ -379,66 +281,34 @@ class TikTikApp {
             });
         });
 
-        // Upload buttons in channel
-        document.getElementById('uploadVideoBtn').addEventListener('click', () => {
-            this.openUploadModal();
-        });
-
-        document.getElementById('uploadShortBtn').addEventListener('click', () => {
-            this.openShortModal();
-        });
-
-        document.getElementById('goLiveBtn').addEventListener('click', () => {
-            this.openLiveModal();
-        });
-
-        // Modal backdrop clicks
-        document.getElementById('createModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeCreateModal();
-            }
-        });
-
-        document.getElementById('uploadModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeUploadModal();
-            }
-        });
-
-        document.getElementById('channelEditModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeChannelEditModal();
-            }
-        });
-
-        // Short Video Modal Events
+        // Short modal
         document.getElementById('closeShortBtn').addEventListener('click', () => {
             this.closeShortModal();
-        });
-
-        document.getElementById('cancelShortBtn').addEventListener('click', () => {
-            this.closeShortModal();
-        });
-
-        document.getElementById('publishShortBtn').addEventListener('click', () => {
-            this.publishShort();
         });
 
         document.getElementById('shortFileInput').addEventListener('change', (e) => {
             this.handleShortFileSelect(e);
         });
 
-        // Live Modal Events
-        document.getElementById('closeLiveBtn').addEventListener('click', () => {
-            this.closeLiveModal();
+        document.getElementById('publishShortBtn').addEventListener('click', () => {
+            this.publishShort();
         });
 
-        document.getElementById('cancelLiveBtn').addEventListener('click', () => {
+        document.getElementById('cancelShortBtn').addEventListener('click', () => {
+            this.closeShortModal();
+        });
+
+        // Live modal
+        document.getElementById('closeLiveBtn').addEventListener('click', () => {
             this.closeLiveModal();
         });
 
         document.getElementById('startLiveBtn').addEventListener('click', () => {
             this.startLiveStream();
+        });
+
+        document.getElementById('cancelLiveBtn').addEventListener('click', () => {
+            this.closeLiveModal();
         });
 
         document.getElementById('toggleCameraBtn').addEventListener('click', () => {
@@ -449,18 +319,365 @@ class TikTikApp {
             this.toggleMicrophone();
         });
 
-        // Modal backdrop clicks
-        document.getElementById('shortModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeShortModal();
-            }
-        });
+        this.setupAdminControls();
+    }
 
-        document.getElementById('liveModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeLiveModal();
+    setupVideoControls() {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const muteBtn = document.getElementById('muteBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeFill = document.getElementById('volumeFill');
+        
+        // New YouTube-style controls
+        const nextVideoBtn = document.getElementById('nextVideoBtn');
+        const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
+        const captionsBtn = document.getElementById('captionsBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsDropdown = document.getElementById('settingsDropdown');
+        const miniplayerBtn = document.getElementById('miniplayerBtn');
+        const theaterModeBtn = document.getElementById('theaterModeBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        
+        // Player state controls
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const theaterBtn = document.getElementById('theaterBtn');
+        const restoreBtn = document.getElementById('restoreBtn');
+        
+        // Navigation controls
+        const prevVideoBtn = document.getElementById('prevVideoBtn');
+        
+        // Miniplayer controls
+        const miniplayerPlayBtn = document.getElementById('miniplayerPlayBtn');
+        
+        // Play/Pause functionality
+        playPauseBtn.addEventListener('click', () => {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                videoPlayer.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
         });
+        
+        miniplayerPlayBtn.addEventListener('click', () => {
+            playPauseBtn.click();
+        });
+        
+        // Video player events
+        videoPlayer.addEventListener('play', () => {
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        });
+        
+        videoPlayer.addEventListener('pause', () => {
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+        });
+        
+        // Progress bar
+        videoPlayer.addEventListener('timeupdate', () => {
+            if (videoPlayer.duration) {
+                const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                progressFill.style.width = progress + '%';
+                
+                const currentTime = this.formatTime(videoPlayer.currentTime);
+                const duration = this.formatTime(videoPlayer.duration);
+                timeDisplay.textContent = `${currentTime} / ${duration}`;
+            }
+        });
+        
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const progress = clickX / rect.width;
+            videoPlayer.currentTime = progress * videoPlayer.duration;
+        });
+        
+        // Volume controls
+        muteBtn.addEventListener('click', () => {
+            if (videoPlayer.muted) {
+                videoPlayer.muted = false;
+                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+            } else {
+                videoPlayer.muted = true;
+                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                volumeFill.style.width = '0%';
+            }
+        });
+        
+        volumeSlider.addEventListener('click', (e) => {
+            const rect = volumeSlider.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const volume = clickX / rect.width;
+            videoPlayer.volume = Math.max(0, Math.min(1, volume));
+            volumeFill.style.width = (volume * 100) + '%';
+            videoPlayer.muted = false;
+            muteBtn.innerHTML = volume > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+        });
+        
+        // Autoplay toggle
+        autoplayToggleBtn.addEventListener('click', () => {
+            this.settings.autoPlay = !this.settings.autoPlay;
+            autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
+            autoplayToggleBtn.title = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
+            this.saveSettings();
+        });
+        
+        // Captions toggle
+        captionsBtn.addEventListener('click', () => {
+            const isActive = captionsBtn.classList.toggle('active');
+            document.getElementById('captionsStatus').textContent = isActive ? 'On' : 'Off';
+            this.toggleCaptions(isActive);
+        });
+        
+        // Settings dropdown
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+        
+        // Close settings dropdown when clicking outside
+        document.addEventListener('click', () => {
+            settingsDropdown.classList.remove('active');
+        });
+        
+        // Settings items
+        document.querySelectorAll('.settings-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const setting = e.currentTarget.dataset.setting;
+                this.handleSettingChange(setting);
+            });
+        });
+        
+        // Miniplayer button
+        miniplayerBtn.addEventListener('click', () => {
+            this.minimizeVideo();
+        });
+        
+        // Theater mode button
+        theaterModeBtn.addEventListener('click', () => {
+            this.toggleTheaterMode();
+        });
+        
+        // Player state controls
+        minimizeBtn.addEventListener('click', () => {
+            this.minimizeVideo();
+        });
+        
+        theaterBtn.addEventListener('click', () => {
+            this.toggleTheaterMode();
+        });
+        
+        fullscreenBtn.addEventListener('click', () => {
+            this.toggleFullscreen();
+        });
+        
+        restoreBtn.addEventListener('click', () => {
+            this.restoreVideo();
+        });
+        
+        // Navigation controls
+        prevVideoBtn.addEventListener('click', () => {
+            this.playPreviousVideo();
+        });
+        
+        nextVideoBtn.addEventListener('click', () => {
+            this.playNextVideo();
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (this.currentVideo && document.getElementById('videoModal').classList.contains('active')) {
+                switch(e.code) {
+                    case 'Space':
+                        e.preventDefault();
+                        playPauseBtn.click();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
+                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
+                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+                        break;
+                    case 'KeyM':
+                        e.preventDefault();
+                        muteBtn.click();
+                        break;
+                    case 'KeyF':
+                        e.preventDefault();
+                        fullscreenBtn.click();
+                        break;
+                    case 'KeyT':
+                        e.preventDefault();
+                        theaterBtn.click();
+                        break;
+                    case 'KeyI':
+                        e.preventDefault();
+                        minimizeBtn.click();
+                        break;
+                }
+            }
+        });
+    }
+
+    formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    minimizeVideo() {
+        const modal = document.getElementById('videoModal');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const miniplayerTitle = document.getElementById('miniplayerTitle');
+        
+        if (modal.classList.contains('minimized')) {
+            return;
+        }
+        
+        modal.classList.add('minimized');
+        minimizeBtn.innerHTML = '<i class="fas fa-expand"></i>';
+        minimizeBtn.title = 'Restore';
+        
+        if (this.currentVideo) {
+            miniplayerTitle.textContent = this.currentVideo.title;
+        }
+        
+        this.showToast('Video minimized. Click to restore.', 'info');
+    }
+
+    restoreVideo() {
+        const modal = document.getElementById('videoModal');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        
+        modal.classList.remove('minimized');
+        modal.classList.remove('theater');
+        minimizeBtn.innerHTML = '<i class="fas fa-compress"></i>';
+        minimizeBtn.title = 'Minimize';
+        
+        this.showToast('Video restored', 'info');
+    }
+
+    toggleTheaterMode() {
+        const modal = document.getElementById('videoModal');
+        const theaterBtn = document.getElementById('theaterBtn');
+        
+        if (modal.classList.contains('theater')) {
+            modal.classList.remove('theater');
+            theaterBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            theaterBtn.title = 'Theater mode';
+            this.showToast('Theater mode disabled', 'info');
+        } else {
+            modal.classList.remove('minimized');
+            modal.classList.add('theater');
+            theaterBtn.innerHTML = '<i class="fas fa-compress"></i>';
+            theaterBtn.title = 'Exit theater mode';
+            this.showToast('Theater mode enabled', 'info');
+        }
+    }
+
+    toggleFullscreen() {
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        if (!document.fullscreenElement) {
+            videoPlayer.requestFullscreen().catch(err => {
+                this.showToast('Fullscreen not supported', 'error');
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    playPreviousVideo() {
+        if (!this.currentVideo) return;
+        
+        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
+        if (currentIndex > 0) {
+            const prevVideo = this.videos[currentIndex - 1];
+            this.switchToVideo(prevVideo);
+            this.showToast('Playing previous video', 'info');
+        } else {
+            this.showToast('This is the first video', 'info');
+        }
+    }
+
+    playNextVideo() {
+        if (!this.currentVideo) return;
+        
+        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
+        if (currentIndex < this.videos.length - 1) {
+            const nextVideo = this.videos[currentIndex + 1];
+            this.switchToVideo(nextVideo);
+            this.showToast('Playing next video', 'info');
+        } else {
+            this.showToast('This is the last video', 'info');
+        }
+    }
+
+    switchToVideo(video) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const wasPlaying = !videoPlayer.paused;
+        
+        this.currentVideo = video;
+        
+        // Update video source
+        videoPlayer.src = video.videoUrl;
+        
+        // Update video info
+        document.getElementById('modalVideoTitle').textContent = video.title;
+        document.getElementById('modalChannelName').textContent = video.channel;
+        document.getElementById('modalChannelAvatar').src = video.avatar;
+        document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
+        document.getElementById('modalVideoDescription').textContent = video.description;
+        document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
+        document.getElementById('miniplayerTitle').textContent = video.title;
+        
+        // Update like button state
+        const likeBtn = document.getElementById('likeBtn');
+        if (this.likedVideos.includes(video.id)) {
+            likeBtn.classList.add('active');
+        } else {
+            likeBtn.classList.remove('active');
+        }
+        
+        // Update save button state
+        const saveBtn = document.getElementById('saveBtn');
+        if (this.savedVideos.includes(video.id)) {
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+            saveBtn.classList.add('active');
+        } else {
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
+            saveBtn.classList.remove('active');
+        }
+        
+        // Auto-play if was playing or autoplay is enabled
+        if (wasPlaying || this.settings.autoPlay) {
+            videoPlayer.play();
+        }
+        
+        // Load comments and recommendations
+        this.loadComments(video.id);
+        this.loadRecommendedVideos(video);
     }
 
     setupAdminControls() {
@@ -501,54 +718,32 @@ class TikTikApp {
         });
     }
 
-    setupSearch() {
-        // Mock search functionality
-        this.searchResults = [];
-    }
-
     toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('collapsed');
-        this.sidebarCollapsed = !this.sidebarCollapsed;
-    }
-
-    toggleTheme() {
-        const currentTheme = this.settings.theme;
-        this.settings.theme = currentTheme === 'dark' ? 'light' : 'dark';
-        this.applyTheme();
-        this.saveSettings();
-    }
-
-    applyTheme() {
-        const theme = this.settings.theme === 'auto' ? this.detectSystemTheme() : this.settings.theme;
-        document.documentElement.setAttribute('data-theme', theme);
+        const mainContent = document.getElementById('mainContent');
         
-        // Update theme toggle icon
-        const themeIcon = document.querySelector('#themeToggle i');
-        themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    }
-
-    detectSystemTheme() {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        this.sidebarCollapsed = !this.sidebarCollapsed;
+        
+        if (this.sidebarCollapsed) {
+            sidebar.classList.add('collapsed');
+        } else {
+            sidebar.classList.remove('collapsed');
+        }
     }
 
     navigateToPage(page) {
-        // Update navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
+        // Remove active class from all nav items and pages
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        
+        // Add active class to current nav item and page
         document.querySelector(`[data-page="${page}"]`).classList.add('active');
-
-        // Update pages
-        document.querySelectorAll('.page').forEach(p => {
-            p.classList.remove('active');
-        });
         document.getElementById(`${page}Page`).classList.add('active');
-
+        
         this.currentPage = page;
-
+        
         // Load page content
-        switch (page) {
+        switch(page) {
             case 'home':
                 this.loadHomePage();
                 break;
@@ -566,12 +761,6 @@ class TikTikApp {
                 break;
             case 'liked':
                 this.loadLikedPage();
-                break;
-            case 'watchlater':
-                this.loadWatchLaterPage();
-                break;
-            case 'downloads':
-                this.loadDownloadsPage();
                 break;
             case 'music':
                 this.loadMusicPage();
@@ -600,10 +789,50 @@ class TikTikApp {
         }
     }
 
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        this.settings.theme = newTheme;
+        this.applyTheme();
+        this.saveSettings();
+    }
+
+    applyTheme() {
+        const theme = this.settings.theme === 'auto' ? 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : 
+            this.settings.theme;
+            
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        const themeIcon = document.querySelector('#themeToggle i');
+        themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    openAdminPanel() {
+        document.getElementById('adminModal').classList.add('active');
+        this.updateAdminSettings();
+    }
+
+    closeAdminPanel() {
+        document.getElementById('adminModal').classList.remove('active');
+    }
+
+    updateAdminSettings() {
+        // Update theme radio buttons
+        document.querySelector(`input[name="theme"][value="${this.settings.theme}"]`).checked = true;
+        
+        // Update other settings
+        document.getElementById('autoPlay').checked = this.settings.autoPlay;
+        document.getElementById('showDescriptions').checked = this.settings.showDescriptions;
+        document.getElementById('videosPerPage').value = this.settings.videosPerPage;
+    }
+
     loadHomePage() {
         const grid = document.getElementById('videoGrid');
         grid.innerHTML = '';
         
+        // Load videos based on settings
         const videosToShow = this.videos.slice(0, this.settings.videosPerPage);
         videosToShow.forEach(video => {
             const videoCard = this.createVideoCard(video);
@@ -615,13 +844,13 @@ class TikTikApp {
         const grid = document.getElementById('trendingGrid');
         grid.innerHTML = '';
         
-        // Sort by views (mock trending algorithm)
+        // Sort videos by views (mock trending)
         const trendingVideos = [...this.videos].sort((a, b) => {
-            const aViews = parseFloat(a.views.replace(/[^\d.]/g, ''));
-            const bViews = parseFloat(b.views.replace(/[^\d.]/g, ''));
+            const aViews = parseInt(a.views.replace(/[^\d]/g, ''));
+            const bViews = parseInt(b.views.replace(/[^\d]/g, ''));
             return bViews - aViews;
         });
-
+        
         trendingVideos.forEach(video => {
             const videoCard = this.createVideoCard(video);
             grid.appendChild(videoCard);
@@ -629,24 +858,53 @@ class TikTikApp {
     }
 
     loadSubscriptionsPage() {
-        // Show empty state for now
+        // Subscriptions page shows empty state by default
     }
 
     loadLibraryPage() {
-        // Show empty state for now
+        // Update channel info
+        document.getElementById('channelName').textContent = this.channelData.name;
+        document.getElementById('subscriberCount').textContent = `${this.channelData.subscribers} subscribers`;
+        document.getElementById('videoCount').textContent = `${this.channelData.videoCount} videos`;
+        document.getElementById('channelDescription').textContent = this.channelData.description;
+        document.getElementById('joinDate').textContent = this.channelData.joinDate;
+        document.getElementById('totalViews').textContent = this.formatNumber(this.channelData.totalViews);
+        
+        // Load user's videos
+        this.loadMyVideos();
+    }
+
+    loadMyVideos() {
+        const grid = document.getElementById('myVideosGrid');
+        grid.innerHTML = '';
+        
+        if (this.myVideos.length === 0) {
+            // Show upload prompt
+            return;
+        }
+        
+        this.myVideos.forEach(video => {
+            const videoCard = this.createVideoCard(video);
+            grid.appendChild(videoCard);
+        });
     }
 
     loadHistoryPage() {
-        const page = document.getElementById('historyPage');
-        if (this.watchHistory.length === 0) {
-            return; // Keep empty state
-        }
-
-        // Create history grid
-        page.innerHTML = '<h2>Watch History</h2><div class="video-grid" id="historyGrid"></div>';
         const grid = document.getElementById('historyGrid');
+        grid.innerHTML = '';
         
-        this.watchHistory.reverse().forEach(videoId => {
+        if (this.watchHistory.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <p>No watch history</p>
+                    <span>Videos you watch will appear here</span>
+                </div>
+            `;
+            return;
+        }
+        
+        this.watchHistory.forEach(videoId => {
             const video = this.videos.find(v => v.id === videoId);
             if (video) {
                 const videoCard = this.createVideoCard(video);
@@ -656,14 +914,19 @@ class TikTikApp {
     }
 
     loadLikedPage() {
-        const page = document.getElementById('likedPage');
-        if (this.likedVideos.length === 0) {
-            return; // Keep empty state
-        }
-
-        // Create liked videos grid
-        page.innerHTML = '<h2>Liked Videos</h2><div class="video-grid" id="likedGrid"></div>';
         const grid = document.getElementById('likedGrid');
+        grid.innerHTML = '';
+        
+        if (this.likedVideos.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-thumbs-up"></i>
+                    <p>No liked videos</p>
+                    <span>Videos you like will appear here</span>
+                </div>
+            `;
+            return;
+        }
         
         this.likedVideos.forEach(videoId => {
             const video = this.videos.find(v => v.id === videoId);
@@ -672,14 +935,6 @@ class TikTikApp {
                 grid.appendChild(videoCard);
             }
         });
-    }
-
-    loadWatchLaterPage() {
-        // Show empty state for now
-    }
-
-    loadDownloadsPage() {
-        // Show empty state for now
     }
 
     loadMusicPage() {
@@ -738,7 +993,545 @@ class TikTikApp {
     }
 
     loadSettingsPage() {
-        // Settings page content is already in HTML
+        // Initialize settings tabs
+        this.setupSettingsTabs();
+    }
+
+    setupSettingsTabs() {
+        // Settings tab navigation
+        document.querySelectorAll('.settings-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabName = tab.dataset.tab;
+                this.switchSettingsTab(tabName);
+            });
+        });
+
+        // Additional settings event listeners
+        this.setupSettingsControls();
+    }
+
+    switchSettingsTab(tabName) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.settings-tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Add active class to selected tab and content
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(`${tabName}-content`).classList.add('active');
+    }
+
+    setupSettingsControls() {
+        // Language setting
+        const languageSelect = document.getElementById('language');
+        if (languageSelect) {
+            languageSelect.addEventListener('change', (e) => {
+                this.settings.language = e.target.value;
+                this.saveSettings();
+                this.applyLanguage(e.target.value);
+                this.showToast('Language updated', 'success');
+            });
+        }
+
+        // Location setting
+        const locationSelect = document.getElementById('location');
+        if (locationSelect) {
+            locationSelect.addEventListener('change', (e) => {
+                this.settings.location = e.target.value;
+                this.saveSettings();
+                this.showToast('Location updated', 'success');
+            });
+        }
+
+        // Video quality setting
+        const videoQualitySelect = document.getElementById('videoQuality');
+        if (videoQualitySelect) {
+            videoQualitySelect.addEventListener('change', (e) => {
+                this.settings.videoQuality = e.target.value;
+                this.saveSettings();
+                this.applyVideoQuality(e.target.value);
+                this.showToast('Video quality updated', 'success');
+            });
+        }
+
+        // Download quality setting
+        const downloadQualitySelect = document.getElementById('download-quality');
+        if (downloadQualitySelect) {
+            downloadQualitySelect.addEventListener('change', (e) => {
+                this.settings.downloadQuality = e.target.value;
+                this.saveSettings();
+                this.showToast('Download quality updated', 'success');
+            });
+        }
+
+        // Caption language setting
+        const captionLanguageSelect = document.getElementById('caption-language');
+        if (captionLanguageSelect) {
+            captionLanguageSelect.addEventListener('change', (e) => {
+                this.settings.captionLanguage = e.target.value;
+                this.saveSettings();
+                this.showToast('Caption language updated', 'success');
+            });
+        }
+
+        // Caption size setting
+        const captionSizeSelect = document.getElementById('caption-size');
+        if (captionSizeSelect) {
+            captionSizeSelect.addEventListener('change', (e) => {
+                this.settings.captionSize = e.target.value;
+                this.saveSettings();
+                this.applyCaptionSize(e.target.value);
+                this.showToast('Caption size updated', 'success');
+            });
+        }
+
+        // All checkbox settings with enhanced functionality
+        const checkboxSettings = [
+            'restrictedMode', 'subscriptions-notif', 'recommended-notif', 'comment-notif', 
+            'live-notif', 'pause-watch-history', 'pause-search-history', 'private-subscriptions',
+            'private-playlists', 'private-liked', 'new-ui', 'ai-features', 'always-choose-quality',
+            'autoplay-on-home', 'annotations', 'show-captions', 'data-saver', 'smart-downloads',
+            'download-on-wifi', 'live-chat-enabled', 'chat-filter', 'high-contrast',
+            'keyboard-navigation', 'screen-reader', 'double-tap-seek', 'zoom-to-fill',
+            'ambient-mode', 'theater-mode', 'miniplayer-auto', 'picture-in-picture',
+            'auto-quality', 'stable-volume', 'speed-controls', 'gesture-controls'
+        ];
+
+        checkboxSettings.forEach(settingId => {
+            const checkbox = document.getElementById(settingId);
+            if (checkbox) {
+                checkbox.addEventListener('change', (e) => {
+                    this.settings[settingId] = e.target.checked;
+                    this.saveSettings();
+                    this.applySettingChange(settingId, e.target.checked);
+                    this.showToast('Setting updated', 'success');
+                });
+            }
+        });
+
+        // Playback speed setting
+        const playbackSpeedSelect = document.getElementById('playback-speed');
+        if (playbackSpeedSelect) {
+            playbackSpeedSelect.addEventListener('change', (e) => {
+                this.settings.playbackSpeed = e.target.value;
+                this.saveSettings();
+                this.applyPlaybackSpeed(e.target.value);
+                this.showToast('Playback speed updated', 'success');
+            });
+        }
+
+        // Seek duration setting
+        const seekDurationSelect = document.getElementById('seek-duration');
+        if (seekDurationSelect) {
+            seekDurationSelect.addEventListener('change', (e) => {
+                this.settings.seekDuration = e.target.value;
+                this.saveSettings();
+                this.showToast('Seek duration updated', 'success');
+            });
+        }
+
+        // Volume normalization slider
+        const volumeSlider = document.getElementById('volume-normalization');
+        if (volumeSlider) {
+            volumeSlider.addEventListener('input', (e) => {
+                this.settings.volumeNormalization = e.target.value;
+                this.saveSettings();
+                this.applyVolumeNormalization(e.target.value);
+            });
+        }
+
+        // Add account button
+        const addAccountBtn = document.querySelector('.add-account-btn');
+        if (addAccountBtn) {
+            addAccountBtn.addEventListener('click', () => {
+                this.showGoogleLoginPopup();
+            });
+        }
+
+        // Switch account functionality
+        document.querySelectorAll('.account-item').forEach(item => {
+            if (!item.classList.contains('active')) {
+                item.addEventListener('click', () => {
+                    this.switchAccount(item.dataset.accountId);
+                });
+            }
+        });
+
+        // Family Centre setup
+        const familyCentreBtn = document.querySelector('.family-centre-info .btn-primary');
+        if (familyCentreBtn) {
+            familyCentreBtn.addEventListener('click', () => {
+                this.setupFamilyCentre();
+            });
+        }
+
+        // Payment method setup
+        const addPaymentBtn = document.querySelector('.payment-methods .btn-primary');
+        if (addPaymentBtn) {
+            addPaymentBtn.addEventListener('click', () => {
+                this.addPaymentMethod();
+            });
+        }
+
+        // Data download request
+        const requestDownloadBtn = document.querySelector('.data-info .btn-primary');
+        if (requestDownloadBtn) {
+            requestDownloadBtn.addEventListener('click', () => {
+                this.requestDataDownload();
+            });
+        }
+
+        // Account deletion
+        const deleteAccountBtn = document.querySelector('.data-info .btn-danger');
+        if (deleteAccountBtn) {
+            deleteAccountBtn.addEventListener('click', () => {
+                this.deleteAccount();
+            });
+        }
+
+        // Feedback form
+        const feedbackForm = document.querySelector('.feedback-form button');
+        if (feedbackForm) {
+            feedbackForm.addEventListener('click', () => {
+                const category = document.getElementById('feedback-category').value;
+                const text = document.getElementById('feedback-text').value.trim();
+                
+                if (!text) {
+                    this.showToast('Please enter your feedback', 'error');
+                    return;
+                }
+                
+                this.submitFeedback(category, text);
+                document.getElementById('feedback-text').value = '';
+                this.showToast('Thank you for your feedback!', 'success');
+            });
+        }
+
+        // Connect to TV button
+        const connectTvBtn = document.querySelector('.tv-info .btn-primary');
+        if (connectTvBtn) {
+            connectTvBtn.addEventListener('click', () => {
+                this.connectToTV();
+            });
+        }
+
+        // History management buttons
+        const clearWatchBtn = document.querySelector('.history-actions .btn-secondary:first-child');
+        const clearSearchBtn = document.querySelector('.history-actions .btn-secondary:last-child');
+        const deleteAllBtn = document.querySelector('.history-actions .btn-danger');
+
+        if (clearWatchBtn) {
+            clearWatchBtn.addEventListener('click', () => {
+                this.clearWatchHistory();
+            });
+        }
+
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', () => {
+                this.clearSearchHistory();
+            });
+        }
+
+        if (deleteAllBtn) {
+            deleteAllBtn.addEventListener('click', () => {
+                this.deleteAllActivity();
+            });
+        }
+
+        // Help center links
+        document.querySelectorAll('.help-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const helpType = link.querySelector('span').textContent;
+                this.openHelpCenter(helpType);
+            });
+        });
+
+        // Terms and policies
+        document.querySelectorAll('.about-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.openTermsPolicy(link.textContent);
+            });
+        });
+
+        // Notification preferences with advanced controls
+        this.setupNotificationControls();
+        
+        // Accessibility features
+        this.setupAccessibilityControls();
+        
+        // Load saved settings
+        this.loadSettingsFromStorage();
+    }
+
+    // Enhanced functionality methods
+    applyLanguage(language) {
+        // Apply language changes to UI
+        document.documentElement.setAttribute('lang', language);
+        // In a real app, this would load translation files
+    }
+
+    applyVideoQuality(quality) {
+        // Apply video quality to current player
+        const videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer && videoPlayer.src) {
+            // Store current time and apply quality
+            const currentTime = videoPlayer.currentTime;
+            const wasPlaying = !videoPlayer.paused;
+            
+            // Apply quality setting
+            videoPlayer.addEventListener('loadedmetadata', () => {
+                videoPlayer.currentTime = currentTime;
+                if (wasPlaying) videoPlayer.play();
+            }, { once: true });
+        }
+    }
+
+    applyCaptionSize(size) {
+        const sizeMap = { small: '14px', medium: '16px', large: '18px' };
+        document.documentElement.style.setProperty('--caption-size', sizeMap[size]);
+    }
+
+    applyPlaybackSpeed(speed) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer) {
+            videoPlayer.playbackRate = parseFloat(speed);
+        }
+    }
+
+    applyVolumeNormalization(level) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer) {
+            videoPlayer.volume = level / 100;
+        }
+    }
+
+    applySettingChange(settingId, value) {
+        switch(settingId) {
+            case 'high-contrast':
+                document.body.classList.toggle('high-contrast', value);
+                break;
+            case 'keyboard-navigation':
+                document.body.classList.toggle('keyboard-nav', value);
+                break;
+            case 'screen-reader':
+                document.body.setAttribute('aria-live', value ? 'polite' : 'off');
+                break;
+            case 'double-tap-seek':
+                this.enableDoubleTapSeek = value;
+                break;
+            case 'zoom-to-fill':
+                this.enableZoomToFill = value;
+                break;
+            case 'ambient-mode':
+                this.enableAmbientMode = value;
+                break;
+            case 'theater-mode':
+                this.enableTheaterMode = value;
+                break;
+            case 'picture-in-picture':
+                this.enablePictureInPicture = value;
+                break;
+            case 'data-saver':
+                this.applyDataSaver(value);
+                break;
+        }
+    }
+
+    applyDataSaver(enabled) {
+        if (enabled) {
+            this.settings.videoQuality = '480p';
+            this.settings.autoplay = false;
+            this.showToast('Data saver enabled - Lower quality and autoplay disabled', 'info');
+        }
+    }
+
+    // Account management
+    showGoogleLoginPopup() {
+        // Trigger Google login
+        if (typeof signInWithGoogle === 'function') {
+            signInWithGoogle();
+        } else {
+            this.showToast('Google login not available', 'error');
+        }
+    }
+
+    switchAccount(accountId) {
+        this.showToast('Switching account...', 'info');
+        // In a real app, this would switch to the selected account
+        setTimeout(() => {
+            this.showToast('Account switched successfully', 'success');
+        }, 1000);
+    }
+
+    setupFamilyCentre() {
+        this.showToast('Opening Family Centre setup...', 'info');
+        // Open family centre configuration
+    }
+
+    addPaymentMethod() {
+        this.showToast('Opening payment method setup...', 'info');
+        // Open payment method modal
+    }
+
+    requestDataDownload() {
+        if (confirm('Request a download of your TikTik data? This may take some time to prepare.')) {
+            this.showToast('Data download request submitted. You will be notified when ready.', 'success');
+        }
+    }
+
+    deleteAccount() {
+        const confirmText = prompt('To delete your account, type "DELETE" to confirm:');
+        if (confirmText === 'DELETE') {
+            if (confirm('This will permanently delete your account and all data. This action cannot be undone.')) {
+                this.showToast('Account deletion process initiated. You will receive an email with next steps.', 'warning');
+            }
+        }
+    }
+
+    submitFeedback(category, text) {
+        // Store feedback locally or send to server
+        const feedback = {
+            category,
+            text,
+            timestamp: new Date().toISOString(),
+            userId: 'current-user'
+        };
+        
+        let feedbacks = JSON.parse(localStorage.getItem('tiktik_feedbacks') || '[]');
+        feedbacks.push(feedback);
+        localStorage.setItem('tiktik_feedbacks', JSON.stringify(feedbacks));
+    }
+
+    connectToTV() {
+        if ('presentation' in navigator) {
+            this.showToast('Searching for available devices...', 'info');
+            // Implement cast functionality
+            setTimeout(() => {
+                this.showToast('No compatible devices found nearby', 'warning');
+            }, 2000);
+        } else {
+            this.showToast('TV casting not supported on this device', 'error');
+        }
+    }
+
+    clearWatchHistory() {
+        if (confirm('Clear all watch history? This action cannot be undone.')) {
+            this.watchHistory = [];
+            this.saveWatchHistory();
+            this.showToast('Watch history cleared', 'success');
+            if (this.currentPage === 'history') {
+                this.loadHistoryPage();
+            }
+        }
+    }
+
+    clearSearchHistory() {
+        if (confirm('Clear all search history?')) {
+            localStorage.removeItem('tiktik_search_history');
+            this.showToast('Search history cleared', 'success');
+        }
+    }
+
+    deleteAllActivity() {
+        if (confirm('Delete ALL activity including watch history, search history, comments, and interactions? This cannot be undone.')) {
+            this.watchHistory = [];
+            this.likedVideos = [];
+            this.savedVideos = [];
+            this.comments = {};
+            
+            localStorage.removeItem('tiktik_search_history');
+            this.saveWatchHistory();
+            this.saveLikedVideos();
+            this.saveSavedVideos();
+            this.saveComments();
+            
+            this.showToast('All activity deleted', 'success');
+        }
+    }
+
+    openHelpCenter(helpType) {
+        this.showToast(`Opening ${helpType}...`, 'info');
+        // Open help modal or navigate to help section
+    }
+
+    openTermsPolicy(type) {
+        this.showToast(`Opening ${type}...`, 'info');
+        // Open terms/policy modal
+    }
+
+    setupNotificationControls() {
+        // Advanced notification scheduling
+        const notificationTime = document.getElementById('notification-time');
+        if (notificationTime) {
+            notificationTime.addEventListener('change', (e) => {
+                this.settings.notificationTime = e.target.value;
+                this.saveSettings();
+                this.scheduleNotifications();
+            });
+        }
+
+        // Notification sound selection
+        const notificationSound = document.getElementById('notification-sound');
+        if (notificationSound) {
+            notificationSound.addEventListener('change', (e) => {
+                this.settings.notificationSound = e.target.value;
+                this.saveSettings();
+                this.playNotificationPreview(e.target.value);
+            });
+        }
+    }
+
+    setupAccessibilityControls() {
+        // Font size control
+        const fontSizeSlider = document.getElementById('font-size');
+        if (fontSizeSlider) {
+            fontSizeSlider.addEventListener('input', (e) => {
+                const size = e.target.value;
+                document.documentElement.style.setProperty('--base-font-size', `${size}px`);
+                this.settings.fontSize = size;
+                this.saveSettings();
+            });
+        }
+
+        // Motion reduction
+        const reduceMotion = document.getElementById('reduce-motion');
+        if (reduceMotion) {
+            reduceMotion.addEventListener('change', (e) => {
+                document.documentElement.style.setProperty('--animation-duration', e.target.checked ? '0s' : '0.3s');
+                this.settings.reduceMotion = e.target.checked;
+                this.saveSettings();
+            });
+        }
+    }
+
+    scheduleNotifications() {
+        // Implementation for notification scheduling
+        this.showToast('Notification preferences updated', 'success');
+    }
+
+    playNotificationPreview(sound) {
+        // Play notification sound preview
+        const audio = new Audio(`/sounds/${sound}.mp3`);
+        audio.volume = 0.3;
+        audio.play().catch(() => {
+            // Fallback for when audio files are not available
+        });
+    }
+
+    loadSettingsFromStorage() {
+        // Load and apply all saved settings
+        Object.keys(this.settings).forEach(key => {
+            const element = document.getElementById(key);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.checked = this.settings[key];
+                } else {
+                    element.value = this.settings[key];
+                }
+            }
+        });
     }
 
     loadHelpPage() {
@@ -756,13 +1549,13 @@ class TikTikApp {
         
         card.innerHTML = `
             <div class="video-thumbnail">
-                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNDQuNSA5MEwxNjUgMTAyLjU5VjU3LjQxTDE0NC41IDkwWiIgZmlsbD0iIzk0QTNBOCIvPgo8L3N2Zz4K';">
                 <span class="video-duration">${video.duration}</span>
             </div>
             <div class="video-info">
                 <h3 class="video-title">${video.title}</h3>
                 <div class="channel-info">
-                    <img class="channel-avatar" src="${video.avatar}" alt="${video.channel}">
+                    <img class="channel-avatar" src="${video.avatar}" alt="${video.channel}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiNGM0Y0RjYiLz4KPGF0aCBkPSJNMzIgMTZDMzguNjI3NyAxNiA0NCAyMS4zNzIzIDQ0IDI4QzQ0IDM0LjYyNzcgMzguNjI3NyA0MCAzMiA0MEMyNS4zNzIzIDQwIDIwIDM0LjYyNzcgMjAgMjhDMjAgMjEuMzcyMyAyNS4zNzIzIDE2IDMyIDE2WiIgZmlsbD0iIzk0QTNBOCIvPgo8L3N2Zz4K';">
                     <span class="channel-name">${video.channel}</span>
                 </div>
                 <div class="video-stats">${video.views} • ${video.uploadTime}</div>
@@ -775,11 +1568,15 @@ class TikTikApp {
     openVideoModal(video) {
         this.currentVideo = video;
         const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
         
-        // Update modal content
+        // Update video player
+        player.src = video.videoUrl;
+        
+        // Update video info
         document.getElementById('modalVideoTitle').textContent = video.title;
-        document.getElementById('modalChannelAvatar').src = video.avatar;
         document.getElementById('modalChannelName').textContent = video.channel;
+        document.getElementById('modalChannelAvatar').src = video.avatar;
         document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
         document.getElementById('modalVideoDescription').textContent = video.description;
         document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
@@ -791,59 +1588,110 @@ class TikTikApp {
         } else {
             likeBtn.classList.remove('active');
         }
-
+        
         // Update save button state
         const saveBtn = document.getElementById('saveBtn');
         if (this.savedVideos.includes(video.id)) {
-            saveBtn.classList.add('active');
             saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+            saveBtn.classList.add('active');
         } else {
-            saveBtn.classList.remove('active');
             saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
+            saveBtn.classList.remove('active');
         }
+        
+        // Load comments
+        this.loadComments(video.id);
         
         // Load recommended videos
         this.loadRecommendedVideos(video);
         
-        // Load comments
-        this.loadVideoComments(video.id);
-        
-        // Set video source and load
-        const player = document.getElementById('videoPlayer');
-        if (video.videoUrl) {
-            player.src = video.videoUrl;
-            player.load();
-        }
-        
-        // Show modal
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
         
-        // Add to history
-        this.addToHistory(video);
+        // Auto-play if enabled
+        if (this.settings.autoPlay) {
+            player.play();
+        }
     }
 
     closeVideoModal() {
         const modal = document.getElementById('videoModal');
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-        
-        // Pause video
         const player = document.getElementById('videoPlayer');
+        
+        modal.classList.remove('active', 'minimized', 'theater');
         player.pause();
-        player.currentTime = 0;
+        player.src = '';
+        
+        // Reset control states
+        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
+        document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
+        document.getElementById('speedBtn').textContent = '1x';
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('volumeFill').style.width = '80%';
         
         this.currentVideo = null;
     }
 
+    loadComments(videoId) {
+        const commentsList = document.getElementById('commentsList');
+        const videoComments = this.comments[videoId] || [];
+        
+        commentsList.innerHTML = '';
+        
+        if (videoComments.length === 0) {
+            commentsList.innerHTML = `
+                <div class="empty-state">
+                    <p>No comments yet</p>
+                    <span>Be the first to comment!</span>
+                </div>
+            `;
+            return;
+        }
+        
+        videoComments.forEach(comment => {
+            const commentElement = this.createCommentElement(comment);
+            commentsList.appendChild(commentElement);
+        });
+        
+        document.getElementById('commentCount').textContent = videoComments.length;
+    }
+
+    createCommentElement(comment) {
+        const element = document.createElement('div');
+        element.className = 'comment-item';
+        
+        element.innerHTML = `
+            <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
+            <div class="comment-content">
+                <div class="comment-author">
+                    ${comment.author}
+                    <span class="comment-time">${comment.time}</span>
+                </div>
+                <div class="comment-text">${comment.text}</div>
+                <div class="comment-actions-bar">
+                    <button class="comment-like-btn">
+                        <i class="fas fa-thumbs-up"></i>
+                        ${comment.likes || 0}
+                    </button>
+                    <button class="comment-reply-btn">Reply</button>
+                </div>
+            </div>
+        `;
+        
+        return element;
+    }
+
     loadRecommendedVideos(currentVideo) {
-        const container = document.getElementById('recommendedList');
-        container.innerHTML = '';
+        const recommendedList = document.getElementById('recommendedList');
+        recommendedList.innerHTML = '';
         
-        // Get other videos (excluding current)
-        const recommended = this.videos.filter(v => v.id !== currentVideo.id).slice(0, 5);
+        // Get videos from same category or random videos
+        const recommendations = this.videos
+            .filter(video => video.id !== currentVideo.id)
+            .slice(0, 5);
         
-        recommended.forEach(video => {
+        recommendations.forEach(video => {
             const item = document.createElement('div');
             item.className = 'recommended-item';
             item.onclick = () => {
@@ -859,101 +1707,69 @@ class TikTikApp {
                 </div>
             `;
             
-            container.appendChild(item);
+            recommendedList.appendChild(item);
         });
-    }
-
-    toggleLike() {
-        if (!this.currentVideo) return;
-        
-        const likeBtn = document.getElementById('likeBtn');
-        const isLiked = this.likedVideos.includes(this.currentVideo.id);
-        
-        if (isLiked) {
-            // Remove like
-            this.likedVideos = this.likedVideos.filter(id => id !== this.currentVideo.id);
-            likeBtn.classList.remove('active');
-            this.currentVideo.likes--;
-        } else {
-            // Add like
-            this.likedVideos.push(this.currentVideo.id);
-            likeBtn.classList.add('active');
-            this.currentVideo.likes++;
-        }
-        
-        document.getElementById('likeCount').textContent = this.formatNumber(this.currentVideo.likes);
-        this.saveLikedVideos();
-        
-        this.showToast(isLiked ? 'Removed from liked videos' : 'Added to liked videos', 'success');
-    }
-
-    toggleDislike() {
-        // Simple dislike functionality (just visual feedback)
-        const dislikeBtn = document.getElementById('dislikeBtn');
-        dislikeBtn.classList.toggle('active');
-        
-        this.showToast('Thanks for your feedback', 'success');
     }
 
     performSearch() {
         const query = document.getElementById('searchInput').value.trim().toLowerCase();
         
-        if (!query) {
-            this.showToast('Please enter a search term', 'warning');
-            return;
-        }
+        if (!query) return;
         
-        // Mock search - filter videos by title or channel
-        this.searchResults = this.videos.filter(video => 
-            video.title.toLowerCase().includes(query) ||
-            video.channel.toLowerCase().includes(query)
-        );
+        this.showLoading();
         
-        // Update home page with search results
+        // Simulate search delay
+        setTimeout(() => {
+            const results = this.videos.filter(video => 
+                video.title.toLowerCase().includes(query) ||
+                video.channel.toLowerCase().includes(query) ||
+                video.description.toLowerCase().includes(query)
+            );
+            
+            this.displaySearchResults(results, query);
+            this.hideLoading();
+        }, 500);
+    }
+
+    displaySearchResults(results, query) {
         const grid = document.getElementById('videoGrid');
         grid.innerHTML = '';
         
-        if (this.searchResults.length === 0) {
+        if (results.length === 0) {
             grid.innerHTML = `
-                <div class="empty-state" style="grid-column: 1 / -1;">
+                <div class="empty-state">
                     <i class="fas fa-search"></i>
-                    <p>No results found</p>
-                    <span>Try different keywords or check your spelling</span>
+                    <p>No results for "${query}"</p>
+                    <span>Try different keywords</span>
                 </div>
             `;
+            return;
+        }
+        
+        results.forEach(video => {
+            const videoCard = this.createVideoCard(video);
+            grid.appendChild(videoCard);
+        });
+        
+        // Update page title
+        const homeTitle = document.querySelector('#homePage h2');
+        if (!homeTitle) {
+            const title = document.createElement('h2');
+            title.textContent = `Search results for "${query}"`;
+            document.getElementById('homePage').insertBefore(title, grid);
         } else {
-            this.searchResults.forEach(video => {
-                const videoCard = this.createVideoCard(video);
-                grid.appendChild(videoCard);
-            });
+            homeTitle.textContent = `Search results for "${query}"`;
         }
         
         // Navigate to home page to show results
         this.navigateToPage('home');
-        
-        this.showToast(`Found ${this.searchResults.length} result(s)`, 'success');
-    }
-
-    openAdminPanel() {
-        const modal = document.getElementById('adminModal');
-        
-        // Update form values
-        document.querySelector(`input[name="theme"][value="${this.settings.theme}"]`).checked = true;
-        document.getElementById('autoPlay').checked = this.settings.autoPlay;
-        document.getElementById('showDescriptions').checked = this.settings.showDescriptions;
-        document.getElementById('videosPerPage').value = this.settings.videosPerPage;
-        
-        modal.classList.add('active');
-    }
-
-    closeAdminPanel() {
-        const modal = document.getElementById('adminModal');
-        modal.classList.remove('active');
     }
 
     addToHistory(video) {
-        // Remove if already exists, then add to beginning
+        // Remove if already exists
         this.watchHistory = this.watchHistory.filter(id => id !== video.id);
+        
+        // Add to beginning
         this.watchHistory.unshift(video.id);
         
         // Keep only last 50 videos
@@ -964,48 +1780,482 @@ class TikTikApp {
         this.saveWatchHistory();
     }
 
-    clearHistory() {
-        if (confirm('Are you sure you want to clear your watch history?')) {
-            this.watchHistory = [];
-            this.saveWatchHistory();
-            this.showToast('Watch history cleared', 'success');
-            
-            // Refresh history page if currently viewing
-            if (this.currentPage === 'history') {
-                this.loadHistoryPage();
+    toggleLike() {
+        if (!this.currentVideo) return;
+        
+        const likeBtn = document.getElementById('likeBtn');
+        const videoId = this.currentVideo.id;
+        
+        if (this.likedVideos.includes(videoId)) {
+            // Unlike
+            this.likedVideos = this.likedVideos.filter(id => id !== videoId);
+            likeBtn.classList.remove('active');
+            this.showToast('Removed from liked videos', 'info');
+        } else {
+            // Like
+            this.likedVideos.push(videoId);
+            likeBtn.classList.add('active');
+            this.showToast('Added to liked videos', 'success');
+        }
+        
+        this.saveLikedVideos();
+    }
+
+    toggleDislike() {
+        const dislikeBtn = document.getElementById('dislikeBtn');
+        
+        if (dislikeBtn.classList.contains('active')) {
+            dislikeBtn.classList.remove('active');
+        } else {
+            dislikeBtn.classList.add('active');
+            // Remove from liked if disliked
+            if (this.currentVideo && this.likedVideos.includes(this.currentVideo.id)) {
+                this.toggleLike();
             }
         }
     }
 
-    resetSettings() {
-        if (confirm('Are you sure you want to reset all settings to default?')) {
-            this.settings = this.getDefaultSettings();
-            this.applyTheme();
-            this.saveSettings();
-            
-            // Update admin panel form
-            document.querySelector(`input[name="theme"][value="${this.settings.theme}"]`).checked = true;
-            document.getElementById('autoPlay').checked = this.settings.autoPlay;
-            document.getElementById('showDescriptions').checked = this.settings.showDescriptions;
-            document.getElementById('videosPerPage').value = this.settings.videosPerPage;
-            
-            this.showToast('Settings reset to default', 'success');
+    shareVideo() {
+        if (!this.currentVideo) return;
+        
+        const url = `${window.location.origin}?video=${this.currentVideo.id}`;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: this.currentVideo.title,
+                text: `Check out this video: ${this.currentVideo.title}`,
+                url: url
+            });
+        } else {
+            // Fallback to clipboard
+            navigator.clipboard.writeText(url).then(() => {
+                this.showToast('Link copied to clipboard', 'success');
+            });
         }
+    }
+
+    toggleSave() {
+        if (!this.currentVideo) return;
+        
+        const saveBtn = document.getElementById('saveBtn');
+        const videoId = this.currentVideo.id;
+        
+        if (this.savedVideos.includes(videoId)) {
+            // Remove from saved
+            this.savedVideos = this.savedVideos.filter(id => id !== videoId);
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
+            saveBtn.classList.remove('active');
+            this.showToast('Removed from saved videos', 'info');
+        } else {
+            // Add to saved
+            this.savedVideos.push(videoId);
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+            saveBtn.classList.add('active');
+            this.showToast('Saved to watch later', 'success');
+        }
+        
+        this.saveSavedVideos();
+    }
+
+    downloadVideo() {
+        if (!this.currentVideo) return;
+        
+        this.showToast('Download started', 'success');
+        
+        // Simulate download
+        const link = document.createElement('a');
+        link.href = this.currentVideo.videoUrl;
+        link.download = `${this.currentVideo.title}.mp4`;
+        link.click();
+    }
+
+    showCommentActions() {
+        document.querySelector('.comment-actions').style.display = 'flex';
+    }
+
+    hideCommentActions() {
+        document.querySelector('.comment-actions').style.display = 'none';
+        document.getElementById('commentInput').value = '';
+    }
+
+    submitComment() {
+        const commentInput = document.getElementById('commentInput');
+        const commentText = commentInput.value.trim();
+        
+        if (!commentText || !this.currentVideo) return;
+        
+        const newComment = {
+            id: Date.now(),
+            author: 'You',
+            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
+            text: commentText,
+            time: 'now',
+            likes: 0
+        };
+        
+        if (!this.comments[this.currentVideo.id]) {
+            this.comments[this.currentVideo.id] = [];
+        }
+        
+        this.comments[this.currentVideo.id].unshift(newComment);
+        this.saveComments();
+        
+        // Refresh comments
+        this.loadComments(this.currentVideo.id);
+        
+        // Clear input and hide actions
+        this.hideCommentActions();
+        
+        this.showToast('Comment added', 'success');
+    }
+
+    openCreateModal() {
+        document.getElementById('createModal').classList.add('active');
+    }
+
+    closeCreateModal() {
+        document.getElementById('createModal').classList.remove('active');
+    }
+
+    openUploadModal() {
+        document.getElementById('uploadModal').classList.add('active');
+    }
+
+    closeUploadModal() {
+        document.getElementById('uploadModal').classList.remove('active');
+        this.resetUploadForm();
+    }
+
+    resetUploadForm() {
+        document.getElementById('uploadArea').style.display = 'block';
+        document.getElementById('uploadForm').style.display = 'none';
+        document.getElementById('videoTitle').value = '';
+        document.getElementById('videoDescription').value = '';
+        document.getElementById('videoCategory').value = 'general';
+        document.getElementById('videoFileInput').value = '';
+    }
+
+    handleVideoFileSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        if (!file.type.startsWith('video/')) {
+            this.showToast('Please select a video file', 'error');
+            return;
+        }
+        
+        document.getElementById('uploadArea').style.display = 'none';
+        document.getElementById('uploadForm').style.display = 'block';
+        document.getElementById('videoTitle').value = file.name.replace(/\.[^/.]+$/, '');
+    }
+
+    publishVideo() {
+        const title = document.getElementById('videoTitle').value.trim();
+        const description = document.getElementById('videoDescription').value.trim();
+        const category = document.getElementById('videoCategory').value;
+        
+        if (!title) {
+            this.showToast('Please enter a title', 'error');
+            return;
+        }
+        
+        // Create new video object
+        const newVideo = {
+            id: Date.now().toString(),
+            title: title,
+            channel: this.channelData.name,
+            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
+            thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
+            duration: '0:00',
+            views: '0 views',
+            uploadTime: 'now',
+            likes: 0,
+            description: description,
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            category: category
+        };
+        
+        // Add to user's videos
+        this.myVideos.push(newVideo);
+        this.saveMyVideos();
+        
+        // Update channel stats
+        this.channelData.videoCount = this.myVideos.length;
+        this.saveChannelData();
+        
+        this.closeUploadModal();
+        this.showToast('Video uploaded successfully!', 'success');
+        
+        // Refresh channel page if currently viewing
+        if (this.currentPage === 'library') {
+            this.loadLibraryPage();
+        }
+    }
+
+    openChannelEditModal() {
+        const modal = document.getElementById('channelEditModal');
+        
+        // Populate current values
+        document.getElementById('editChannelName').value = this.channelData.name;
+        document.getElementById('editChannelDescription').value = this.channelData.description;
+        
+        modal.classList.add('active');
+    }
+
+    closeChannelEditModal() {
+        document.getElementById('channelEditModal').classList.remove('active');
+    }
+
+    saveChannelChanges() {
+        const name = document.getElementById('editChannelName').value.trim();
+        const description = document.getElementById('editChannelDescription').value.trim();
+        
+        if (!name) {
+            this.showToast('Please enter a channel name', 'error');
+            return;
+        }
+        
+        this.channelData.name = name;
+        this.channelData.description = description;
+        
+        this.saveChannelData();
+        this.closeChannelEditModal();
+        this.showToast('Channel updated successfully!', 'success');
+        
+        // Refresh if on library page
+        if (this.currentPage === 'library') {
+            this.loadLibraryPage();
+        }
+    }
+
+    switchChannelTab(tab) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.channel-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to selected tab and content
+        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+        document.getElementById(`${tab}Tab`).classList.add('active');
+    }
+
+    openShortModal() {
+        document.getElementById('shortModal').classList.add('active');
+    }
+
+    closeShortModal() {
+        document.getElementById('shortModal').classList.remove('active');
+        this.resetShortForm();
+    }
+
+    resetShortForm() {
+        document.getElementById('shortUploadArea').style.display = 'block';
+        document.getElementById('shortForm').style.display = 'none';
+        document.getElementById('shortTitle').value = '';
+        document.getElementById('shortDescription').value = '';
+        document.getElementById('shortCategory').value = 'general';
+        document.getElementById('shortFileInput').value = '';
+    }
+
+    handleShortFileSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        if (!file.type.startsWith('video/')) {
+            this.showToast('Please select a video file', 'error');
+            return;
+        }
+        
+        // Create video preview
+        const preview = document.getElementById('shortPreview');
+        preview.src = URL.createObjectURL(file);
+        
+        document.getElementById('shortUploadArea').style.display = 'none';
+        document.getElementById('shortForm').style.display = 'flex';
+        document.getElementById('shortTitle').value = file.name.replace(/\.[^/.]+$/, '');
+    }
+
+    publishShort() {
+        const title = document.getElementById('shortTitle').value.trim();
+        const description = document.getElementById('shortDescription').value.trim();
+        const category = document.getElementById('shortCategory').value;
+        
+        if (!title) {
+            this.showToast('Please enter a title', 'error');
+            return;
+        }
+        
+        // Create new short object
+        const newShort = {
+            id: Date.now().toString(),
+            title: title,
+            channel: this.channelData.name,
+            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
+            thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
+            duration: '0:30',
+            views: '0 views',
+            uploadTime: 'now',
+            likes: 0,
+            description: description,
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            category: category,
+            isShort: true
+        };
+        
+        // Add to user's shorts
+        this.myShorts.push(newShort);
+        this.saveMyShorts();
+        
+        // Update channel stats
+        this.channelData.videoCount = this.myVideos.length + this.myShorts.length;
+        this.saveChannelData();
+        
+        this.closeShortModal();
+        this.showToast('Short published successfully!', 'success');
+        
+        // Refresh channel page if currently viewing
+        if (this.currentPage === 'library') {
+            this.loadLibraryPage();
+        }
+    }
+
+    openLiveModal() {
+        document.getElementById('liveModal').classList.add('active');
+        this.initializeCamera();
+    }
+
+    closeLiveModal() {
+        document.getElementById('liveModal').classList.remove('active');
+        this.stopCamera();
+        this.resetLiveForm();
+    }
+
+    resetLiveForm() {
+        document.getElementById('liveTitle').value = '';
+        document.getElementById('liveDescription').value = '';
+        document.getElementById('liveCategory').value = 'gaming';
+        document.querySelector('input[name="livePrivacy"][value="public"]').checked = true;
+    }
+
+    async initializeCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const preview = document.getElementById('cameraPreview');
+            preview.srcObject = stream;
+            this.cameraStream = stream;
+            this.isCameraOn = true;
+            this.isMicOn = true;
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+            this.showToast('Camera access denied', 'error');
+        }
+    }
+
+    stopCamera() {
+        if (this.cameraStream) {
+            this.cameraStream.getTracks().forEach(track => track.stop());
+            this.cameraStream = null;
+            this.isCameraOn = false;
+            this.isMicOn = false;
+        }
+    }
+
+    toggleCamera() {
+        if (!this.cameraStream) return;
+        
+        const videoTracks = this.cameraStream.getVideoTracks();
+        videoTracks.forEach(track => {
+            track.enabled = !track.enabled;
+        });
+        
+        this.isCameraOn = !this.isCameraOn;
+        const btn = document.getElementById('toggleCameraBtn');
+        btn.innerHTML = this.isCameraOn ? '<i class="fas fa-video"></i> Camera' : '<i class="fas fa-video-slash"></i> Camera';
+    }
+
+    toggleMicrophone() {
+        if (!this.cameraStream) return;
+        
+        const audioTracks = this.cameraStream.getAudioTracks();
+        audioTracks.forEach(track => {
+            track.enabled = !track.enabled;
+        });
+        
+        this.isMicOn = !this.isMicOn;
+        const btn = document.getElementById('toggleMicBtn');
+        btn.innerHTML = this.isMicOn ? '<i class="fas fa-microphone"></i> Microphone' : '<i class="fas fa-microphone-slash"></i> Microphone';
+    }
+
+    startLiveStream() {
+        const title = document.getElementById('liveTitle').value.trim();
+        const description = document.getElementById('liveDescription').value.trim();
+        const category = document.getElementById('liveCategory').value;
+        const privacy = document.querySelector('input[name="livePrivacy"]:checked').value;
+        
+        if (!title) {
+            this.showToast('Please enter a stream title', 'error');
+            return;
+        }
+        
+        // Create new live stream object
+        const newLiveStream = {
+            id: Date.now().toString(),
+            title: title,
+            channel: this.channelData.name,
+            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
+            thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
+            description: description,
+            category: category,
+            privacy: privacy,
+            startTime: new Date().toISOString(),
+            viewers: 0,
+            isLive: true
+        };
+        
+        // Add to live streams
+        this.liveStreams.push(newLiveStream);
+        this.saveLiveStreams();
+        
+        this.closeLiveModal();
+        this.showToast('Live stream started successfully!', 'success');
+        
+        // In a real app, this would connect to a streaming server
+        setTimeout(() => {
+            this.showToast('Live stream ended', 'info');
+        }, 5000);
+    }
+
+    clearHistory() {
+        this.watchHistory = [];
+        this.saveWatchHistory();
+        this.showToast('Watch history cleared', 'success');
+        
+        if (this.currentPage === 'history') {
+            this.loadHistoryPage();
+        }
+    }
+
+    resetSettings() {
+        this.settings = {
+            theme: 'light',
+            autoPlay: true,
+            showDescriptions: true,
+            videosPerPage: 20
+        };
+        this.saveSettings();
+        this.applyTheme();
+        this.updateAdminSettings();
+        this.showToast('Settings reset to default', 'success');
     }
 
     saveSettings() {
         localStorage.setItem('tiktik_settings', JSON.stringify(this.settings));
-        this.closeAdminPanel();
-        this.showToast('Settings saved successfully', 'success');
+        this.showToast('Settings saved', 'success');
     }
 
+    // Data persistence methods
     loadSettings() {
         const saved = localStorage.getItem('tiktik_settings');
-        return saved ? JSON.parse(saved) : this.getDefaultSettings();
-    }
-
-    getDefaultSettings() {
-        return {
+        return saved ? JSON.parse(saved) : {
             theme: 'light',
             autoPlay: true,
             showDescriptions: true,
@@ -1031,6 +2281,67 @@ class TikTikApp {
         localStorage.setItem('tiktik_liked', JSON.stringify(this.likedVideos));
     }
 
+    loadSavedVideos() {
+        const saved = localStorage.getItem('tiktik_saved_videos');
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    saveSavedVideos() {
+        localStorage.setItem('tiktik_saved_videos', JSON.stringify(this.savedVideos));
+    }
+
+    loadComments() {
+        const saved = localStorage.getItem('tiktik_comments');
+        return saved ? JSON.parse(saved) : {};
+    }
+
+    saveComments() {
+        localStorage.setItem('tiktik_comments', JSON.stringify(this.comments));
+    }
+
+    loadMyVideos() {
+        const saved = localStorage.getItem('tiktik_my_videos');
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    saveMyVideos() {
+        localStorage.setItem('tiktik_my_videos', JSON.stringify(this.myVideos));
+    }
+
+    loadChannelData() {
+        const saved = localStorage.getItem('tiktik_channel_data');
+        return saved ? JSON.parse(saved) : {
+            name: 'My Channel',
+            description: 'Welcome to my channel! Here you\'ll find amazing content.',
+            subscribers: 0,
+            videoCount: 0,
+            joinDate: new Date().toLocaleDateString(),
+            totalViews: 0
+        };
+    }
+
+    saveChannelData() {
+        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
+    }
+
+    loadMyShorts() {
+        const saved = localStorage.getItem('tiktik_my_shorts');
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    saveMyShorts() {
+        localStorage.setItem('tiktik_my_shorts', JSON.stringify(this.myShorts));
+    }
+
+    loadLiveStreams() {
+        const saved = localStorage.getItem('tiktik_live_streams');
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    saveLiveStreams() {
+        localStorage.setItem('tiktik_live_streams', JSON.stringify(this.liveStreams));
+    }
+
     formatNumber(num) {
         if (num >= 1000000) {
             return (num / 1000000).toFixed(1) + 'M';
@@ -1038,6 +2349,110 @@ class TikTikApp {
             return (num / 1000).toFixed(1) + 'K';
         }
         return num.toString();
+    }
+
+    toggleCaptions(show) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        if (show) {
+            // Enable captions/subtitles
+            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
+                for (let track of videoPlayer.textTracks) {
+                    track.mode = 'showing';
+                }
+            }
+            this.showToast('Captions enabled', 'info');
+        } else {
+            // Disable captions/subtitles
+            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
+                for (let track of videoPlayer.textTracks) {
+                    track.mode = 'hidden';
+                }
+            }
+            this.showToast('Captions disabled', 'info');
+        }
+    }
+    
+    handleSettingChange(setting) {
+        switch(setting) {
+            case 'quality':
+                this.showQualityMenu();
+                break;
+            case 'speed':
+                this.showSpeedMenu();
+                break;
+            case 'captions':
+                this.showCaptionsMenu();
+                break;
+        }
+    }
+    
+    showQualityMenu() {
+        const qualities = ['Auto', '2160p', '1440p', '1080p', '720p', '480p', '360p', '240p'];
+        this.showSubMenu('Quality', qualities, 'Auto', (quality) => {
+            document.getElementById('currentQuality').textContent = quality;
+            this.setVideoQuality(quality);
+        });
+    }
+    
+    showSpeedMenu() {
+        const speeds = ['0.25', '0.5', '0.75', 'Normal', '1.25', '1.5', '1.75', '2'];
+        this.showSubMenu('Playback speed', speeds, 'Normal', (speed) => {
+            document.getElementById('currentSpeed').textContent = speed;
+            this.setPlaybackSpeed(speed);
+        });
+    }
+    
+    showCaptionsMenu() {
+        const options = ['Off', 'English', 'Hindi', 'Spanish', 'French'];
+        this.showSubMenu('Subtitles/CC', options, 'Off', (option) => {
+            document.getElementById('captionsStatus').textContent = option;
+            this.setCaptionLanguage(option);
+        });
+    }
+    
+    showSubMenu(title, options, current, callback) {
+        const dropdown = document.getElementById('settingsDropdown');
+        dropdown.innerHTML = `
+            <div class="settings-item" onclick="this.parentElement.classList.remove('active')">
+                <i class="fas fa-chevron-left"></i>
+                <span>${title}</span>
+            </div>
+            ${options.map(option => `
+                <div class="settings-item" data-value="${option}">
+                    <span>${option}</span>
+                    ${option === current ? '<i class="fas fa-check"></i>' : ''}
+                </div>
+            `).join('')}
+        `;
+        
+        dropdown.querySelectorAll('[data-value]').forEach(item => {
+            item.addEventListener('click', () => {
+                callback(item.dataset.value);
+                dropdown.classList.remove('active');
+            });
+        });
+    }
+    
+    setVideoQuality(quality) {
+        this.showToast(`Video quality set to ${quality}`, 'info');
+    }
+    
+    setPlaybackSpeed(speed) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const speedValue = speed === 'Normal' ? 1 : parseFloat(speed);
+        videoPlayer.playbackRate = speedValue;
+        this.showToast(`Playback speed set to ${speed}`, 'info');
+    }
+    
+    setCaptionLanguage(language) {
+        if (language === 'Off') {
+            this.toggleCaptions(false);
+            document.getElementById('captionsBtn').classList.remove('active');
+        } else {
+            this.toggleCaptions(true);
+            document.getElementById('captionsBtn').classList.add('active');
+        }
     }
 
     showToast(message, type = 'info') {
@@ -1061,669 +2476,6 @@ class TikTikApp {
     hideLoading() {
         document.getElementById('loadingSpinner').classList.remove('active');
     }
-
-    loadSavedVideos() {
-        const saved = localStorage.getItem('tiktik_saved_videos');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveSavedVideos() {
-        localStorage.setItem('tiktik_saved_videos', JSON.stringify(this.savedVideos));
-    }
-
-    loadComments() {
-        const saved = localStorage.getItem('tiktik_comments');
-        return saved ? JSON.parse(saved) : this.getDefaultComments();
-    }
-
-    saveComments() {
-        localStorage.setItem('tiktik_comments', JSON.stringify(this.comments));
-    }
-
-    getDefaultComments() {
-        return {
-            '1': [
-                {
-                    id: 'c1',
-                    author: 'NatureLover123',
-                    avatar: 'https://pixabay.com/get/g727b5c506ff678b49c5ad56b7dfbd90d2a044c1fd61d5f1c48760fe86afba1adeede5ac345ed4fd79d591e3e3dcc1a5f1245930860f8237be2afebaef8e9aebb_1280.jpg',
-                    text: 'Absolutely stunning! The colors in this sunset are incredible.',
-                    time: '2 hours ago',
-                    likes: 24
-                },
-                {
-                    id: 'c2',
-                    author: 'PhotoPro2024',
-                    avatar: 'https://pixabay.com/get/g2f3bd00b498776f7c22fbbcc5c126c6ef40fae301a35014cc2bf1f104b6789ca01d1994ee29184c9c5651352319b9e57f42f6ce3a16f2aa0a2599c3ef2795080_1280.jpg',
-                    text: 'What camera settings did you use for this? The detail is amazing!',
-                    time: '4 hours ago',
-                    likes: 12
-                }
-            ],
-            '2': [
-                {
-                    id: 'c4',
-                    author: 'CityPhotographer',
-                    avatar: 'https://pixabay.com/get/g0a5da4b16791ee5a080efc068a5a97b5eadc1194838f0aa8ab7aff8602beb52959adb3e71c6324a009335d29593d2178b3ebe319247e071e50815ab190d7664e_1280.jpg',
-                    text: 'Great tutorial! Finally learned how to capture city lights properly.',
-                    time: '1 hour ago',
-                    likes: 18
-                }
-            ]
-        };
-    }
-
-    shareVideo() {
-        if (this.currentVideo) {
-            if (navigator.share) {
-                navigator.share({
-                    title: this.currentVideo.title,
-                    text: `Check out this video: ${this.currentVideo.title}`,
-                    url: window.location.href
-                }).catch(err => {
-                    this.fallbackShare();
-                });
-            } else {
-                this.fallbackShare();
-            }
-        }
-    }
-
-    fallbackShare() {
-        const shareUrl = window.location.href;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-            this.showToast('Link copied to clipboard!', 'success');
-        }).catch(() => {
-            this.showToast('Could not copy link', 'error');
-        });
-    }
-
-    toggleSave() {
-        if (!this.currentVideo) return;
-
-        const videoId = this.currentVideo.id;
-        const saveBtn = document.getElementById('saveBtn');
-
-        if (this.savedVideos.includes(videoId)) {
-            this.savedVideos = this.savedVideos.filter(id => id !== videoId);
-            saveBtn.classList.remove('active');
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
-            this.showToast('Removed from saved videos', 'info');
-        } else {
-            this.savedVideos.push(videoId);
-            saveBtn.classList.add('active');
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-            this.showToast('Added to saved videos', 'success');
-        }
-
-        this.saveSavedVideos();
-    }
-
-    downloadVideo() {
-        if (this.currentVideo && this.currentVideo.videoUrl) {
-            const link = document.createElement('a');
-            link.href = this.currentVideo.videoUrl;
-            link.download = `${this.currentVideo.title}.mp4`;
-            link.click();
-            this.showToast('Download started!', 'success');
-        } else {
-            this.showToast('Video not available for download', 'error');
-        }
-    }
-
-    showCommentActions() {
-        document.querySelector('.comment-actions').style.display = 'flex';
-    }
-
-    hideCommentActions() {
-        document.querySelector('.comment-actions').style.display = 'none';
-        document.getElementById('commentInput').value = '';
-        document.getElementById('commentInput').blur();
-    }
-
-    submitComment() {
-        const input = document.getElementById('commentInput');
-        const text = input.value.trim();
-
-        if (text && this.currentVideo) {
-            const newComment = {
-                id: 'c' + Date.now(),
-                author: 'You',
-                avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
-                text: text,
-                time: 'just now',
-                likes: 0
-            };
-
-            if (!this.comments[this.currentVideo.id]) {
-                this.comments[this.currentVideo.id] = [];
-            }
-
-            this.comments[this.currentVideo.id].unshift(newComment);
-            this.saveComments();
-            this.loadVideoComments(this.currentVideo.id);
-            this.hideCommentActions();
-            this.showToast('Comment added!', 'success');
-        }
-    }
-
-    loadVideoComments(videoId) {
-        const commentsList = document.getElementById('commentsList');
-        const commentCount = document.getElementById('commentCount');
-        
-        const videoComments = this.comments[videoId] || [];
-        commentCount.textContent = videoComments.length;
-
-        commentsList.innerHTML = '';
-
-        videoComments.forEach(comment => {
-            const commentItem = document.createElement('div');
-            commentItem.className = 'comment-item';
-            
-            commentItem.innerHTML = `
-                <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
-                <div class="comment-content">
-                    <div class="comment-author">
-                        ${comment.author}
-                        <span class="comment-time">${comment.time}</span>
-                    </div>
-                    <div class="comment-text">${comment.text}</div>
-                    <div class="comment-actions-bar">
-                        <button class="comment-like-btn" onclick="window.tiktikApp.likeComment('${comment.id}', '${videoId}')">
-                            <i class="fas fa-thumbs-up"></i>
-                            <span>${comment.likes}</span>
-                        </button>
-                        <button class="comment-reply-btn">Reply</button>
-                    </div>
-                </div>
-            `;
-
-            commentsList.appendChild(commentItem);
-        });
-    }
-
-    likeComment(commentId, videoId) {
-        const videoComments = this.comments[videoId];
-        if (videoComments) {
-            const comment = videoComments.find(c => c.id === commentId);
-            if (comment) {
-                comment.likes += 1;
-                this.saveComments();
-                this.loadVideoComments(videoId);
-            }
-        }
-    }
-
-    // Create Modal Functions
-    openCreateModal() {
-        document.getElementById('createModal').classList.add('active');
-    }
-
-    closeCreateModal() {
-        document.getElementById('createModal').classList.remove('active');
-    }
-
-    // Upload Modal Functions
-    openUploadModal() {
-        document.getElementById('uploadModal').classList.add('active');
-        document.getElementById('uploadArea').style.display = 'block';
-        document.getElementById('uploadForm').style.display = 'none';
-    }
-
-    closeUploadModal() {
-        document.getElementById('uploadModal').classList.remove('active');
-        this.resetUploadForm();
-    }
-
-    resetUploadForm() {
-        document.getElementById('videoFileInput').value = '';
-        document.getElementById('videoTitle').value = '';
-        document.getElementById('videoDescription').value = '';
-        document.getElementById('thumbnailInput').value = '';
-        document.getElementById('videoCategory').value = 'general';
-        document.getElementById('uploadArea').style.display = 'block';
-        document.getElementById('uploadForm').style.display = 'none';
-    }
-
-    handleVideoFileSelect(event) {
-        const files = event.target.files;
-        if (files.length > 0) {
-            const file = files[0];
-            document.getElementById('uploadArea').style.display = 'none';
-            document.getElementById('uploadForm').style.display = 'block';
-            
-            // Auto-fill title from filename
-            const fileName = file.name.replace(/\.[^/.]+$/, "");
-            document.getElementById('videoTitle').value = fileName;
-            
-            this.showToast('Video file selected: ' + file.name, 'success');
-        }
-    }
-
-    publishVideo() {
-        const title = document.getElementById('videoTitle').value.trim();
-        const description = document.getElementById('videoDescription').value.trim();
-        const category = document.getElementById('videoCategory').value;
-        const fileInput = document.getElementById('videoFileInput');
-        
-        if (!title) {
-            this.showToast('Please enter a video title', 'error');
-            return;
-        }
-        
-        if (!fileInput.files.length) {
-            this.showToast('Please select a video file', 'error');
-            return;
-        }
-
-        // Create new video object
-        const newVideo = {
-            id: 'user_' + Date.now(),
-            title: title,
-            channel: this.channelData.name,
-            avatar: this.channelData.avatar,
-            thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
-            duration: '0:00',
-            views: '0 views',
-            uploadTime: 'just now',
-            likes: 0,
-            description: description || 'No description provided',
-            videoUrl: URL.createObjectURL(fileInput.files[0]),
-            category: category,
-            isUserVideo: true
-        };
-
-        // Add to user's videos
-        this.myVideos.push(newVideo);
-        this.saveMyVideos();
-        
-        // Update channel stats
-        this.channelData.videoCount = this.myVideos.length;
-        this.saveChannelData();
-        
-        this.closeUploadModal();
-        this.showToast('Video published successfully!', 'success');
-        
-        // Refresh channel page if currently viewing
-        if (this.currentPage === 'library') {
-            this.loadLibraryPage();
-        }
-    }
-
-    // Channel Management
-    loadLibraryPage() {
-        this.updateChannelDisplay();
-        this.loadMyVideosGrid();
-    }
-
-    updateChannelDisplay() {
-        document.getElementById('channelName').textContent = this.channelData.name;
-        document.getElementById('channelAvatar').src = this.channelData.avatar;
-        document.getElementById('channelBanner').src = this.channelData.banner;
-        document.getElementById('subscriberCount').textContent = this.formatNumber(this.channelData.subscribers) + ' subscribers';
-        document.getElementById('videoCount').textContent = this.myVideos.length + ' videos';
-        document.getElementById('channelDescription').textContent = this.channelData.description;
-        document.getElementById('joinDate').textContent = this.channelData.joinDate;
-        document.getElementById('totalViews').textContent = this.formatNumber(this.channelData.totalViews);
-    }
-
-    loadMyVideosGrid() {
-        const grid = document.getElementById('myVideosGrid');
-        grid.innerHTML = '';
-        
-        if (this.myVideos.length === 0) {
-            return; // Show upload prompt
-        }
-        
-        document.querySelector('.upload-section').style.display = 'none';
-        
-        this.myVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    switchChannelTab(tabName) {
-        // Update tab buttons
-        document.querySelectorAll('.channel-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        
-        // Update tab content
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        document.getElementById(tabName + 'Tab').classList.add('active');
-    }
-
-    // Channel Edit Modal
-    openChannelEditModal() {
-        document.getElementById('editChannelName').value = this.channelData.name;
-        document.getElementById('editChannelDescription').value = this.channelData.description;
-        document.getElementById('channelEditModal').classList.add('active');
-    }
-
-    closeChannelEditModal() {
-        document.getElementById('channelEditModal').classList.remove('active');
-    }
-
-    saveChannelData() {
-        const name = document.getElementById('editChannelName').value.trim();
-        const description = document.getElementById('editChannelDescription').value.trim();
-        
-        if (!name) {
-            this.showToast('Channel name is required', 'error');
-            return;
-        }
-        
-        this.channelData.name = name;
-        this.channelData.description = description;
-        
-        // Handle avatar upload
-        const avatarInput = document.getElementById('avatarInput');
-        if (avatarInput.files.length > 0) {
-            this.channelData.avatar = URL.createObjectURL(avatarInput.files[0]);
-        }
-        
-        // Handle banner upload
-        const bannerInput = document.getElementById('bannerInput');
-        if (bannerInput.files.length > 0) {
-            this.channelData.banner = URL.createObjectURL(bannerInput.files[0]);
-        }
-        
-        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
-        this.updateChannelDisplay();
-        this.closeChannelEditModal();
-        this.showToast('Channel updated successfully!', 'success');
-    }
-
-    // Data Management
-    loadMyVideos() {
-        const saved = localStorage.getItem('tiktik_my_videos');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveMyVideos() {
-        localStorage.setItem('tiktik_my_videos', JSON.stringify(this.myVideos));
-    }
-
-    loadChannelData() {
-        const saved = localStorage.getItem('tiktik_channel_data');
-        return saved ? JSON.parse(saved) : this.getDefaultChannelData();
-    }
-
-    getDefaultChannelData() {
-        return {
-            name: 'My Channel',
-            description: 'Welcome to my channel! Here you\'ll find amazing content.',
-            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
-            banner: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
-            subscribers: 0,
-            videoCount: 0,
-            totalViews: 0,
-            joinDate: new Date().toLocaleDateString()
-        };
-    }
-
-    // Short Video Functions
-    openShortModal() {
-        document.getElementById('shortModal').classList.add('active');
-        document.getElementById('shortUploadArea').style.display = 'block';
-        document.getElementById('shortForm').style.display = 'none';
-    }
-
-    closeShortModal() {
-        document.getElementById('shortModal').classList.remove('active');
-        this.resetShortForm();
-    }
-
-    resetShortForm() {
-        document.getElementById('shortFileInput').value = '';
-        document.getElementById('shortTitle').value = '';
-        document.getElementById('shortDescription').value = '';
-        document.getElementById('shortCategory').value = 'general';
-        document.getElementById('shortUploadArea').style.display = 'block';
-        document.getElementById('shortForm').style.display = 'none';
-    }
-
-    handleShortFileSelect(event) {
-        const files = event.target.files;
-        if (files.length > 0) {
-            const file = files[0];
-            const video = document.getElementById('shortPreview');
-            
-            // Check if it's a video file
-            if (!file.type.startsWith('video/')) {
-                this.showToast('Please select a video file', 'error');
-                return;
-            }
-            
-            // Check file size (limit to 100MB)
-            if (file.size > 100 * 1024 * 1024) {
-                this.showToast('File size too large. Please select a video under 100MB', 'error');
-                return;
-            }
-            
-            video.src = URL.createObjectURL(file);
-            document.getElementById('shortUploadArea').style.display = 'none';
-            document.getElementById('shortForm').style.display = 'block';
-            
-            // Auto-fill title from filename
-            const fileName = file.name.replace(/\.[^/.]+$/, "");
-            document.getElementById('shortTitle').value = fileName;
-            
-            this.showToast('Short video selected: ' + file.name, 'success');
-        }
-    }
-
-    publishShort() {
-        const title = document.getElementById('shortTitle').value.trim();
-        const description = document.getElementById('shortDescription').value.trim();
-        const category = document.getElementById('shortCategory').value;
-        const fileInput = document.getElementById('shortFileInput');
-        
-        if (!title) {
-            this.showToast('Please enter a title for your short', 'error');
-            return;
-        }
-        
-        if (!fileInput.files.length) {
-            this.showToast('Please select a video file', 'error');
-            return;
-        }
-
-        // Create new short object
-        const newShort = {
-            id: 'short_' + Date.now(),
-            title: title,
-            channel: this.channelData.name,
-            avatar: this.channelData.avatar,
-            thumbnail: 'https://picsum.photos/300/400?random=' + Date.now(),
-            duration: '0:30',
-            views: '0 views',
-            uploadTime: 'just now',
-            likes: 0,
-            description: description || 'No description provided',
-            videoUrl: URL.createObjectURL(fileInput.files[0]),
-            category: category,
-            isShort: true,
-            isUserContent: true
-        };
-
-        // Add to user's shorts
-        this.myShorts.push(newShort);
-        this.saveMyShorts();
-        
-        // Update channel stats
-        this.channelData.videoCount = this.myVideos.length + this.myShorts.length;
-        this.saveChannelData();
-        
-        this.closeShortModal();
-        this.showToast('Short published successfully!', 'success');
-        
-        // Refresh channel page if currently viewing
-        if (this.currentPage === 'library') {
-            this.loadLibraryPage();
-        }
-    }
-
-    // Live Stream Functions
-    openLiveModal() {
-        document.getElementById('liveModal').classList.add('active');
-        this.initializeCamera();
-    }
-
-    closeLiveModal() {
-        document.getElementById('liveModal').classList.remove('active');
-        this.stopCamera();
-        this.resetLiveForm();
-    }
-
-    resetLiveForm() {
-        document.getElementById('liveTitle').value = '';
-        document.getElementById('liveDescription').value = '';
-        document.getElementById('liveCategory').value = 'gaming';
-        document.querySelector('input[name="livePrivacy"][value="public"]').checked = true;
-    }
-
-    async initializeCamera() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: true, 
-                audio: true 
-            });
-            
-            this.cameraStream = stream;
-            this.isCameraOn = true;
-            this.isMicOn = true;
-            
-            const video = document.getElementById('cameraPreview');
-            video.srcObject = stream;
-            
-            this.updateCameraControls();
-            this.showToast('Camera and microphone ready', 'success');
-            
-        } catch (error) {
-            console.error('Error accessing camera:', error);
-            this.showToast('Unable to access camera. Please check permissions.', 'error');
-        }
-    }
-
-    stopCamera() {
-        if (this.cameraStream) {
-            this.cameraStream.getTracks().forEach(track => track.stop());
-            this.cameraStream = null;
-            this.isCameraOn = false;
-            this.isMicOn = false;
-            
-            const video = document.getElementById('cameraPreview');
-            video.srcObject = null;
-        }
-    }
-
-    toggleCamera() {
-        if (this.cameraStream) {
-            const videoTrack = this.cameraStream.getVideoTracks()[0];
-            if (videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                this.isCameraOn = videoTrack.enabled;
-                this.updateCameraControls();
-                
-                const status = this.isCameraOn ? 'on' : 'off';
-                this.showToast(`Camera turned ${status}`, 'info');
-            }
-        }
-    }
-
-    toggleMicrophone() {
-        if (this.cameraStream) {
-            const audioTrack = this.cameraStream.getAudioTracks()[0];
-            if (audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-                this.isMicOn = audioTrack.enabled;
-                this.updateCameraControls();
-                
-                const status = this.isMicOn ? 'on' : 'off';
-                this.showToast(`Microphone turned ${status}`, 'info');
-            }
-        }
-    }
-
-    updateCameraControls() {
-        const cameraBtn = document.getElementById('toggleCameraBtn');
-        const micBtn = document.getElementById('toggleMicBtn');
-        
-        cameraBtn.style.opacity = this.isCameraOn ? '1' : '0.5';
-        micBtn.style.opacity = this.isMicOn ? '1' : '0.5';
-        
-        cameraBtn.querySelector('i').className = this.isCameraOn ? 'fas fa-video' : 'fas fa-video-slash';
-        micBtn.querySelector('i').className = this.isMicOn ? 'fas fa-microphone' : 'fas fa-microphone-slash';
-    }
-
-    startLiveStream() {
-        const title = document.getElementById('liveTitle').value.trim();
-        const description = document.getElementById('liveDescription').value.trim();
-        const category = document.getElementById('liveCategory').value;
-        const privacy = document.querySelector('input[name="livePrivacy"]:checked').value;
-        
-        if (!title) {
-            this.showToast('Please enter a title for your live stream', 'error');
-            return;
-        }
-        
-        if (!this.cameraStream) {
-            this.showToast('Camera not ready. Please allow camera access.', 'error');
-            return;
-        }
-
-        // Create new live stream object
-        const newLiveStream = {
-            id: 'live_' + Date.now(),
-            title: title,
-            channel: this.channelData.name,
-            avatar: this.channelData.avatar,
-            thumbnail: 'https://picsum.photos/640/360?random=' + Date.now(),
-            viewers: '0 watching',
-            startTime: new Date().toLocaleTimeString(),
-            description: description || 'Live streaming now!',
-            category: category,
-            privacy: privacy,
-            isLive: true,
-            stream: this.cameraStream
-        };
-
-        // Add to live streams
-        this.liveStreams.push(newLiveStream);
-        this.saveLiveStreams();
-        
-        this.closeLiveModal();
-        this.showToast('Live stream started successfully!', 'success');
-        
-        // In a real app, this would connect to a streaming server
-        setTimeout(() => {
-            this.showToast('Live stream ended', 'info');
-        }, 5000);
-    }
-
-    // Data Management for Shorts and Live Streams
-    loadMyShorts() {
-        const saved = localStorage.getItem('tiktik_my_shorts');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveMyShorts() {
-        localStorage.setItem('tiktik_my_shorts', JSON.stringify(this.myShorts));
-    }
-
-    loadLiveStreams() {
-        const saved = localStorage.getItem('tiktik_live_streams');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveLiveStreams() {
-        localStorage.setItem('tiktik_live_streams', JSON.stringify(this.liveStreams));
-    }
 }
 
 // Initialize the application when DOM is loaded
@@ -1741,105 +2493,3 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 });
-
-// Handle system theme changes
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (window.tiktikApp && window.tiktikApp.settings.theme === 'auto') {
-        window.tiktikApp.applyTheme();
-    }
-});
-
-// Handle window resize for responsive behavior
-window.addEventListener('resize', () => {
-    if (window.innerWidth <= 768) {
-        // Mobile behavior
-        const sidebar = document.getElementById('sidebar');
-        if (!sidebar.classList.contains('collapsed')) {
-            sidebar.classList.remove('active');
-        }
-    }
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-    // Escape to close modals
-    if (e.key === 'Escape') {
-        const videoModal = document.getElementById('videoModal');
-        const adminModal = document.getElementById('adminModal');
-        
-        if (videoModal.classList.contains('active')) {
-            window.tiktikApp.closeVideoModal();
-        } else if (adminModal.classList.contains('active')) {
-            window.tiktikApp.closeAdminPanel();
-        }
-    }
-    
-    // Space to play/pause video (when modal is open)
-    if (e.key === ' ' && document.getElementById('videoModal').classList.contains('active')) {
-        e.preventDefault();
-        const player = document.getElementById('videoPlayer');
-        if (player.paused) {
-            player.play();
-        } else {
-            player.pause();
-        }
-    }
-});
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAY1kqPrI-Sw5LYPfIUoKE45nJ3papGZU8",
-  authDomain: "tiktik-video-2de07.firebaseapp.com",
-  projectId: "tiktik-video-2de07",
-  appId: "1:840826006253:web"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-function signInWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-
-      // ✅ Login बटन छुपाओ
-      document.querySelector('button[onclick="signInWithGoogle()"]').style.display = "none";
-
-      // ✅ प्रोफाइल UI दिखाओ
-      document.getElementById("profile-container").style.display = "flex";
-      document.getElementById("profile-pic").src = user.photoURL;
-      document.getElementById("profile-name").innerText = user.displayName;
-      document.getElementById("profile-email").innerText = user.email;
-
-      localStorage.setItem("user", JSON.stringify(user));
-    })
-    .catch((error) => {
-      alert("Login failed: " + error.message);
-    });
-}
-
-function logout() {
-  auth.signOut().then(() => {
-    document.getElementById("profile-container").style.display = "none";
-    document.querySelector('button[onclick="signInWithGoogle()"]').style.display = "inline-block";
-    localStorage.removeItem("user");
-  });
-}
-
-function toggleProfileMenu() {
-  const menu = document.getElementById("profile-menu");
-  menu.style.display = (menu.style.display === "block") ? "none" : "block";
-}
-
-// ✅ Step 4: Auto-login on page load
-window.onload = function () {
-  const savedUser = localStorage.getItem("user");
-  if (savedUser) {
-    const user = JSON.parse(savedUser);
-    document.querySelector('button[onclick="signInWithGoogle()"]').style.display = "none";
-    document.getElementById("profile-container").style.display = "flex";
-    document.getElementById("profile-pic").src = user.photoURL;
-    document.getElementById("profile-name").innerText = user.displayName;
-    document.getElementById("profile-email").innerText = user.email;
-  }
-};
