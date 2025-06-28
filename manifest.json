@@ -3,7 +3,7 @@
   "name": "TikTik - Video Sharing Platform",
   "short_name": "TikTik",
   "description": "A complete YouTube clone with video player, comments, and social features",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff0000",
