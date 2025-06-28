@@ -270,6 +270,15 @@ class TikTikApp {
             this.closeUploadModal();
         });
 
+        // Subscribe and Bell buttons
+        document.getElementById('subscribeBtn').addEventListener('click', () => {
+            this.toggleSubscribe();
+        });
+
+        document.getElementById('bellBtn').addEventListener('click', () => {
+            this.toggleNotifications();
+        });
+
         // Channel edit modal
         document.getElementById('editChannelBtn').addEventListener('click', () => {
             this.openChannelEditModal();
@@ -775,6 +784,78 @@ class TikTikApp {
             sidebar.classList.add('collapsed');
         } else {
             sidebar.classList.remove('collapsed');
+        }
+    }
+
+    toggleSubscribe() {
+        const subscribeBtn = document.getElementById('subscribeBtn');
+        const bellBtn = document.getElementById('bellBtn');
+        const subscriberCount = document.getElementById('subscriberCount');
+        
+        const isSubscribed = subscribeBtn.classList.contains('subscribed');
+        
+        if (isSubscribed) {
+            // Unsubscribe
+            subscribeBtn.classList.remove('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
+            bellBtn.classList.remove('active');
+            bellBtn.style.display = 'none';
+            
+            // Update subscriber count
+            let currentCount = parseInt(this.channelData.subscribers) || 0;
+            this.channelData.subscribers = Math.max(0, currentCount - 1);
+            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
+            
+            this.showToast('Unsubscribed successfully', 'info');
+        } else {
+            // Subscribe
+            subscribeBtn.classList.add('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
+            bellBtn.style.display = 'flex';
+            
+            // Update subscriber count
+            let currentCount = parseInt(this.channelData.subscribers) || 0;
+            this.channelData.subscribers = currentCount + 1;
+            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
+            
+            this.showToast('Subscribed successfully! 🎉', 'success');
+        }
+        
+        this.saveChannelData();
+    }
+
+    toggleNotifications() {
+        const bellBtn = document.getElementById('bellBtn');
+        const subscribeBtn = document.getElementById('subscribeBtn');
+        
+        // Only allow notification toggle if subscribed
+        if (!subscribeBtn.classList.contains('subscribed')) {
+            this.showToast('Please subscribe first to enable notifications', 'warning');
+            return;
+        }
+        
+        const isActive = bellBtn.classList.contains('active');
+        
+        if (isActive) {
+            bellBtn.classList.remove('active');
+            bellBtn.title = 'Turn on notifications';
+            this.showToast('Notifications turned off', 'info');
+        } else {
+            bellBtn.classList.add('active');
+            bellBtn.title = 'Turn off notifications';
+            this.showToast('Notifications turned on! 🔔', 'success');
+            
+            // Request notification permission if not granted
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('TikTik Notifications', {
+                            body: 'You will now receive notifications from this channel!',
+                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
+                        });
+                    }
+                });
+            }
         }
     }
 
@@ -2431,6 +2512,10 @@ class TikTikApp {
     saveSettings() {
         localStorage.setItem('tiktik_settings', JSON.stringify(this.settings));
         this.showToast('Settings saved', 'success');
+    }
+
+    saveChannelData() {
+        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
     }
 
     // Data persistence methods
