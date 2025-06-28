@@ -1,3 +1,4 @@
+
 // TikTik - YouTube Clone Application
 // Pure JavaScript implementation with local storage persistence
 
@@ -19,14 +20,14 @@ class TikTikApp {
         this.isCameraOn = false;
         this.isMicOn = false;
         
-        // Video data with proper working thumbnail URLs
+        // Video data with actual video URLs
         this.videos = [
             {
                 id: '1',
                 title: 'Amazing Sunset Timelapse - Nature\'s Beauty Unveiled',
                 channel: 'NatureFilms HD',
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=320&h=180&fit=crop',
+                avatar: 'https://pixabay.com/get/gf2d38d42d8a2c7e0ac06e52b7db59b5aa5b5e7b8b1ff7d6b4b8c1c37e1c3c0c5_1280.jpg',
+                thumbnail: 'https://pixabay.com/get/g4c1a5c5b5c1b5c5b5c1b5c5b5c1b5c5b5c1b5c5b5c1b5c5b5c1b5c5b5c1b5c5_1280.jpg',
                 duration: '4:23',
                 views: '1.2M views',
                 uploadTime: '2 days ago',
@@ -39,8 +40,8 @@ class TikTikApp {
                 id: '2',
                 title: 'Modern Web Development Tutorial - React & JavaScript',
                 channel: 'CodeMaster',
-                avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=320&h=180&fit=crop',
+                avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
+                thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
                 duration: '45:17',
                 views: '856K views',
                 uploadTime: '1 week ago',
@@ -53,8 +54,8 @@ class TikTikApp {
                 id: '3',
                 title: 'Epic Gaming Moments - Best Highlights 2024',
                 channel: 'GameWorld Pro',
-                avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=320&h=180&fit=crop',
+                avatar: 'https://pixabay.com/get/g0a5da4b16791ee5a080efc068a5a97b5eadc1194838f0aa8ab7aff8602beb52959adb3e71c6324a009335d29593d2178b3ebe319247e071e50815ab190d7664e_1280.jpg',
+                thumbnail: 'https://pixabay.com/get/g3c1a2b32f52b3c5a3c1b2c3d4e5f6789abcdef123456789abcdef123456789abc_1280.jpg',
                 duration: '12:45',
                 views: '2.1M views',
                 uploadTime: '3 days ago',
@@ -67,8 +68,8 @@ class TikTikApp {
                 id: '4',
                 title: 'Healthy Morning Routine - Transform Your Life',
                 channel: 'Wellness Journey',
-                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=320&h=180&fit=crop',
+                avatar: 'https://pixabay.com/get/g2c736471db05f3161ea3fd9781a42a96e9e79523db07155ec05a77a92896f367d73cd460275cba8f1581583d76dfc2f5bbc3a9d453c7ec76d297a0114349da02_1280.jpg',
+                thumbnail: 'https://pixabay.com/get/g4d5e6f789abcdef123456789abcdef123456789abcdef123456789abcdef123_1280.jpg',
                 duration: '8:32',
                 views: '745K views',
                 uploadTime: '5 days ago',
@@ -81,8 +82,8 @@ class TikTikApp {
                 id: '5',
                 title: 'Latest Music Hits 2024 - Top Songs Compilation',
                 channel: 'MusicVibes',
-                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=320&h=180&fit=crop',
+                avatar: 'https://pixabay.com/get/g5e6f789abcdef123456789abcdef123456789abcdef123456789abcdef123456_1280.jpg',
+                thumbnail: 'https://pixabay.com/get/g6f789abcdef123456789abcdef123456789abcdef123456789abcdef123456789_1280.jpg',
                 duration: '25:18',
                 views: '3.4M views',
                 uploadTime: '1 day ago',
@@ -170,9 +171,6 @@ class TikTikApp {
                 this.addToHistory(this.currentVideo);
             }
         });
-
-        // Video player controls
-        this.setupVideoControls();
 
         // Like/Dislike buttons
         document.getElementById('likeBtn').addEventListener('click', () => {
@@ -320,324 +318,6 @@ class TikTikApp {
         });
 
         this.setupAdminControls();
-    }
-
-    setupVideoControls() {
-        const videoPlayer = document.getElementById('videoPlayer');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const progressBar = document.getElementById('progressBar');
-        const progressFill = document.getElementById('progressFill');
-        const timeDisplay = document.getElementById('timeDisplay');
-        const muteBtn = document.getElementById('muteBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeFill = document.getElementById('volumeFill');
-        const speedBtn = document.getElementById('speedBtn');
-        
-        // Player state controls
-        const minimizeBtn = document.getElementById('minimizeBtn');
-        const theaterBtn = document.getElementById('theaterBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const restoreBtn = document.getElementById('restoreBtn');
-        
-        // Navigation controls
-        const prevVideoBtn = document.getElementById('prevVideoBtn');
-        const nextVideoBtn = document.getElementById('nextVideoBtn');
-        
-        // Miniplayer controls
-        const miniplayerPlayBtn = document.getElementById('miniplayerPlayBtn');
-        
-        // Play/Pause functionality
-        playPauseBtn.addEventListener('click', () => {
-            if (videoPlayer.paused) {
-                videoPlayer.play();
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                videoPlayer.pause();
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        });
-        
-        miniplayerPlayBtn.addEventListener('click', () => {
-            playPauseBtn.click();
-        });
-        
-        // Video player events
-        videoPlayer.addEventListener('play', () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        });
-        
-        videoPlayer.addEventListener('pause', () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-        });
-        
-        // Progress bar
-        videoPlayer.addEventListener('timeupdate', () => {
-            if (videoPlayer.duration) {
-                const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
-                progressFill.style.width = progress + '%';
-                
-                const currentTime = this.formatTime(videoPlayer.currentTime);
-                const duration = this.formatTime(videoPlayer.duration);
-                timeDisplay.textContent = `${currentTime} / ${duration}`;
-            }
-        });
-        
-        progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const progress = clickX / rect.width;
-            videoPlayer.currentTime = progress * videoPlayer.duration;
-        });
-        
-        // Volume controls
-        muteBtn.addEventListener('click', () => {
-            if (videoPlayer.muted) {
-                videoPlayer.muted = false;
-                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                volumeFill.style.width = (videoPlayer.volume * 100) + '%';
-            } else {
-                videoPlayer.muted = true;
-                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                volumeFill.style.width = '0%';
-            }
-        });
-        
-        volumeSlider.addEventListener('click', (e) => {
-            const rect = volumeSlider.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const volume = clickX / rect.width;
-            videoPlayer.volume = Math.max(0, Math.min(1, volume));
-            volumeFill.style.width = (volume * 100) + '%';
-            videoPlayer.muted = false;
-            muteBtn.innerHTML = volume > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-        });
-        
-        // Speed control
-        let currentSpeed = 1;
-        const speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-        speedBtn.addEventListener('click', () => {
-            const currentIndex = speeds.indexOf(currentSpeed);
-            const nextIndex = (currentIndex + 1) % speeds.length;
-            currentSpeed = speeds[nextIndex];
-            videoPlayer.playbackRate = currentSpeed;
-            speedBtn.textContent = currentSpeed + 'x';
-        });
-        
-        // Player state controls
-        minimizeBtn.addEventListener('click', () => {
-            this.minimizeVideo();
-        });
-        
-        theaterBtn.addEventListener('click', () => {
-            this.toggleTheaterMode();
-        });
-        
-        fullscreenBtn.addEventListener('click', () => {
-            this.toggleFullscreen();
-        });
-        
-        restoreBtn.addEventListener('click', () => {
-            this.restoreVideo();
-        });
-        
-        // Navigation controls
-        prevVideoBtn.addEventListener('click', () => {
-            this.playPreviousVideo();
-        });
-        
-        nextVideoBtn.addEventListener('click', () => {
-            this.playNextVideo();
-        });
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (this.currentVideo && document.getElementById('videoModal').classList.contains('active')) {
-                switch(e.code) {
-                    case 'Space':
-                        e.preventDefault();
-                        playPauseBtn.click();
-                        break;
-                    case 'ArrowLeft':
-                        e.preventDefault();
-                        videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
-                        break;
-                    case 'ArrowRight':
-                        e.preventDefault();
-                        videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
-                        break;
-                    case 'ArrowUp':
-                        e.preventDefault();
-                        videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
-                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
-                        break;
-                    case 'ArrowDown':
-                        e.preventDefault();
-                        videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
-                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
-                        break;
-                    case 'KeyM':
-                        e.preventDefault();
-                        muteBtn.click();
-                        break;
-                    case 'KeyF':
-                        e.preventDefault();
-                        fullscreenBtn.click();
-                        break;
-                    case 'KeyT':
-                        e.preventDefault();
-                        theaterBtn.click();
-                        break;
-                    case 'KeyI':
-                        e.preventDefault();
-                        minimizeBtn.click();
-                        break;
-                }
-            }
-        });
-    }
-
-    formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    minimizeVideo() {
-        const modal = document.getElementById('videoModal');
-        const minimizeBtn = document.getElementById('minimizeBtn');
-        const miniplayerTitle = document.getElementById('miniplayerTitle');
-        
-        if (modal.classList.contains('minimized')) {
-            return;
-        }
-        
-        modal.classList.add('minimized');
-        minimizeBtn.innerHTML = '<i class="fas fa-expand"></i>';
-        minimizeBtn.title = 'Restore';
-        
-        if (this.currentVideo) {
-            miniplayerTitle.textContent = this.currentVideo.title;
-        }
-        
-        this.showToast('Video minimized. Click to restore.', 'info');
-    }
-
-    restoreVideo() {
-        const modal = document.getElementById('videoModal');
-        const minimizeBtn = document.getElementById('minimizeBtn');
-        
-        modal.classList.remove('minimized');
-        modal.classList.remove('theater');
-        minimizeBtn.innerHTML = '<i class="fas fa-compress"></i>';
-        minimizeBtn.title = 'Minimize';
-        
-        this.showToast('Video restored', 'info');
-    }
-
-    toggleTheaterMode() {
-        const modal = document.getElementById('videoModal');
-        const theaterBtn = document.getElementById('theaterBtn');
-        
-        if (modal.classList.contains('theater')) {
-            modal.classList.remove('theater');
-            theaterBtn.innerHTML = '<i class="fas fa-expand"></i>';
-            theaterBtn.title = 'Theater mode';
-            this.showToast('Theater mode disabled', 'info');
-        } else {
-            modal.classList.remove('minimized');
-            modal.classList.add('theater');
-            theaterBtn.innerHTML = '<i class="fas fa-compress"></i>';
-            theaterBtn.title = 'Exit theater mode';
-            this.showToast('Theater mode enabled', 'info');
-        }
-    }
-
-    toggleFullscreen() {
-        const videoPlayer = document.getElementById('videoPlayer');
-        
-        if (!document.fullscreenElement) {
-            videoPlayer.requestFullscreen().catch(err => {
-                this.showToast('Fullscreen not supported', 'error');
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    }
-
-    playPreviousVideo() {
-        if (!this.currentVideo) return;
-        
-        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
-        if (currentIndex > 0) {
-            const prevVideo = this.videos[currentIndex - 1];
-            this.switchToVideo(prevVideo);
-            this.showToast('Playing previous video', 'info');
-        } else {
-            this.showToast('This is the first video', 'info');
-        }
-    }
-
-    playNextVideo() {
-        if (!this.currentVideo) return;
-        
-        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
-        if (currentIndex < this.videos.length - 1) {
-            const nextVideo = this.videos[currentIndex + 1];
-            this.switchToVideo(nextVideo);
-            this.showToast('Playing next video', 'info');
-        } else {
-            this.showToast('This is the last video', 'info');
-        }
-    }
-
-    switchToVideo(video) {
-        const videoPlayer = document.getElementById('videoPlayer');
-        const wasPlaying = !videoPlayer.paused;
-        
-        this.currentVideo = video;
-        
-        // Update video source
-        videoPlayer.src = video.videoUrl;
-        
-        // Update video info
-        document.getElementById('modalVideoTitle').textContent = video.title;
-        document.getElementById('modalChannelName').textContent = video.channel;
-        document.getElementById('modalChannelAvatar').src = video.avatar;
-        document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
-        document.getElementById('modalVideoDescription').textContent = video.description;
-        document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
-        document.getElementById('miniplayerTitle').textContent = video.title;
-        
-        // Update like button state
-        const likeBtn = document.getElementById('likeBtn');
-        if (this.likedVideos.includes(video.id)) {
-            likeBtn.classList.add('active');
-        } else {
-            likeBtn.classList.remove('active');
-        }
-        
-        // Update save button state
-        const saveBtn = document.getElementById('saveBtn');
-        if (this.savedVideos.includes(video.id)) {
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-            saveBtn.classList.add('active');
-        } else {
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
-            saveBtn.classList.remove('active');
-        }
-        
-        // Auto-play if was playing or autoplay is enabled
-        if (wasPlaying || this.settings.autoPlay) {
-            videoPlayer.play();
-        }
-        
-        // Load comments and recommendations
-        this.loadComments(video.id);
-        this.loadRecommendedVideos(video);
     }
 
     setupAdminControls() {
@@ -953,545 +633,7 @@ class TikTikApp {
     }
 
     loadSettingsPage() {
-        // Initialize settings tabs
-        this.setupSettingsTabs();
-    }
-
-    setupSettingsTabs() {
-        // Settings tab navigation
-        document.querySelectorAll('.settings-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                const tabName = tab.dataset.tab;
-                this.switchSettingsTab(tabName);
-            });
-        });
-
-        // Additional settings event listeners
-        this.setupSettingsControls();
-    }
-
-    switchSettingsTab(tabName) {
-        // Remove active class from all tabs and contents
-        document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.settings-tab-content').forEach(content => content.classList.remove('active'));
-        
-        // Add active class to selected tab and content
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        document.getElementById(`${tabName}-content`).classList.add('active');
-    }
-
-    setupSettingsControls() {
-        // Language setting
-        const languageSelect = document.getElementById('language');
-        if (languageSelect) {
-            languageSelect.addEventListener('change', (e) => {
-                this.settings.language = e.target.value;
-                this.saveSettings();
-                this.applyLanguage(e.target.value);
-                this.showToast('Language updated', 'success');
-            });
-        }
-
-        // Location setting
-        const locationSelect = document.getElementById('location');
-        if (locationSelect) {
-            locationSelect.addEventListener('change', (e) => {
-                this.settings.location = e.target.value;
-                this.saveSettings();
-                this.showToast('Location updated', 'success');
-            });
-        }
-
-        // Video quality setting
-        const videoQualitySelect = document.getElementById('videoQuality');
-        if (videoQualitySelect) {
-            videoQualitySelect.addEventListener('change', (e) => {
-                this.settings.videoQuality = e.target.value;
-                this.saveSettings();
-                this.applyVideoQuality(e.target.value);
-                this.showToast('Video quality updated', 'success');
-            });
-        }
-
-        // Download quality setting
-        const downloadQualitySelect = document.getElementById('download-quality');
-        if (downloadQualitySelect) {
-            downloadQualitySelect.addEventListener('change', (e) => {
-                this.settings.downloadQuality = e.target.value;
-                this.saveSettings();
-                this.showToast('Download quality updated', 'success');
-            });
-        }
-
-        // Caption language setting
-        const captionLanguageSelect = document.getElementById('caption-language');
-        if (captionLanguageSelect) {
-            captionLanguageSelect.addEventListener('change', (e) => {
-                this.settings.captionLanguage = e.target.value;
-                this.saveSettings();
-                this.showToast('Caption language updated', 'success');
-            });
-        }
-
-        // Caption size setting
-        const captionSizeSelect = document.getElementById('caption-size');
-        if (captionSizeSelect) {
-            captionSizeSelect.addEventListener('change', (e) => {
-                this.settings.captionSize = e.target.value;
-                this.saveSettings();
-                this.applyCaptionSize(e.target.value);
-                this.showToast('Caption size updated', 'success');
-            });
-        }
-
-        // All checkbox settings with enhanced functionality
-        const checkboxSettings = [
-            'restrictedMode', 'subscriptions-notif', 'recommended-notif', 'comment-notif', 
-            'live-notif', 'pause-watch-history', 'pause-search-history', 'private-subscriptions',
-            'private-playlists', 'private-liked', 'new-ui', 'ai-features', 'always-choose-quality',
-            'autoplay-on-home', 'annotations', 'show-captions', 'data-saver', 'smart-downloads',
-            'download-on-wifi', 'live-chat-enabled', 'chat-filter', 'high-contrast',
-            'keyboard-navigation', 'screen-reader', 'double-tap-seek', 'zoom-to-fill',
-            'ambient-mode', 'theater-mode', 'miniplayer-auto', 'picture-in-picture',
-            'auto-quality', 'stable-volume', 'speed-controls', 'gesture-controls'
-        ];
-
-        checkboxSettings.forEach(settingId => {
-            const checkbox = document.getElementById(settingId);
-            if (checkbox) {
-                checkbox.addEventListener('change', (e) => {
-                    this.settings[settingId] = e.target.checked;
-                    this.saveSettings();
-                    this.applySettingChange(settingId, e.target.checked);
-                    this.showToast('Setting updated', 'success');
-                });
-            }
-        });
-
-        // Playback speed setting
-        const playbackSpeedSelect = document.getElementById('playback-speed');
-        if (playbackSpeedSelect) {
-            playbackSpeedSelect.addEventListener('change', (e) => {
-                this.settings.playbackSpeed = e.target.value;
-                this.saveSettings();
-                this.applyPlaybackSpeed(e.target.value);
-                this.showToast('Playback speed updated', 'success');
-            });
-        }
-
-        // Seek duration setting
-        const seekDurationSelect = document.getElementById('seek-duration');
-        if (seekDurationSelect) {
-            seekDurationSelect.addEventListener('change', (e) => {
-                this.settings.seekDuration = e.target.value;
-                this.saveSettings();
-                this.showToast('Seek duration updated', 'success');
-            });
-        }
-
-        // Volume normalization slider
-        const volumeSlider = document.getElementById('volume-normalization');
-        if (volumeSlider) {
-            volumeSlider.addEventListener('input', (e) => {
-                this.settings.volumeNormalization = e.target.value;
-                this.saveSettings();
-                this.applyVolumeNormalization(e.target.value);
-            });
-        }
-
-        // Add account button
-        const addAccountBtn = document.querySelector('.add-account-btn');
-        if (addAccountBtn) {
-            addAccountBtn.addEventListener('click', () => {
-                this.showGoogleLoginPopup();
-            });
-        }
-
-        // Switch account functionality
-        document.querySelectorAll('.account-item').forEach(item => {
-            if (!item.classList.contains('active')) {
-                item.addEventListener('click', () => {
-                    this.switchAccount(item.dataset.accountId);
-                });
-            }
-        });
-
-        // Family Centre setup
-        const familyCentreBtn = document.querySelector('.family-centre-info .btn-primary');
-        if (familyCentreBtn) {
-            familyCentreBtn.addEventListener('click', () => {
-                this.setupFamilyCentre();
-            });
-        }
-
-        // Payment method setup
-        const addPaymentBtn = document.querySelector('.payment-methods .btn-primary');
-        if (addPaymentBtn) {
-            addPaymentBtn.addEventListener('click', () => {
-                this.addPaymentMethod();
-            });
-        }
-
-        // Data download request
-        const requestDownloadBtn = document.querySelector('.data-info .btn-primary');
-        if (requestDownloadBtn) {
-            requestDownloadBtn.addEventListener('click', () => {
-                this.requestDataDownload();
-            });
-        }
-
-        // Account deletion
-        const deleteAccountBtn = document.querySelector('.data-info .btn-danger');
-        if (deleteAccountBtn) {
-            deleteAccountBtn.addEventListener('click', () => {
-                this.deleteAccount();
-            });
-        }
-
-        // Feedback form
-        const feedbackForm = document.querySelector('.feedback-form button');
-        if (feedbackForm) {
-            feedbackForm.addEventListener('click', () => {
-                const category = document.getElementById('feedback-category').value;
-                const text = document.getElementById('feedback-text').value.trim();
-                
-                if (!text) {
-                    this.showToast('Please enter your feedback', 'error');
-                    return;
-                }
-                
-                this.submitFeedback(category, text);
-                document.getElementById('feedback-text').value = '';
-                this.showToast('Thank you for your feedback!', 'success');
-            });
-        }
-
-        // Connect to TV button
-        const connectTvBtn = document.querySelector('.tv-info .btn-primary');
-        if (connectTvBtn) {
-            connectTvBtn.addEventListener('click', () => {
-                this.connectToTV();
-            });
-        }
-
-        // History management buttons
-        const clearWatchBtn = document.querySelector('.history-actions .btn-secondary:first-child');
-        const clearSearchBtn = document.querySelector('.history-actions .btn-secondary:last-child');
-        const deleteAllBtn = document.querySelector('.history-actions .btn-danger');
-
-        if (clearWatchBtn) {
-            clearWatchBtn.addEventListener('click', () => {
-                this.clearWatchHistory();
-            });
-        }
-
-        if (clearSearchBtn) {
-            clearSearchBtn.addEventListener('click', () => {
-                this.clearSearchHistory();
-            });
-        }
-
-        if (deleteAllBtn) {
-            deleteAllBtn.addEventListener('click', () => {
-                this.deleteAllActivity();
-            });
-        }
-
-        // Help center links
-        document.querySelectorAll('.help-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const helpType = link.querySelector('span').textContent;
-                this.openHelpCenter(helpType);
-            });
-        });
-
-        // Terms and policies
-        document.querySelectorAll('.about-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.openTermsPolicy(link.textContent);
-            });
-        });
-
-        // Notification preferences with advanced controls
-        this.setupNotificationControls();
-        
-        // Accessibility features
-        this.setupAccessibilityControls();
-        
-        // Load saved settings
-        this.loadSettingsFromStorage();
-    }
-
-    // Enhanced functionality methods
-    applyLanguage(language) {
-        // Apply language changes to UI
-        document.documentElement.setAttribute('lang', language);
-        // In a real app, this would load translation files
-    }
-
-    applyVideoQuality(quality) {
-        // Apply video quality to current player
-        const videoPlayer = document.getElementById('videoPlayer');
-        if (videoPlayer && videoPlayer.src) {
-            // Store current time and apply quality
-            const currentTime = videoPlayer.currentTime;
-            const wasPlaying = !videoPlayer.paused;
-            
-            // Apply quality setting
-            videoPlayer.addEventListener('loadedmetadata', () => {
-                videoPlayer.currentTime = currentTime;
-                if (wasPlaying) videoPlayer.play();
-            }, { once: true });
-        }
-    }
-
-    applyCaptionSize(size) {
-        const sizeMap = { small: '14px', medium: '16px', large: '18px' };
-        document.documentElement.style.setProperty('--caption-size', sizeMap[size]);
-    }
-
-    applyPlaybackSpeed(speed) {
-        const videoPlayer = document.getElementById('videoPlayer');
-        if (videoPlayer) {
-            videoPlayer.playbackRate = parseFloat(speed);
-        }
-    }
-
-    applyVolumeNormalization(level) {
-        const videoPlayer = document.getElementById('videoPlayer');
-        if (videoPlayer) {
-            videoPlayer.volume = level / 100;
-        }
-    }
-
-    applySettingChange(settingId, value) {
-        switch(settingId) {
-            case 'high-contrast':
-                document.body.classList.toggle('high-contrast', value);
-                break;
-            case 'keyboard-navigation':
-                document.body.classList.toggle('keyboard-nav', value);
-                break;
-            case 'screen-reader':
-                document.body.setAttribute('aria-live', value ? 'polite' : 'off');
-                break;
-            case 'double-tap-seek':
-                this.enableDoubleTapSeek = value;
-                break;
-            case 'zoom-to-fill':
-                this.enableZoomToFill = value;
-                break;
-            case 'ambient-mode':
-                this.enableAmbientMode = value;
-                break;
-            case 'theater-mode':
-                this.enableTheaterMode = value;
-                break;
-            case 'picture-in-picture':
-                this.enablePictureInPicture = value;
-                break;
-            case 'data-saver':
-                this.applyDataSaver(value);
-                break;
-        }
-    }
-
-    applyDataSaver(enabled) {
-        if (enabled) {
-            this.settings.videoQuality = '480p';
-            this.settings.autoplay = false;
-            this.showToast('Data saver enabled - Lower quality and autoplay disabled', 'info');
-        }
-    }
-
-    // Account management
-    showGoogleLoginPopup() {
-        // Trigger Google login
-        if (typeof signInWithGoogle === 'function') {
-            signInWithGoogle();
-        } else {
-            this.showToast('Google login not available', 'error');
-        }
-    }
-
-    switchAccount(accountId) {
-        this.showToast('Switching account...', 'info');
-        // In a real app, this would switch to the selected account
-        setTimeout(() => {
-            this.showToast('Account switched successfully', 'success');
-        }, 1000);
-    }
-
-    setupFamilyCentre() {
-        this.showToast('Opening Family Centre setup...', 'info');
-        // Open family centre configuration
-    }
-
-    addPaymentMethod() {
-        this.showToast('Opening payment method setup...', 'info');
-        // Open payment method modal
-    }
-
-    requestDataDownload() {
-        if (confirm('Request a download of your TikTik data? This may take some time to prepare.')) {
-            this.showToast('Data download request submitted. You will be notified when ready.', 'success');
-        }
-    }
-
-    deleteAccount() {
-        const confirmText = prompt('To delete your account, type "DELETE" to confirm:');
-        if (confirmText === 'DELETE') {
-            if (confirm('This will permanently delete your account and all data. This action cannot be undone.')) {
-                this.showToast('Account deletion process initiated. You will receive an email with next steps.', 'warning');
-            }
-        }
-    }
-
-    submitFeedback(category, text) {
-        // Store feedback locally or send to server
-        const feedback = {
-            category,
-            text,
-            timestamp: new Date().toISOString(),
-            userId: 'current-user'
-        };
-        
-        let feedbacks = JSON.parse(localStorage.getItem('tiktik_feedbacks') || '[]');
-        feedbacks.push(feedback);
-        localStorage.setItem('tiktik_feedbacks', JSON.stringify(feedbacks));
-    }
-
-    connectToTV() {
-        if ('presentation' in navigator) {
-            this.showToast('Searching for available devices...', 'info');
-            // Implement cast functionality
-            setTimeout(() => {
-                this.showToast('No compatible devices found nearby', 'warning');
-            }, 2000);
-        } else {
-            this.showToast('TV casting not supported on this device', 'error');
-        }
-    }
-
-    clearWatchHistory() {
-        if (confirm('Clear all watch history? This action cannot be undone.')) {
-            this.watchHistory = [];
-            this.saveWatchHistory();
-            this.showToast('Watch history cleared', 'success');
-            if (this.currentPage === 'history') {
-                this.loadHistoryPage();
-            }
-        }
-    }
-
-    clearSearchHistory() {
-        if (confirm('Clear all search history?')) {
-            localStorage.removeItem('tiktik_search_history');
-            this.showToast('Search history cleared', 'success');
-        }
-    }
-
-    deleteAllActivity() {
-        if (confirm('Delete ALL activity including watch history, search history, comments, and interactions? This cannot be undone.')) {
-            this.watchHistory = [];
-            this.likedVideos = [];
-            this.savedVideos = [];
-            this.comments = {};
-            
-            localStorage.removeItem('tiktik_search_history');
-            this.saveWatchHistory();
-            this.saveLikedVideos();
-            this.saveSavedVideos();
-            this.saveComments();
-            
-            this.showToast('All activity deleted', 'success');
-        }
-    }
-
-    openHelpCenter(helpType) {
-        this.showToast(`Opening ${helpType}...`, 'info');
-        // Open help modal or navigate to help section
-    }
-
-    openTermsPolicy(type) {
-        this.showToast(`Opening ${type}...`, 'info');
-        // Open terms/policy modal
-    }
-
-    setupNotificationControls() {
-        // Advanced notification scheduling
-        const notificationTime = document.getElementById('notification-time');
-        if (notificationTime) {
-            notificationTime.addEventListener('change', (e) => {
-                this.settings.notificationTime = e.target.value;
-                this.saveSettings();
-                this.scheduleNotifications();
-            });
-        }
-
-        // Notification sound selection
-        const notificationSound = document.getElementById('notification-sound');
-        if (notificationSound) {
-            notificationSound.addEventListener('change', (e) => {
-                this.settings.notificationSound = e.target.value;
-                this.saveSettings();
-                this.playNotificationPreview(e.target.value);
-            });
-        }
-    }
-
-    setupAccessibilityControls() {
-        // Font size control
-        const fontSizeSlider = document.getElementById('font-size');
-        if (fontSizeSlider) {
-            fontSizeSlider.addEventListener('input', (e) => {
-                const size = e.target.value;
-                document.documentElement.style.setProperty('--base-font-size', `${size}px`);
-                this.settings.fontSize = size;
-                this.saveSettings();
-            });
-        }
-
-        // Motion reduction
-        const reduceMotion = document.getElementById('reduce-motion');
-        if (reduceMotion) {
-            reduceMotion.addEventListener('change', (e) => {
-                document.documentElement.style.setProperty('--animation-duration', e.target.checked ? '0s' : '0.3s');
-                this.settings.reduceMotion = e.target.checked;
-                this.saveSettings();
-            });
-        }
-    }
-
-    scheduleNotifications() {
-        // Implementation for notification scheduling
-        this.showToast('Notification preferences updated', 'success');
-    }
-
-    playNotificationPreview(sound) {
-        // Play notification sound preview
-        const audio = new Audio(`/sounds/${sound}.mp3`);
-        audio.volume = 0.3;
-        audio.play().catch(() => {
-            // Fallback for when audio files are not available
-        });
-    }
-
-    loadSettingsFromStorage() {
-        // Load and apply all saved settings
-        Object.keys(this.settings).forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                if (element.type === 'checkbox') {
-                    element.checked = this.settings[key];
-                } else {
-                    element.value = this.settings[key];
-                }
-            }
-        });
+        // Settings page content is already in HTML
     }
 
     loadHelpPage() {
@@ -1509,13 +651,13 @@ class TikTikApp {
         
         card.innerHTML = `
             <div class="video-thumbnail">
-                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNDQuNSA5MEwxNjUgMTAyLjU5VjU3LjQxTDE0NC41IDkwWiIgZmlsbD0iIzk0QTNBOCIvPgo8L3N2Zz4K';">
+                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
                 <span class="video-duration">${video.duration}</span>
             </div>
             <div class="video-info">
                 <h3 class="video-title">${video.title}</h3>
                 <div class="channel-info">
-                    <img class="channel-avatar" src="${video.avatar}" alt="${video.channel}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiNGM0Y0RjYiLz4KPGF0aCBkPSJNMzIgMTZDMzguNjI3NyAxNiA0NCAyMS4zNzIzIDQ0IDI4QzQ0IDM0LjYyNzcgMzguNjI3NyA0MCAzMiA0MEMyNS4zNzIzIDQwIDIwIDM0LjYyNzcgMjAgMjhDMjAgMjEuMzcyMyAyNS4zNzIzIDE2IDMyIDE2WiIgZmlsbD0iIzk0QTNBOCIvPgo8L3N2Zz4K';">
+                    <img class="channel-avatar" src="${video.avatar}" alt="${video.channel}">
                     <span class="channel-name">${video.channel}</span>
                 </div>
                 <div class="video-stats">${video.views} • ${video.uploadTime}</div>
@@ -1577,18 +719,9 @@ class TikTikApp {
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
         
-        modal.classList.remove('active', 'minimized', 'theater');
+        modal.classList.remove('active');
         player.pause();
         player.src = '';
-        
-        // Reset control states
-        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
-        document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
-        document.getElementById('speedBtn').textContent = '1x';
-        document.getElementById('progressFill').style.width = '0%';
-        document.getElementById('volumeFill').style.width = '80%';
         
         this.currentVideo = null;
     }
