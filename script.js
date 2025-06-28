@@ -2493,3 +2493,43 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 });
+
+// ✅ चैनल लोगो (avatar) बदलना
+document.getElementById('avatarUpload')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.getElementById('channelAvatar').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert('कृपया एक मान्य छवि फ़ाइल चुनें।');
+    }
+});
+
+// ✅ चैनल बैनर बदलना
+document.getElementById('bannerUpload')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.getElementById('channelBanner').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert('कृपया एक मान्य बैनर छवि फ़ाइल चुनें।');
+    }
+});
+
+// ✅ वीडियो अपलोड इनपुट और प्रीव्यू
+document.getElementById('videoFileInput')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('video/')) {
+        const videoPreview = document.getElementById('previewVideo');
+        videoPreview.src = URL.createObjectURL(file);
+        videoPreview.style.display = 'block';
+    } else {
+        alert('कृपया एक मान्य वीडियो फ़ाइल चुनें।');
+    }
+});
