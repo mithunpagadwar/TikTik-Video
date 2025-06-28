@@ -179,36 +179,122 @@ body {
     height: 36px;
     border-radius: 50%;
     cursor: pointer;
+    transition: var(--transition);
+}
+
+.profile-pic:hover {
+    opacity: 0.8;
 }
 
 .profile-menu {
     display: none;
     position: absolute;
-    top: 42px;
+    top: 45px;
     right: 0;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
-    padding: 10px;
-    z-index: 100;
-    width: 200px;
-    box-shadow: 0 2px 8px var(--shadow);
-    border-radius: 8px;
+    padding: 0;
+    z-index: 1000;
+    width: 300px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
 }
 
-.profile-menu p {
-    margin: 5px 0;
-    font-size: 14px;
+.profile-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.profile-name {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 500;
     color: var(--text-primary);
+    line-height: 1.2;
 }
 
-.profile-menu button {
-    padding: 6px 12px;
-    background: #ff4444;
-    color: white;
-    border: none;
+.profile-email {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+.profile-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.profile-link:hover {
+    text-decoration: underline;
+}
+
+.menu-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 8px 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
     cursor: pointer;
-    width: 100%;
-    border-radius: 4px;
+    transition: var(--transition);
+    color: var(--text-primary);
+    font-size: 14px;
+    gap: 16px;
+    position: relative;
+}
+
+.menu-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.menu-item span {
+    flex: 1;
+}
+
+.menu-item .fa-chevron-right {
+    margin-left: auto;
+    width: auto;
+    font-size: 12px;
+}
+
+.menu-item:active {
+    background-color: var(--bg-tertiary);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .profile-menu {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 /* Sidebar Styles */
