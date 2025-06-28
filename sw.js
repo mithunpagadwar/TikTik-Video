@@ -1,5 +1,16 @@
 
-const CACHE_NAME = 'tiktik-v1.0.0';
+const CACHE_NAME = 'tiktik-v1.0.1';
+
+// Get the base path for GitHub Pages
+const getBasePath = () => {
+  if (self.location.hostname.includes('github.io')) {
+    const pathArray = self.location.pathname.split('/');
+    return pathArray[1] ? `/${pathArray[1]}/` : '/';
+  }
+  return '/';
+};
+
+const basePath = getBasePath();
 const urlsToCache = [
   '/',
   '/index.html',
