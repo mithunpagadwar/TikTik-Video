@@ -3114,6 +3114,12 @@ class TikTikApp {
 
 // Google Sign-in and Sign-out functionality
 function signInWithGoogle() {
+  // Check if Firebase is available
+  if (typeof firebase === 'undefined') {
+    alert('Google Sign-in is not available. Please check your internet connection.');
+    return;
+  }
+
   const provider = new firebase.auth.GoogleAuthProvider();
 
   firebase.auth().signInWithPopup(provider)
@@ -3130,11 +3136,25 @@ function signInWithGoogle() {
 
       console.log("Sign-in successful:", user);
     }).catch((error) => {
-      console.error("Error signing in:", error);
+      console.log("Login failed:", error);
+      
+      // Handle unauthorized domain error
+      if (error.code === 'auth/unauthorized-domain') {
+        alert('Google Sign-in is not configured for this domain. You can still use TikTik without signing in.');
+      } else {
+        alert('Sign-in failed: ' + error.message);
+      }
     });
 }
 
 function signOut() {
+  if (typeof firebase === 'undefined') {
+    // Manual logout if Firebase is not available
+    document.getElementById("googleLoginBtn").style.display = "block";
+    document.getElementById("profile-container").style.display = "none";
+    return;
+  }
+
   firebase.auth().signOut()
     .then(() => {
       // Sign-out successful.
@@ -3146,34 +3166,50 @@ function signOut() {
     }).catch((error) => {
       // An error happened.
       console.error("Error signing out:", error);
+      
+      // Force logout UI update
+      document.getElementById("googleLoginBtn").style.display = "block";
+      document.getElementById("profile-container").style.display = "none";
     });
 }
 
+// Add logout function to profile menu
+function logout() {
+  signOut();
+  toggleProfileMenu();
+}
+
 // Check if user is already signed-in
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-      document.getElementById("googleLoginBtn").style.display = "none";
-      document.getElementById("profile-container").style.display = "flex";
-      document.getElementById("profile-pic").src = user.photoURL;
-      document.getElementById("profile-avatar").src = user.photoURL;
-      document.getElementById("profile-name").innerText = user.displayName;
-      document.getElementById("profile-email").innerText = user.email;
-    }
-});
+if (typeof firebase !== 'undefined') {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        document.getElementById("googleLoginBtn").style.display = "none";
+        document.getElementById("profile-container").style.display = "flex";
+        document.getElementById("profile-pic").src = user.photoURL;
+        document.getElementById("profile-avatar").src = user.photoURL;
+        document.getElementById("profile-name").innerText = user.displayName;
+        document.getElementById("profile-email").innerText = user.email;
+      }
+  });
+}
 
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.tiktikApp = new TikTikApp();
     window.app = window.tiktikApp;
 
-    // Register Service Worker for PWA
+    // Register Service Worker for PWA with proper path for GitHub Pages
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
+        const swPath = window.location.hostname.includes('github.io') ? 
+            `${window.location.pathname}sw.js` : '/sw.js';
+        
+        navigator.serviceWorker.register(swPath)
             .then((registration) => {
                 console.log('Service Worker registered successfully:', registration);
             })
             .catch((error) => {
-                console.error('Service Worker registration failed:', error);
+                console.log('Service Worker registration failed:', error.message);
+                // Continue without service worker if registration fails
             });
     }
 });
