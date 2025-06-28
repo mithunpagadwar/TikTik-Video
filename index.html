@@ -2452,6 +2452,12 @@
     appId: "1:840826006253:web:d4c7f5c8e9b2a3f1e6d8e5"
   };
 
+  // Add authorized domain for Firebase Auth
+  const currentDomain = window.location.hostname;
+  if (currentDomain.includes('replit.dev') || currentDomain.includes('repl.co')) {
+    console.log('Running on Replit domain:', currentDomain);
+  }
+
   // Firebase Initialization
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
