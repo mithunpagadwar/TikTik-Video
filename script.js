@@ -1827,75 +1827,75 @@ class TikTikApp {
         }
     }
 
-    closeVideoModal() {
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
+   closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('videoPlayer');
 
-        modal.classList.remove('active', 'minimized', 'theater');
-        player.pause();        player.src = '';
+    modal.classList.remove('active', 'minimized', 'theater');
+    player.pause();
+    player.src = '';
 
-        // Reset control states
-```text
-        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
-        document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
-        document.getElementById('speedBtn').textContent = '1x';
-        document.getElementById('progressFill').style.width = '0%';
-        document.getElementById('volumeFill').style.width = '80%';
+    // Reset control states
+    document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+    document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
+    document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
+    document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
+    document.getElementById('speedBtn').textContent = '1x';
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('volumeFill').style.width = '80%';
 
-        this.currentVideo = null;
-    }
+    this.currentVideo = null;
+}
 
-    loadComments(videoId) {
-        const commentsList = document.getElementById('commentsList');
-        const videoComments = this.comments[videoId] || [];
+loadComments(videoId) {
+    const commentsList = document.getElementById('commentsList');
+    const videoComments = this.comments[videoId] || [];
 
-        commentsList.innerHTML = '';
+    commentsList.innerHTML = '';
 
-        if (videoComments.length === 0) {
-            commentsList.innerHTML = `
-                <div class="empty-state">
-                    <p>No comments yet</p>
-                    <span>Be the first to comment!</span>
-                </div>
-            `;
-            return;
-        }
-
-        videoComments.forEach(comment => {
-            const commentElement = this.createCommentElement(comment);
-            commentsList.appendChild(commentElement);
-        });
-
-        document.getElementById('commentCount').textContent = videoComments.length;
-    }
-
-    createCommentElement(comment) {
-        const element = document.createElement('div');
-        element.className = 'comment-item';
-
-        element.innerHTML = `
-            <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
-            <div class="comment-content">
-                <div class="comment-author">
-                    ${comment.author}
-                    <span class="comment-time">${comment.time}</span>
-                </div>
-                <div class="comment-text">${comment.text}</div>
-                <div class="comment-actions-bar">
-                    <button class="comment-like-btn">
-                        <i class="fas fa-thumbs-up"></i>
-                        ${comment.likes || 0}
-                    </button>
-                    <button class="comment-reply-btn">Reply</button>
-                </div>
+    if (videoComments.length === 0) {
+        commentsList.innerHTML = `
+            <div class="empty-state">
+                <p>No comments yet</p>
+                <span>Be the first to comment!</span>
             </div>
         `;
-
-        return element;
+        return;
     }
 
+    videoComments.forEach(comment => {
+        const commentElement = this.createCommentElement(comment);
+        commentsList.appendChild(commentElement);
+    });
+
+    document.getElementById('commentCount').textContent = videoComments.length;
+}
+
+createCommentElement(comment) {
+    const element = document.createElement('div');
+    element.className = 'comment-item';
+
+    element.innerHTML = `
+        <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
+        <div class="comment-content">
+            <div class="comment-author">
+                ${comment.author}
+                <span class="comment-time">${comment.time}</span>
+            </div>
+            <div class="comment-text">${comment.text}</div>
+            <div class="comment-actions-bar">
+                <button class="comment-like-btn">
+                    <i class="fas fa-thumbs-up"></i>
+                    ${comment.likes || 0}
+                </button>
+                <button class="comment-reply-btn">Reply</button>
+            </div>
+        </div>
+    `;
+
+    return element;
+}
+    
     loadRecommendedVideos(currentVideo) {
         const recommendedList = document.getElementById('recommendedList');
         recommendedList.innerHTML = '';
