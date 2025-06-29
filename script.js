@@ -333,6 +333,19 @@ class TikTikApp {
         });
 
         this.setupAdminControls();
+
+        // TikTik Studio modal
+        document.getElementById('closeStudioBtn').addEventListener('click', () => {
+            this.closeTikTikStudio();
+        });
+
+        // Studio tabs
+        document.querySelectorAll('.studio-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const tabName = e.target.dataset.tab;
+                this.switchStudioTab(tabName);
+            });
+        });
     }
 
     setupVideoControls() {
@@ -548,8 +561,29 @@ class TikTikApp {
                         e.preventDefault();
                         minimizeBtn.click();
                         break;
+                    case 'KeyN':
+                        e.preventDefault();
+                        this.playNextVideo();
+                        break;
+                    case 'KeyP':
+                        e.preventDefault();
+                        this.playPreviousVideo();
+                        break;
                 }
             }
+        });
+
+        // Playlist controls
+        document.getElementById('playlistAutoplayToggle').addEventListener('click', () => {
+            this.togglePlaylistAutoplay();
+        });
+
+        document.getElementById('shuffleBtn').addEventListener('click', () => {
+            this.toggleShuffle();
+        });
+
+        document.getElementById('repeatBtn').addEventListener('click', () => {
+            this.toggleRepeat();
         });
     }
 
@@ -1581,6 +1615,11 @@ class TikTikApp {
 
     openVideoModal(video) {
         this.currentVideo = video;
+        this.currentPlaylist = [...this.videos];
+        this.currentVideoIndex = this.currentPlaylist.findIndex(v => v.id === video.id);
+        this.isShuffleOn = false;
+        this.isRepeatOn = false;
+        
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
 
@@ -1618,6 +1657,9 @@ class TikTikApp {
 
         // Load recommended videos
         this.loadRecommendedVideos(video);
+        
+        // Load playlist
+        this.loadVideoPlaylist();
 
         modal.classList.add('active');
 
@@ -1723,6 +1765,131 @@ class TikTikApp {
 
             recommendedList.appendChild(item);
         });
+    }
+
+    loadVideoPlaylist() {
+        const playlistContent = document.getElementById('playlistContent');
+        const playlistInfo = document.getElementById('playlistInfo');
+        
+        playlistContent.innerHTML = '';
+        
+        // Update playlist info
+        playlistInfo.textContent = `${this.currentVideoIndex + 1} / ${this.currentPlaylist.length}`;
+        
+        // Load playlist items
+        this.currentPlaylist.forEach((video, index) => {
+            const item = document.createElement('div');
+            item.className = `playlist-item ${index === this.currentVideoIndex ? 'current' : ''}`;
+            item.onclick = () => this.playVideoFromPlaylist(index);
+            
+            item.innerHTML = `
+                <div class="playlist-item-index">${index + 1}</div>
+                <img class="playlist-thumbnail" src="${video.thumbnail}" alt="${video.title}">
+                <div class="playlist-item-duration">${video.duration}</div>
+                <div class="playlist-item-info">
+                    <h5 class="playlist-item-title">${video.title}</h5>
+                    <p class="playlist-item-channel">${video.channel}</p>
+                    <p class="playlist-item-stats">${video.views}</p>
+                </div>
+            `;
+            
+            playlistContent.appendChild(item);
+        });
+        
+        // Scroll current video into view
+        setTimeout(() => {
+            const currentItem = playlistContent.querySelector('.playlist-item.current');
+            if (currentItem) {
+                currentItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 100);
+    }
+
+    playVideoFromPlaylist(index) {
+        if (index < 0 || index >= this.currentPlaylist.length) return;
+        
+        const video = this.currentPlaylist[index];
+        this.currentVideoIndex = index;
+        this.switchToVideo(video);
+        this.loadVideoPlaylist();
+    }
+
+    playNextVideo() {
+        if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
+        
+        let nextIndex;
+        
+        if (this.isShuffleOn) {
+            // Random next video
+            do {
+                nextIndex = Math.floor(Math.random() * this.currentPlaylist.length);
+            } while (nextIndex === this.currentVideoIndex && this.currentPlaylist.length > 1);
+        } else {
+            nextIndex = this.currentVideoIndex + 1;
+            
+            if (nextIndex >= this.currentPlaylist.length) {
+                if (this.isRepeatOn) {
+                    nextIndex = 0;
+                } else {
+                    this.showToast('Playlist ended', 'info');
+                    return;
+                }
+            }
+        }
+        
+        this.playVideoFromPlaylist(nextIndex);
+        this.showToast('Playing next video', 'info');
+    }
+
+    playPreviousVideo() {
+        if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
+        
+        let prevIndex = this.currentVideoIndex - 1;
+        
+        if (prevIndex < 0) {
+            if (this.isRepeatOn) {
+                prevIndex = this.currentPlaylist.length - 1;
+            } else {
+                this.showToast('This is the first video', 'info');
+                return;
+            }
+        }
+        
+        this.playVideoFromPlaylist(prevIndex);
+        this.showToast('Playing previous video', 'info');
+    }
+
+    toggleShuffle() {
+        this.isShuffleOn = !this.isShuffleOn;
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        shuffleBtn.classList.toggle('active', this.isShuffleOn);
+        
+        this.showToast(this.isShuffleOn ? 'Shuffle enabled' : 'Shuffle disabled', 'info');
+    }
+
+    toggleRepeat() {
+        this.isRepeatOn = !this.isRepeatOn;
+        const repeatBtn = document.getElementById('repeatBtn');
+        repeatBtn.classList.toggle('active', this.isRepeatOn);
+        
+        this.showToast(this.isRepeatOn ? 'Repeat enabled' : 'Repeat disabled', 'info');
+    }
+
+    togglePlaylistAutoplay() {
+        this.settings.autoPlay = !this.settings.autoPlay;
+        const autoplayToggle = document.getElementById('playlistAutoplayToggle');
+        const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
+        
+        autoplayToggle.classList.toggle('active', this.settings.autoPlay);
+        if (autoplayToggleBtn) {
+            autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
+        }
+        
+        const playlistInfo = document.getElementById('playlistInfo');
+        playlistInfo.textContent = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
+        
+        this.saveSettings();
+        this.showToast(this.settings.autoPlay ? 'Autoplay enabled' : 'Autoplay disabled', 'info');
     }
 
     performSearch() {
@@ -2675,6 +2842,180 @@ class TikTikApp {
             this.loadStudioComments();
             this.showToast('Comment deleted successfully', 'success');
         }
+    }
+
+    openTikTikStudio() {
+        document.getElementById('studioModal').classList.add('active');
+        this.loadStudioData();
+        if (typeof toggleProfileMenu === 'function') {
+            toggleProfileMenu();
+        }
+    }
+
+    closeTikTikStudio() {
+        document.getElementById('studioModal').classList.remove('active');
+    }
+
+    switchStudioTab(tabName) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.studio-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.studio-tab-content').forEach(content => content.classList.remove('active'));
+
+        // Add active class to selected tab and content
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+
+        // Load tab-specific data
+        this.loadStudioTabData(tabName);
+    }
+
+    loadStudioData() {
+        // Update dashboard stats
+        document.getElementById('total-videos-stat').textContent = this.myVideos.length;
+        document.getElementById('total-views-stat').textContent = this.formatNumber(this.channelData.totalViews);
+        document.getElementById('subscribers-stat').textContent = this.formatNumber(this.channelData.subscribers);
+
+        const totalLikes = this.myVideos.reduce((sum, video) => sum + (video.likes || 0), 0);
+        document.getElementById('total-likes-stat').textContent = this.formatNumber(totalLikes);
+    }
+
+    loadStudioTabData(tabName) {
+        switch(tabName) {
+            case 'videos':
+                this.loadStudioVideos();
+                break;
+            case 'comments':
+                this.loadStudioComments();
+                break;
+            case 'analytics':
+                this.loadStudioAnalytics();
+                break;
+            case 'monetization':
+                this.loadStudioMonetization();
+                break;
+        }
+    }
+
+    loadStudioVideos() {
+        const videosList = document.getElementById('studio-videos-list');
+        videosList.innerHTML = '';
+
+        if (this.myVideos.length === 0) {
+            videosList.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        No videos uploaded yet. Start creating content!
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        this.myVideos.forEach((video, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail-small">
+                </td>
+                <td>
+                    <div style="max-width: 200px;">
+                        <strong>${video.title}</strong>
+                        <br>
+                        <small style="color: var(--text-secondary);">${video.description || 'No description'}</small>
+                    </div>
+                </td>
+                <td>${video.views}</td>
+                <td>${this.formatNumber(video.likes || 0)}</td>
+                <td>${video.uploadTime}</td>
+                <td>
+                    <div class="video-actions">
+                        <button class="action-btn-small edit" onclick="app.editVideo('${video.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn-small delete" onclick="app.deleteVideo('${video.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            videosList.appendChild(row);
+        });
+    }
+
+    loadStudioComments() {
+        const commentsList = document.getElementById('studio-comments-list');
+        commentsList.innerHTML = '';
+
+        const allComments = [];
+        Object.keys(this.comments).forEach(videoId => {
+            const video = this.myVideos.find(v => v.id === videoId);
+            if (video && this.comments[videoId]) {
+                this.comments[videoId].forEach(comment => {
+                    allComments.push({
+                        ...comment,
+                        videoTitle: video.title,
+                        videoId: videoId
+                    });
+                });
+            }
+        });
+
+        if (allComments.length === 0) {
+            commentsList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    No comments on your videos yet.
+                </div>
+            `;
+            return;
+        }
+
+        allComments.forEach(comment => {
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment-item-studio';
+            commentDiv.innerHTML = `
+                <div class="comment-content-studio">
+                    <div class="comment-author-studio">${comment.author}</div>
+                    <div class="comment-text-studio">${comment.text}</div>
+                    <small style="color: var(--text-muted);">On: ${comment.videoTitle}</small>
+                </div>
+                <div class="comment-actions-studio">
+                    <button class="action-btn-small" onclick="app.replyToComment('${comment.id}')">
+                        <i class="fas fa-reply"></i>
+                    </button>
+                    <button class="action-btn-small delete" onclick="app.deleteComment('${comment.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            commentsList.appendChild(commentDiv);
+        });
+    }
+
+    loadStudioAnalytics() {
+        // Analytics functionality would be implemented here
+        console.log('Loading analytics data...');
+    }
+
+    loadStudioMonetization() {
+        // Monetization functionality would be implemented here
+        console.log('Loading monetization data...');
+    }
+
+    editVideo(videoId) {
+        this.showToast('Video editing feature coming soon', 'info');
+    }
+
+    deleteVideo(videoId) {
+        if (confirm('Are you sure you want to delete this video?')) {
+            this.myVideos = this.myVideos.filter(video => video.id !== videoId);
+            this.saveMyVideos();
+            this.loadStudioVideos();
+            this.showToast('Video deleted successfully', 'success');
+        }
+    }
+
+    replyToComment(commentId) {
+        this.showToast('Comment reply feature coming soon', 'info');
     }
 }
 
