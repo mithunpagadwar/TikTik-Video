@@ -1,3689 +1,2154 @@
-// TikTik - YouTube Clone Application
-// Pure JavaScript implementation with local storage persistence
 
-class TikTikApp {
-    constructor() {
-        this.currentVideo = null;
-        this.currentPage = 'home';
-        this.sidebarCollapsed = false;
-        this.settings = this.loadSettings();
-        this.watchHistory = this.loadWatchHistory();
-        this.likedVideos = this.loadLikedVideos();
-        this.savedVideos = this.loadSavedVideos();
-        this.comments = this.loadComments();
-        this.myVideos = this.loadMyVideos();
-        this.channelData = this.loadChannelData();
-        this.myShorts = this.loadMyShorts();
-        this.liveStreams = this.loadLiveStreams();
-        this.cameraStream = null;
-        this.isCameraOn = false;
-        this.isMicOn = false;
-
-        // Video data with proper working thumbnail URLs
-        this.videos = [
-            {
-                id: '1',
-                title: 'Amazing Sunset Timelapse - Nature\'s Beauty Unveiled',
-                channel: 'NatureFilms HD',
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=320&h=180&fit=crop',
-                duration: '4:23',
-                views: '1.2M views',
-                uploadTime: '2 days ago',
-                likes: 24580,
-                description: 'Experience the breathtaking beauty of nature with this stunning sunset timelapse captured over the Pacific Ocean.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                category: 'general'
-            },
-            {
-                id: '2',
-                title: 'Modern Web Development Tutorial - React & JavaScript',
-                channel: 'CodeMaster',
-                avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=320&h=180&fit=crop',
-                duration: '45:17',
-                views: '856K views',
-                uploadTime: '1 week ago',
-                likes: 18750,
-                description: 'Learn modern web development with React, JavaScript ES6+, and best practices for building scalable applications.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-                category: 'learning'
-            },
-            {
-                id: '3',
-                title: 'Epic Gaming Moments - Best Highlights 2024',
-                channel: 'GameWorld Pro',
-                avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=320&h=180&fit=crop',
-                duration: '12:45',
-                views: '2.1M views',
-                uploadTime: '3 days ago',
-                likes: 45620,
-                description: 'The most incredible gaming moments and epic wins from top streamers around the world.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                category: 'gaming'
-            },
-            {
-                id: '4',
-                title: 'Healthy Morning Routine - Transform Your Life',
-                channel: 'Wellness Journey',
-                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=320&h=180&fit=crop',
-                duration: '8:32',
-                views: '745K views',
-                uploadTime: '5 days ago',
-                likes: 12340,
-                description: 'Start your day right with this simple yet effective morning routine that will boost your energy and productivity.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-                category: 'general'
-            },
-            {
-                id: '5',
-                title: 'Latest Music Hits 2024 - Top Songs Compilation',
-                channel: 'MusicVibes',
-                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face',
-                thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=320&h=180&fit=crop',
-                duration: '25:18',
-                views: '3.4M views',
-                uploadTime: '1 day ago',
-                likes: 67890,
-                description: 'The hottest music tracks of 2024 featuring popular artists and trending songs.',
-                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-                category: 'music'
-            }
-        ];
-
-        this.init();
-    }
-
-    init() {
-        this.setupEventListeners();
-        this.applyTheme();
-        this.loadHomePage();
-        this.updateAdminSettings();
-    }
-
-    setupEventListeners() {
-        // Sidebar toggle
-        document.getElementById('menuBtn').addEventListener('click', () => {
-            this.toggleSidebar();
-        });
-
-        // Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = item.dataset.page;
-                if (page) {
-                    this.navigateToPage(page);
-                }
-            });
-        });
-
-        // Theme toggle
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            this.toggleTheme();
-        });
-
-        // Admin panel
-        document.getElementById('adminPanelBtn').addEventListener('click', () => {
-            this.openAdminPanel();
-        });
-
-        document.getElementById('closeAdminBtn').addEventListener('click', () => {
-            this.closeAdminPanel();
-        });
-
-        // Video modal
-        document.getElementById('closeVideoBtn').addEventListener('click', () => {
-            this.closeVideoModal();
-        });
-
-        // Search functionality
-        document.getElementById('searchBtn').addEventListener('click', () => {
-            this.performSearch();
-        });
-
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.performSearch();
-            }
-        });
-
-        // Close modals on backdrop click
-        document.getElementById('videoModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeVideoModal();
-            }
-        });
-
-        document.getElementById('adminModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeAdminPanel();
-            }
-        });
-
-        // Video player events
-        const videoPlayer = document.getElementById('videoPlayer');
-        videoPlayer.addEventListener('play', () => {
-            if (this.currentVideo) {
-                this.addToHistory(this.currentVideo);
-            }
-        });
-
-        // Auto play next video when current video ends
-        videoPlayer.addEventListener('ended', () => {
-            if (this.settings.autoPlay && this.currentPlaylist && this.currentVideoIndex < this.currentPlaylist.length - 1) {
-                setTimeout(() => {
-                    this.playNextVideo();
-                }, 1000); // 1 second delay before next video
-            } else if (this.settings.autoPlay && this.isRepeatOn) {
-                setTimeout(() => {
-                    this.playVideoFromPlaylist(0);
-                }, 1000);
-            }
-        });
-
-        // Video player controls
-        this.setupVideoControls();
-
-        // Like/Dislike buttons
-        document.getElementById('likeBtn').addEventListener('click', () => {
-            this.toggleLike();
-        });
-
-        document.getElementById('dislikeBtn').addEventListener('click', () => {
-            this.toggleDislike();
-        });
-
-        // Share, Save, Download buttons
-        document.getElementById('shareBtn').addEventListener('click', () => {
-            this.shareVideo();
-        });
-
-        document.getElementById('saveBtn').addEventListener('click', () => {
-            this.toggleSave();
-        });
-
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            this.downloadVideo();
-        });
-
-        // Comment functionality
-        document.getElementById('commentInput').addEventListener('focus', () => {
-            this.showCommentActions();
-        });
-
-        document.getElementById('cancelComment').addEventListener('click', () => {
-            this.hideCommentActions();
-        });
-
-        document.getElementById('submitComment').addEventListener('click', () => {
-            this.submitComment();
-        });
-
-        document.getElementById('commentInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.submitComment();
-            }
-        });
-
-        // Create button and modals
-        document.getElementById('createBtn').addEventListener('click', () => {
-            this.openCreateModal();
-        });
-
-        document.getElementById('closeCreateBtn').addEventListener('click', () => {
-            this.closeCreateModal();
-        });
-
-        // Create options
-        document.getElementById('uploadVideoOption').addEventListener('click', () => {
-            this.closeCreateModal();
-            this.openUploadModal();
-        });
-
-        document.getElementById('createShortOption').addEventListener('click', () => {
-            this.closeCreateModal();
-            this.openShortModal();
-        });
-
-        document.getElementById('goLiveOption').addEventListener('click', () => {
-            this.closeCreateModal();
-            this.openLiveModal();
-        });
-
-        // Upload modal
-        document.getElementById('closeUploadBtn').addEventListener('click', () => {
-            this.closeUploadModal();
-        });
-
-        document.getElementById('videoFileInput').addEventListener('change', (e) => {
-            this.handleVideoFileSelect(e);
-        });
-
-        document.getElementById('publishVideoBtn').addEventListener('click', () => {
-            this.publishVideo();
-        });
-
-        document.getElementById('cancelUploadBtn').addEventListener('click', () => {
-            this.closeUploadModal();
-        });
-
-        // Subscribe and Bell buttons
-        document.getElementById('subscribeBtn').addEventListener('click', () => {
-            this.toggleSubscribe();
-        });
-
-        document.getElementById('bellBtn').addEventListener('click', () => {
-            this.toggleNotifications();
-        });
-
-        // Modal Subscribe and Bell buttons
-        document.getElementById('modalSubscribeBtn').addEventListener('click', () => {
-            this.toggleModalSubscribe();
-        });
-
-        document.getElementById('modalBellBtn').addEventListener('click', () => {
-            this.toggleModalNotifications();
-        });
-
-        // Channel edit modal
-        document.getElementById('editChannelBtn').addEventListener('click', () => {
-            this.openChannelEditModal();
-        });
-
-        document.getElementById('closeChannelEditBtn').addEventListener('click', () => {
-            this.closeChannelEditModal();
-        });
-
-        document.getElementById('saveChannelBtn').addEventListener('click', () => {
-            this.saveChannelChanges();
-        });
-
-        document.getElementById('cancelChannelEditBtn').addEventListener('click', () => {
-            this.closeChannelEditModal();
-        });
-
-        // Channel tabs
-        document.querySelectorAll('.channel-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                this.switchChannelTab(e.target.dataset.tab);
-            });
-        });
-
-        // Short modal
-        document.getElementById('closeShortBtn').addEventListener('click', () => {
-            this.closeShortModal();
-        });
-
-        document.getElementById('shortFileInput').addEventListener('change', (e) => {
-            this.handleShortFileSelect(e);
-        });
-
-        document.getElementById('publishShortBtn').addEventListener('click', () => {
-            this.publishShort();
-        });
-
-        document.getElementById('cancelShortBtn').addEventListener('click', () => {
-            this.closeShortModal();
-        });
-
-        // Live modal
-        document.getElementById('closeLiveBtn').addEventListener('click', () => {
-            this.closeLiveModal();
-        });
-
-        document.getElementById('startLiveBtn').addEventListener('click', () => {
-            this.startLiveStream();
-        });
-
-        document.getElementById('cancelLiveBtn').addEventListener('click', () => {
-            this.closeLiveModal();
-        });
-
-        document.getElementById('toggleCameraBtn').addEventListener('click', () => {
-            this.toggleCamera();
-        });
-
-        document.getElementById('toggleMicBtn').addEventListener('click', () => {
-            this.toggleMicrophone();
-        });
-
-        this.setupAdminControls();
-
-        // TikTik Studio modal
-        document.getElementById('closeStudioBtn').addEventListener('click', () => {
-            this.closeTikTikStudio();
-        });
-
-        // Studio tabs
-        document.querySelectorAll('.studio-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const tabName = e.target.dataset.tab;
-                this.switchStudioTab(tabName);
-            });
-        });
-    }
-
-    setupVideoControls() {
-        const videoPlayer = document.getElementById('videoPlayer');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const progressBar = document.getElementById('progressBar');
-        const progressFill = document.getElementById('progressFill');
-        const timeDisplay = document.getElementById('timeDisplay');
-        const muteBtn = document.getElementById('muteBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeFill = document.getElementById('volumeFill');
-
-        // New YouTube-style controls
-        const nextVideoBtn = document.getElementById('nextVideoBtn');
-        const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
-        const captionsBtn = document.getElementById('captionsBtn');
-        const settingsBtn = document.getElementById('settingsBtn');
-        const settingsDropdown = document.getElementById('settingsDropdown');
-        const miniplayerBtn = document.getElementById('miniplayerBtn');
-        const theaterModeBtn = document.getElementById('theaterModeBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-
-        // Player state controls
-        const minimizeBtn = document.getElementById('minimizeBtn');
-        const theaterBtn = document.getElementById('theaterBtn');
-        const restoreBtn = document.getElementById('restoreBtn');
-
-        // Navigation controls
-        const prevVideoBtn = document.getElementById('prevVideoBtn');
-
-        // Miniplayer controls
-        const miniplayerPlayBtn = document.getElementById('miniplayerPlayBtn');
-
-        // Play/Pause functionality
-        playPauseBtn.addEventListener('click', () => {
-            if (videoPlayer.paused) {
-                videoPlayer.play();
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                videoPlayer.pause();
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        });
-
-        miniplayerPlayBtn.addEventListener('click', () => {
-            playPauseBtn.click();
-        });
-
-        // Video player events
-        videoPlayer.addEventListener('play', () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        });
-
-        videoPlayer.addEventListener('pause', () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-        });
-
-        // Progress bar
-        videoPlayer.addEventListener('timeupdate', () => {
-            if (videoPlayer.duration) {
-                const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
-                progressFill.style.width = progress + '%';
-
-                const currentTime = this.formatTime(videoPlayer.currentTime);
-                const duration = this.formatTime(videoPlayer.duration);
-                timeDisplay.textContent = `${currentTime} / ${duration}`;
-            }
-        });
-
-        progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const progress = clickX / rect.width;
-            videoPlayer.currentTime = progress * videoPlayer.duration;
-        });
-
-        // Volume controls
-        muteBtn.addEventListener('click', () => {
-            if (videoPlayer.muted) {
-                videoPlayer.muted = false;
-                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                volumeFill.style.width = (videoPlayer.volume * 100) + '%';
-            } else {
-                videoPlayer.muted = true;
-                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                volumeFill.style.width = '0%';
-            }
-        });
-
-        volumeSlider.addEventListener('click', (e) => {
-            const rect = volumeSlider.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const volume = clickX / rect.width;
-            videoPlayer.volume = Math.max(0, Math.min(1, volume));
-            volumeFill.style.width = (volume * 100) + '%';
-            videoPlayer.muted = false;
-            muteBtn.innerHTML = volume > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-        });
-
-        // Autoplay toggle
-        autoplayToggleBtn.addEventListener('click', () => {
-            this.settings.autoPlay = !this.settings.autoPlay;
-            autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
-            autoplayToggleBtn.title = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
-            this.saveSettings();
-        });
-
-        // Captions toggle
-        captionsBtn.addEventListener('click', () => {
-            const isActive = captionsBtn.classList.toggle('active');
-            document.getElementById('captionsStatus').textContent = isActive ? 'On' : 'Off';
-            this.toggleCaptions(isActive);
-        });
-
-        // Settings dropdown
-        settingsBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            settingsDropdown.classList.toggle('active');
-        });
-
-        // Close settings dropdown when clicking outside
-        document.addEventListener('click', () => {
-            settingsDropdown.classList.remove('active');
-        });
-
-        // Settings items
-        document.querySelectorAll('.settings-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const setting = e.currentTarget.dataset.setting;
-                this.handleSettingChange(setting);
-            });
-        });
-
-        // Miniplayer button
-        miniplayerBtn.addEventListener('click', () => {
-            this.minimizeVideo();
-        });
-
-        // Theater mode button
-        theaterModeBtn.addEventListener('click', () => {
-            this.toggleTheaterMode();
-        });
-
-        // Player state controls
-        minimizeBtn.addEventListener('click', () => {
-            this.minimizeVideo();
-        });
-
-        theaterBtn.addEventListener('click', () => {
-            this.toggleTheaterMode();
-        });
-
-        fullscreenBtn.addEventListener('click', () => {
-            this.toggleFullscreen();
-        });
-
-        restoreBtn.addEventListener('click', () => {
-            this.restoreVideo();
-        });
-
-        // Navigation controls
-        prevVideoBtn.addEventListener('click', () => {
-            this.playPreviousVideo();
-        });
-
-        nextVideoBtn.addEventListener('click', () => {
-            this.playNextVideo();
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (this.currentVideo && document.getElementById('videoModal').classList.contains('active')) {
-                switch(e.code) {
-                    case 'Space':
-                        e.preventDefault();
-                        playPauseBtn.click();
-                        break;
-                    case 'ArrowLeft':
-                        e.preventDefault();
-                        videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
-                        break;
-                    case 'ArrowRight':
-                        e.preventDefault();
-                        videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
-                        break;
-                    case 'ArrowUp':
-                        e.preventDefault();
-                        videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
-                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
-                        break;
-                    case 'ArrowDown':
-                        e.preventDefault();
-                        videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
-                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
-                        break;
-                    case 'KeyM':
-                        e.preventDefault();
-                        muteBtn.click();
-                        break;
-                    case 'KeyF':
-                        e.preventDefault();
-                        fullscreenBtn.click();
-                        break;
-                    case 'KeyT':
-                        e.preventDefault();
-                        theaterBtn.click();
-                        break;
-                    case 'KeyI':
-                        e.preventDefault();
-                        minimizeBtn.click();
-                        break;
-                    case 'KeyN':
-                        e.preventDefault();
-                        this.playNextVideo();
-                        break;
-                    case 'KeyP':
-                        e.preventDefault();
-                        this.playPreviousVideo();
-                        break;
-                }
-            }
-        });
-
-        // Playlist controls
-        document.getElementById('playlistAutoplayToggle').addEventListener('click', () => {
-            this.togglePlaylistAutoplay();
-        });
-
-        document.getElementById('shuffleBtn').addEventListener('click', () => {
-            this.toggleShuffle();
-        });
-
-        document.getElementById('repeatBtn').addEventListener('click', () => {
-            this.toggleRepeat();
-        });
-    }
-
-    formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    minimizeVideo() {
-        const modal = document.getElementById('videoModal');
-        const minimizeBtn = document.getElementById('minimizeBtn');
-        const miniplayerTitle = document.getElementById('miniplayerTitle');
-
-        if (modal.classList.contains('minimized')) {
-            return;
-        }
-
-        modal.classList.add('minimized');
-        minimizeBtn.innerHTML = '<i class="fas fa-expand"></i>';
-        minimizeBtn.title = 'Restore';
-
-        if (this.currentVideo) {
-            miniplayerTitle.textContent = this.currentVideo.title;
-        }
-
-        this.showToast('Video minimized. Click to restore.', 'info');
-    }
-
-    restoreVideo() {
-        const modal = document.getElementById('videoModal');
-        const minimizeBtn = document.getElementById('minimizeBtn');
-
-        modal.classList.remove('minimized');
-        modal.classList.remove('theater');
-        minimizeBtn.innerHTML = '<i class="fas fa-compress"></i>';
-        minimizeBtn.title = 'Minimize';
-
-        this.showToast('Video restored', 'info');
-    }
-
-    toggleTheaterMode() {
-        const modal = document.getElementById('videoModal');
-        const theaterBtn = document.getElementById('theaterBtn');
-
-        if (modal.classList.contains('theater')) {
-            modal.classList.remove('theater');
-            theaterBtn.innerHTML = '<i class="fas fa-expand"></i>';
-            theaterBtn.title = 'Theater mode';
-            this.showToast('Theater mode disabled', 'info');
-        } else {
-            modal.classList.remove('minimized');
-            modal.classList.add('theater');
-            theaterBtn.innerHTML = '<i class="fas fa-compress"></i>';
-            theaterBtn.title = 'Exit theater mode';
-            this.showToast('Theater mode enabled', 'info');
-        }
-    }
-
-    toggleFullscreen() {
-        const videoPlayer = document.getElementById('videoPlayer');
-
-        if (!document.fullscreenElement) {
-            videoPlayer.requestFullscreen().catch(err => {
-                this.showToast('Fullscreen not supported', 'error');
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    }
-
-    playPreviousVideo() {
-        if (!this.currentVideo) return;
-
-        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
-        if (currentIndex > 0) {
-            const prevVideo = this.videos[currentIndex - 1];
-            this.switchToVideo(prevVideo);
-            this.showToast('Playing previous video', 'info');
-        } else {
-            this.showToast('This is the first video', 'info');
-        }
-    }
-
-    playNextVideo() {
-        if (!this.currentVideo) return;
-
-        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
-        if (currentIndex < this.videos.length - 1) {
-            const nextVideo = this.videos[currentIndex + 1];
-            this.switchToVideo(nextVideo);
-            this.showToast('Playing next video', 'info');
-        } else {
-            this.showToast('This is the last video', 'info');
-        }
-    }
-
-    switchToVideo(video) {
-        const videoPlayer = document.getElementById('videoPlayer');
-        const wasPlaying = !videoPlayer.paused;
-
-        this.currentVideo = video;
-
-        // Update video source
-        videoPlayer.src = video.videoUrl;
-
-        // Update video info
-        document.getElementById('modalVideoTitle').textContent = video.title;
-        document.getElementById('modalChannelName').textContent = video.channel;
-        document.getElementById('modalChannelAvatar').src = video.avatar;
-        document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
-        document.getElementById('modalVideoDescription').textContent = video.description;
-        document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
-        document.getElementById('miniplayerTitle').textContent = video.title;
-
-        // Update like button state
-        const likeBtn = document.getElementById('likeBtn');
-        if (this.likedVideos.includes(video.id)) {
-            likeBtn.classList.add('active');
-        } else {
-            likeBtn.classList.remove('active');
-        }
-
-        // Update save button state
-        const saveBtn = document.getElementById('saveBtn');
-        if (this.savedVideos.includes(video.id)) {
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-            saveBtn.classList.add('active');
-        } else {
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
-            saveBtn.classList.remove('active');
-        }
-
-        // Auto-play if was playing or autoplay is enabled
-        if (wasPlaying || this.settings.autoPlay) {
-            videoPlayer.play();
-        }
-
-        // Load comments and recommendations
-        this.loadComments(video.id);
-        this.loadRecommendedVideos(video);
-    }
-
-    setupAdminControls() {
-        // Theme settings
-        document.querySelectorAll('input[name="theme"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    this.settings.theme = e.target.value;
-                    this.applyTheme();
-                }
-            });
-        });
-
-        // Other settings
-        document.getElementById('autoPlay').addEventListener('change', (e) => {
-            this.settings.autoPlay = e.target.checked;
-        });
-
-        document.getElementById('showDescriptions').addEventListener('change', (e) => {
-            this.settings.showDescriptions = e.target.checked;
-        });
-
-        document.getElementById('videosPerPage').addEventListener('change', (e) => {
-            this.settings.videosPerPage = parseInt(e.target.value);
-        });
-
-        // Action buttons
-        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-            this.clearHistory();
-        });
-
-        document.getElementById('resetSettingsBtn').addEventListener('click', () => {
-            this.resetSettings();
-        });
-
-        document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-            this.saveSettings();
-        });
-    }
-
-    toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-
-        this.sidebarCollapsed = !this.sidebarCollapsed;
-
-        if (this.sidebarCollapsed) {
-            sidebar.classList.add('collapsed');
-        } else {
-            sidebar.classList.remove('collapsed');
-        }
-    }
-
-    toggleSubscribe() {
-        const subscribeBtn = document.getElementById('subscribeBtn');
-        const bellBtn = document.getElementById('bellBtn');
-        const subscriberCount = document.getElementById('subscriberCount');
-
-        const isSubscribed = subscribeBtn.classList.contains('subscribed');
-
-        if (isSubscribed) {
-            // Unsubscribe
-            subscribeBtn.classList.remove('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-            bellBtn.classList.remove('active');
-            bellBtn.style.display = 'none';
-
-            // Update subscriber count
-            let currentCount = parseInt(this.channelData.subscribers) || 0;
-            this.channelData.subscribers = Math.max(0, currentCount - 1);
-            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
-
-            this.showToast('Unsubscribed successfully', 'info');
-        } else {
-            // Subscribe
-            subscribeBtn.classList.add('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
-            bellBtn.style.display = 'flex';
-
-            // Update subscriber count
-            let currentCount = parseInt(this.channelData.subscribers) || 0;
-            this.channelData.subscribers = currentCount + 1;
-            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
-
-            this.showToast('Subscribed successfully! 🎉', 'success');
-        }
-
-        this.saveChannelData();
-    }
-
-    toggleNotifications() {
-        const bellBtn = document.getElementById('bellBtn');
-        const subscribeBtn = document.getElementById('subscribeBtn');
-
-        // Only allow notification toggle if subscribed
-        if (!subscribeBtn.classList.contains('subscribed')) {
-            this.showToast('Please subscribe first to enable notifications', 'warning');
-            return;
-        }
-
-        const isActive = bellBtn.classList.contains('active');
-
-        if (isActive) {
-            bellBtn.classList.remove('active');
-            bellBtn.title = 'Turn on notifications';
-            this.showToast('Notifications turned off', 'info');
-        } else {
-            bellBtn.classList.add('active');
-            bellBtn.title = 'Turn off notifications';
-            this.showToast('Notifications turned on! 🔔', 'success');
-
-            // Request notification permission if not granted
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        new Notification('TikTik Notifications', {
-                            body: 'You will now receive notifications from this channel!',
-                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
-                        });
-                    }
-                });
-            }
-        }
-    }
-
-    toggleModalSubscribe() {
-        const subscribeBtn = document.getElementById('modalSubscribeBtn');
-        const bellBtn = document.getElementById('modalBellBtn');
-
-        const isSubscribed = subscribeBtn.classList.contains('subscribed');
-
-        if (isSubscribed) {
-            // Unsubscribe
-            subscribeBtn.classList.remove('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-            bellBtn.classList.remove('active');
-            bellBtn.style.display = 'none';
-
-            this.showToast('Unsubscribed successfully', 'info');
-        } else {
-            // Subscribe
-            subscribeBtn.classList.add('subscribed');
-            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
-            bellBtn.style.display = 'flex';
-
-            this.showToast('Subscribed successfully! 🎉', 'success');
-        }
-    }
-
-    toggleModalNotifications() {
-        const bellBtn = document.getElementById('modalBellBtn');
-        const subscribeBtn = document.getElementById('modalSubscribeBtn');
-
-        // Only allow notification toggle if subscribed
-        if (!subscribeBtn.classList.contains('subscribed')) {
-            this.showToast('Please subscribe first to enable notifications', 'warning');
-            return;
-        }
-
-        const isActive = bellBtn.classList.contains('active');
-
-        if (isActive) {
-            bellBtn.classList.remove('active');
-            bellBtn.title = 'Turn on notifications';
-            this.showToast('Notifications turned off', 'info');
-        } else {
-            bellBtn.classList.add('active');
-            bellBtn.title = 'Turn off notifications';
-            this.showToast('Notifications turned on! 🔔', 'success');
-
-            // Request notification permission if not granted
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        new Notification('TikTik Notifications', {
-                            body: 'You will now receive notifications from this channel!',
-                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
-                        });
-                    }
-                });
-            }
-        }
-    }
-
-    navigateToPage(page) {
-        // Remove active class from all nav items and pages
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-
-        // Add active class to current nav item and page
-        document.querySelector(`[data-page="${page}"]`).classList.add('active');
-        document.getElementById(`${page}Page`).classList.add('active');
-
-        this.currentPage = page;
-
-        // Load page content
-        switch(page) {
-            case 'home':
-                this.loadHomePage();
-                break;
-            case 'trending':
-                this.loadTrendingPage();
-                break;
-            case 'subscriptions':
-                this.loadSubscriptionsPage();
-                break;
-            case 'library':
-                this.loadLibraryPage();
-                break;
-            case 'history':
-                this.loadHistoryPage();
-                break;
-            case 'liked':
-                this.loadLikedPage();
-                break;
-            case 'music':
-                this.loadMusicPage();
-                break;
-            case 'sports':
-                this.loadSportsPage();
-                break;
-            case 'gaming':
-                this.loadGamingPage();
-                break;
-            case 'news':
-                this.loadNewsPage();
-                break;
-            case 'learning':
-                this.loadLearningPage();
-                break;
-            case 'settings':
-                this.loadSettingsPage();
-                break;
-            case 'help':
-                this.loadHelpPage();
-                break;
-            case 'feedback':
-                this.loadFeedbackPage();
-                break;
-        }
-    }
-
-    toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-        this.settings.theme = newTheme;
-        this.applyTheme();
-        this.saveSettings();
-    }
-
-    applyTheme() {
-        const theme = this.settings.theme === 'auto' ? 
-            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : 
-            this.settings.theme;
-
-        document.documentElement.setAttribute('data-theme', theme);
-
-        const themeIcon = document.querySelector('#themeToggle i');
-        themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    }
-
-    openAdminPanel() {
-        document.getElementById('adminModal').classList.add('active');
-        this.updateAdminSettings();
-    }
-
-    closeAdminPanel() {
-        document.getElementById('adminModal').classList.remove('active');
-    }
-
-    updateAdminSettings() {
-        // Update theme radio buttons
-        document.querySelector(`input[name="theme"][value="${this.settings.theme}"]`).checked = true;
-
-        // Update other settings
-        document.getElementById('autoPlay').checked = this.settings.autoPlay;
-        document.getElementById('showDescriptions').checked = this.settings.showDescriptions;
-        document.getElementById('videosPerPage').value = this.settings.videosPerPage;
-    }
-
-    loadHomePage() {
-        const grid = document.getElementById('videoGrid');
-        grid.innerHTML = '';
-
-        // Load videos based on settings
-        const videosToShow = this.videos.slice(0, this.settings.videosPerPage);
-        videosToShow.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadTrendingPage() {
-        const grid = document.getElementById('trendingGrid');
-        grid.innerHTML = '';
-
-        // Sort videos by views (mock trending)
-        const trendingVideos = [...this.videos].sort((a, b) => {
-            const aViews = parseInt(a.views.replace(/[^\d]/g, ''));
-            const bViews = parseInt(b.views.replace(/[^\d]/g, ''));
-            return bViews - aViews;
-        });
-
-        trendingVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadSubscriptionsPage() {
-        // Subscriptions page shows empty state by default
-    }
-
-    loadLibraryPage() {
-        // Update channel info
-        document.getElementById('channelName').textContent = this.channelData.name;
-        document.getElementById('subscriberCount').textContent = `${this.channelData.subscribers} subscribers`;
-        document.getElementById('videoCount').textContent = `${this.channelData.videoCount} videos`;
-        document.getElementById('channelDescription').textContent = this.channelData.description;
-        document.getElementById('joinDate').textContent = this.channelData.joinDate;
-        document.getElementById('totalViews').textContent = this.formatNumber(this.channelData.totalViews);
-
-        // Load user's videos
-        this.loadMyVideos();
-    }
-
-    loadMyVideos() {
-        const grid = document.getElementById('myVideosGrid');
-        grid.innerHTML = '';
-
-        if (this.myVideos.length === 0) {
-            // Show upload prompt
-            return;
-        }
-
-        this.myVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadHistoryPage() {
-        const grid = document.getElementById('historyGrid');
-        grid.innerHTML = '';
-
-        if (this.watchHistory.length === 0) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-history"></i>
-                    <p>No watch history</p>
-                    <span>Videos you watch will appear here</span>
-                </div>
-            `;
-            return;
-        }
-
-        this.watchHistory.forEach(videoId => {
-            const video = this.videos.find(v => v.id === videoId);
-            if (video) {
-                const videoCard = this.createVideoCard(video);
-                grid.appendChild(videoCard);
-            }
-        });
-    }
-
-    loadLikedPage() {
-        const grid = document.getElementById('likedGrid');
-        grid.innerHTML = '';
-
-        if (this.likedVideos.length === 0) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-thumbs-up"></i>
-                    <p>No liked videos</p>
-                    <span>Videos you like will appear here</span>
-                </div>
-            `;
-            return;
-        }
-
-        this.likedVideos.forEach(videoId => {
-            const video = this.videos.find(v => v.id === videoId);
-            if (video) {
-                const videoCard = this.createVideoCard(video);
-                grid.appendChild(videoCard);
-            }
-        });
-    }
-
-    loadMusicPage() {
-        const grid = document.getElementById('musicGrid');
-        grid.innerHTML = '';
-
-        const musicVideos = this.videos.filter(video => video.category === 'music');
-        musicVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadSportsPage() {
-        const grid = document.getElementById('sportsGrid');
-        grid.innerHTML = '';
-
-        const sportsVideos = this.videos.filter(video => video.category === 'sports');
-        sportsVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadGamingPage() {
-        const grid = document.getElementById('gamingGrid');
-        grid.innerHTML = '';
-
-        const gamingVideos = this.videos.filter(video => video.category === 'gaming');
-        gamingVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadNewsPage() {
-        const grid = document.getElementById('newsGrid');
-        grid.innerHTML = '';
-
-        const newsVideos = this.videos.filter(video => video.category === 'news');
-        newsVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadLearningPage() {
-        const grid = document.getElementById('learningGrid');
-        grid.innerHTML = '';
-
-        const learningVideos = this.videos.filter(video => video.category === 'learning');
-        learningVideos.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-    }
-
-    loadSettingsPage() {
-        // Initialize settings tabs
-        this.setupSettingsTabs();
-    }
-
-    setupSettingsTabs() {
-        // Settings tab navigation
-        document.querySelectorAll('.settings-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                const tabName = tab.dataset.tab;
-                this.switchSettingsTab(tabName);
-            });
-        });
-
-        // Additional settings event listeners
-        this.setupSettingsControls();
-    }
-
-    switchSettingsTab(tabName) {
-        // Remove active class from all tabs and contents
-        document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.settings-tab-content').forEach(content => content.classList.remove('active'));
-
-        // Add active class to selected tab and content
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        document.getElementById(`${tabName}-content`).classList.add('active');
-    }
-
-    setupSettingsControls() {
-        // Language setting
-        const languageSelect = document.getElementById('language');
-        if (languageSelect) {
-            languageSelect.addEventListener('change', (e) => {
-                this.settings.language = e.target.value;
-                this.saveSettings();
-                this.applyLanguage(e.target.value);
-                this.showToast('Language updated', 'success');
-            });
-        }
-
-        // Location setting
-        const locationSelect = document.getElementById('location');
-        if (locationSelect) {
-            locationSelect.addEventListener('change', (e) => {
-                this.settings.location = e.target.value;
-                this.saveSettings();
-                this.showToast('Location updated', 'success');
-            });
-        }
-
-        // Video quality setting
-        const videoQualitySelect = document.getElementById('videoQuality');
-        if (videoQualitySelect) {
-            videoQualitySelect.addEventListener('change', (e) => {
-                this.settings.videoQuality = e.target.value;
-                this.saveSettings();
-                this.applyVideoQuality(e.target.value);
-                this.showToast('Video quality updated', 'success');
-            });
-        }
-
-        // Download quality setting
-        const downloadQualitySelect = document.getElementById('download-quality');
-        if (downloadQualitySelect) {
-            downloadQualitySelect.addEventListener('change', (e) => {
-                this.settings.downloadQuality = e.target.value;
-                this.saveSettings();
-                this.showToast('Download quality updated', 'success');
-            });
-        }
-
-        // Caption language setting
-        const captionLanguageSelect = document.getElementById('caption-language');
-        if (captionLanguageSelect) {
-            captionLanguageSelect.addEventListener('change', (e) => {
-                this.settings.captionLanguage = e.target.value;
-                this.saveSettings();
-                this.showToast('Caption language updated', 'success');
-            });
-        }
-
-        // Caption size setting
-        const captionSizeSelect = document.getElementById('caption-size');
-        if (captionSizeSelect) {
-            captionSizeSelect.addEventListener('change', (e) => {
-                this.settings.captionSize = e.target.value;
-                this.saveSettings();
-                this.applyCaptionSize(e.target.value);
-                this.showToast('Caption size updated', 'success');
-            });
-        }
-
-        // All checkbox settings with enhanced functionality
-        const checkboxSettings = [
-            'restrictedMode', 'subscriptions-notif', 'recommended-notif', 'comment-notif', 
-            'live-notif', 'pause-watch-history', 'pause-search-history', 'private-subscriptions',
-            'private-playlists', 'private-liked', 'new-ui', 'ai-features', 'always-choose-quality',
-            'autoplay-on-home', 'annotations', 'show-captions', 'data-saver', 'smart-downloads',
-            'download-on-wifi', 'live-chat-enabled', 'chat-filter', 'high-contrast',
-            'keyboard-navigation', 'screen-reader', 'double-tap-seek', 'zoom-to-fill',
-            'ambient-mode', 'theater-mode', 'miniplayer-auto', 'picture-in-picture',
-            'auto-quality', 'stable-volume', 'speed-controls', 'gesture-controls'
-        ];
-
-        checkboxSettings.forEach(settingId => {
-            const checkbox = document.getElementById(settingId);
-            if (checkbox) {
-                checkbox.addEventListener('change', (e) => {
-                    this.settings[settingId] = e.target.checked;
-                    this.saveSettings();
-                    this.applySettingChange(settingId, e.target.checked);
-                    this.showToast('Setting updated', 'success');
-                });
-            }
-        });
-
-        // Playback speed setting
-        const playbackSpeedSelect = document.getElementById('playback-speed');
-        if (playbackSpeedSelect) {
-            playbackSpeedSelect.addEventListener('change', (e) => {
-                this.settings.playbackSpeed = e.target.value;
-                this.saveSettings();
-                this.applyPlaybackSpeed(e.target.value);
-                this.showToast('Playback speed updated', 'success');
-            });
-        }
-
-        // Seek duration setting
-        const seekDurationSelect = document.getElementById('seek-duration');
-        if (seekDurationSelect) {
-            seekDurationSelect.addEventListener('change', (e) => {
-                this.settings.seekDuration = e.target.value;
-                this.saveSettings();
-                this.showToast('Seek duration updated', 'success');
-            });
-        }
-
-        // Volume normalization slider
-        const volumeSlider = document.getElementById('volume-normalization');
-        if (volumeSlider) {
-            volumeSlider.addEventListener('input', (e) => {
-                this.settings.volumeNormalization = e.target.value;
-                this.saveSettings();
-                this.applyVolumeNormalization(e.target.value);
-            });
-        }
-
-        // Add account button
-        const addAccountBtn = document.querySelector('.add-account-btn');
-        if (addAccountBtn) {
-            addAccountBtn.addEventListener('click', () => {
-                this.showGoogleLoginPopup();
-            });
-        }
-
-        // Switch account functionality
-        document.querySelectorAll('.account-item').forEach(item => {
-            if (!item.classList.contains('active')) {
-                item.addEventListener('click', () => {
-                    this.switchAccount(item.dataset.accountId);
-                });
-            }
-        });
-
-        // Family Centre setup
-        const familyCentreBtn = document.querySelector('.family-centre-info .btn-primary');
-        if (familyCentreBtn) {
-            familyCentreBtn.addEventListener('click', () => {
-                this.setupFamilyCentre();
-            });
-        }
-
-        // Payment method setup
-        const addPaymentBtn = document.querySelector('.payment-methods .btn-primary');
-        if (addPaymentBtn) {
-            addPaymentBtn.addEventListener('click', () => {
-                this.addPaymentMethod();
-            });
-        }
-
-        // Data download request
-        const requestDownloadBtn = document.querySelector('.data-info .btn-primary');
-        if (requestDownloadBtn) {
-            requestDownloadBtn.addEventListener('click', () => {
-                this.requestDataDownload();
-            });
-        }
-
-        // Account deletion
-        const deleteAccountBtn = document.querySelector('.data-info .btn-danger');
-        if (deleteAccountBtn) {
-            deleteAccountBtn.addEventListener('click', () => {
-                this.deleteAccount();
-            });
-        }
-
-        // Feedback form
-        const feedbackForm = document.querySelector('.feedback-form button');
-        if (feedbackForm) {
-            feedbackForm.addEventListener('click', () => {
-                const category = document.getElementById('feedback-category').value;
-                const text = document.getElementById('feedback-text').value.trim();
-
-                if (!text) {
-                    this.showToast('Please enter your feedback', 'error');
-                    return;
-                }
-
-                this.submitFeedback(category, text);
-                document.getElementById('feedback-text').value = '';
-                this.showToast('Thank you for your feedback!', 'success');
-            });
-        }
-
-        // Connect to TV button
-        const connectTvBtn = document.querySelector('.tv-info .btn-primary');
-        if (connectTvBtn) {
-            connectTvBtn.addEventListener('click', () => {
-                this.connectToTV();
-            });
-        }
-
-        // History management buttons
-        const clearWatchBtn = document.querySelector('.history-actions .btn-secondary:first-child');
-        const clearSearchBtn = document.querySelector('.history-actions .btn-secondary:last-child');
-        const deleteAllBtn = document.querySelector('.history-actions .btn-danger');
-
-        if (clearWatchBtn) {
-            clearWatchBtn.addEventListener('click', () => {
-                this.clearWatchHistory();
-            });
-        }
-
-        if (clearSearchBtn) {
-            clearSearchBtn.addEventListener('click', () => {
-                this.clearSearchHistory();
-            });
-        }
-
-        if (deleteAllBtn) {
-            deleteAllBtn.addEventListener('click', () => {
-                this.deleteAllActivity();
-            });
-        }
-
-        // Help center links
-        document.querySelectorAll('.help-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const helpType = link.querySelector('span').textContent;
-                this.openHelpCenter(helpType);
-            });
-        });
-
-        // Terms and policies
-        document.querySelectorAll('.about-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.openTermsPolicy(link.textContent);
-            });
-        });
-
-        // Notification preferences with advanced controls
-        this.setupNotificationControls();
-
-        // Accessibility features
-        this.setupAccessibilityControls();
-
-        // Load saved settings
-        this.loadSettingsFromStorage();
-    }
-
-    // Enhanced functionality methods
-    applyLanguage(language) {
-        // Apply language changes to UI
-        document.documentElement.setAttribute('lang', language);
-        // In a real app, this would load translation files
-    }
-
-    applyVideoQuality(quality) {
-        // Apply video quality to current player
-        const videoPlayer = document.getElementById('videoPlayer');
-        if (videoPlayer && videoPlayer.src) {
-            // Store current time and apply quality
-            const currentTime = videoPlayer.currentTime;
-            const wasPlaying = !videoPlayer.paused;
-
-            // Apply quality setting
-            videoPlayer.addEventListener('loadedmetadata', () => {
-                videoPlayer.currentTime = currentTime;
-                if (wasPlaying) videoPlayer.play();
-            }, { once: true });
-        }
-    }
-
-    applyCaptionSize(size) {
-        const sizeMap = { small: '14px', medium: '16px', large: '18px' };
-        document.documentElement.style.setProperty('--caption-size', sizeMap[size]);
-    }
-
-    applyPlaybackSpeed(speed) {
-        const videoPlayer = document.getElementById('videoPlayer');
-        if (videoPlayer) {
-            videoPlayer.playbackRate = parseFloat(speed);
-        }
-    }
-
-    applyVolumeNormalization(level) {
-        const videoPlayer = document.getElementById('videoPlayer');
-        if (videoPlayer) {
-            videoPlayer.volume = level / 100;
-        }
-    }
-
-    applySettingChange(settingId, value) {
-        switch(settingId) {
-            case 'high-contrast':
-                document.body.classList.toggle('high-contrast', value);
-                break;
-            case 'keyboard-navigation':
-                document.body.classList.toggle('keyboard-nav', value);
-                break;
-            case 'screen-reader':
-                document.body.setAttribute('aria-live', value ? 'polite' : 'off');
-                break;
-            case 'double-tap-seek':
-                this.enableDoubleTapSeek = value;
-                break;
-            case 'zoom-to-fill':
-                this.enableZoomToFill = value;
-                break;
-            case 'ambient-mode':
-                this.enableAmbientMode = value;
-                break;
-            case 'theater-mode':
-                this.enableTheaterMode = value;
-                break;
-            case 'picture-in-picture':
-                this.enablePictureInPicture = value;
-                break;
-            case 'data-saver':
-                this.applyDataSaver(value);
-                break;
-        }
-    }
-
-    applyDataSaver(enabled) {
-        if (enabled) {
-            this.settings.videoQuality = '480p';
-            this.settings.autoplay = false;
-            this.showToast('Data saver enabled - Lower quality and autoplay disabled', 'info');
-        }
-    }
-
-    // Account management
-    showGoogleLoginPopup() {
-        // Trigger Google login
-        if (typeof signInWithGoogle === 'function') {
-            signInWithGoogle();
-        } else {
-            this.showToast('Google login not available', 'error');
-        }
-    }
-
-    switchAccount(accountId) {
-        this.showToast('Switching account...', 'info');
-        // In a real app, this would switch to the selected account
-        setTimeout(() => {
-            this.showToast('Account switched successfully', 'success');
-        }, 1000);
-    }
-
-    setupFamilyCentre() {
-        this.showToast('Opening Family Centre setup...', 'info');
-        // Open family centre configuration
-    }
-
-    addPaymentMethod() {
-        this.showToast('Opening payment method setup...', 'info');
-        // Open payment method modal
-    }
-
-    requestDataDownload() {
-        if (confirm('Request a download of your TikTik data? This may take some time to prepare.')) {
-            this.showToast('Data download request submitted. You will be notified when ready.', 'success');
-        }
-    }
-
-    deleteAccount() {
-        const confirmText = prompt('To delete your account, type "DELETE" to confirm:');
-        if (confirmText === 'DELETE') {
-            if (confirm('This will permanently delete your account and all data. This action cannot be undone.')) {
-                this.showToast('Account deletion process initiated. You will receive an email with next steps.', 'warning');
-            }
-        }
-    }
-
-    submitFeedback(category, text) {
-        // Store feedback locally or send to server
-        const feedback = {
-            category,
-            text,
-            timestamp: new Date().toISOString(),
-            userId: 'current-user'
-        };
-
-        let feedbacks = JSON.parse(localStorage.getItem('tiktik_feedbacks') || '[]');
-        feedbacks.push(feedback);
-        localStorage.setItem('tiktik_feedbacks', JSON.stringify(feedbacks));
-    }
-
-    connectToTV() {
-        if ('presentation' in navigator) {
-            this.showToast('Searching for available devices...', 'info');
-            // Implement cast functionality
-            setTimeout(() => {
-                this.showToast('No compatible devices found nearby', 'warning');
-            }, 2000);
-        } else {
-            this.showToast('TV casting not supported on this device', 'error');
-        }
-    }
-
-    clearWatchHistory() {
-        if (confirm('Clear all watch history? This action cannot be undone.')) {
-            this.watchHistory = [];
-            this.saveWatchHistory();
-            this.showToast('Watch history cleared', 'success');
-            if (this.currentPage === 'history') {
-                this.loadHistoryPage();
-            }
-        }
-    }
-
-    clearSearchHistory() {
-        if (confirm('Clear all search history?')) {
-            localStorage.removeItem('tiktik_search_history');
-            this.showToast('Search history cleared', 'success');
-        }
-    }
-
-    deleteAllActivity() {
-        if (confirm('Delete ALL activity including watch history, search history, comments, and interactions? This cannot be undone.')) {
-            this.watchHistory = [];
-            this.likedVideos = [];
-            this.savedVideos = [];
-            this.comments = {};
-
-            localStorage.removeItem('tiktik_search_history');
-            this.saveWatchHistory();
-            this.saveLikedVideos();
-            this.saveSavedVideos();
-            this.saveComments();
-
-            this.showToast('All activity deleted', 'success');
-        }
-    }
-
-    openHelpCenter(helpType) {
-        this.showToast(`Opening ${helpType}...`, 'info');
-        // Open help modal or navigate to help section
-    }
-
-    openTermsPolicy(type) {
-        this.showToast(`Opening ${type}...`, 'info');
-        // Open terms/policy modal
-    }
-
-    setupNotificationControls() {
-        // Advanced notification scheduling
-        const notificationTime = document.getElementById('notification-time');
-        if (notificationTime) {
-            notificationTime.addEventListener('change', (e) => {
-                this.settings.notificationTime = e.target.value;
-                this.saveSettings();
-                this.scheduleNotifications();
-            });
-        }
-
-        // Notification sound selection
-        const notificationSound = document.getElementById('notification-sound');
-        if (notificationSound) {
-            notificationSound.addEventListener('change', (e) => {
-                this.settings.notificationSound = e.target.value;
-                this.saveSettings();
-                this.playNotificationPreview(e.target.value);
-            });
-        }
-    }
-
-    setupAccessibilityControls() {
-        // Font size control
-        const fontSizeSlider = document.getElementById('font-size');
-        if (fontSizeSlider) {
-            fontSizeSlider.addEventListener('input', (e) => {
-                const size = e.target.value;
-                document.documentElement.style.setProperty('--base-font-size', `${size}px`);
-                this.settings.fontSize = size;
-                this.saveSettings();
-            });
-        }
-
-        // Motion reduction
-        const reduceMotion = document.getElementById('reduce-motion');
-        if (reduceMotion) {
-            reduceMotion.addEventListener('change', (e) => {
-                document.documentElement.style.setProperty('--animation-duration', e.target.checked ? '0s' : '0.3s');
-                this.settings.reduceMotion = e.target.checked;
-                this.saveSettings();
-            });
-        }
-    }
-
-    scheduleNotifications() {
-        // Implementation for notification scheduling
-        this.showToast('Notification preferences updated', 'success');
-    }
-
-    playNotificationPreview(sound) {
-        // Play notification sound preview
-        const audio = new Audio(`/sounds/${sound}.mp3`);
-        audio.volume = 0.3;
-        audio.play().catch(() => {
-            // Fallback for when audio files are not available
-        });
-    }
-
-    loadSettingsFromStorage() {
-        // Load and apply all saved settings
-        Object.keys(this.settings).forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                if (element.type === 'checkbox') {
-                    element.checked = this.settings[key];
-                } else {
-                    element.value = this.settings[key];
-                }
-            }
-        });
-    }
-
-    loadHelpPage() {
-        // Help page content is already in HTML
-    }
-
-    loadFeedbackPage() {
-        // Feedback page content is already in HTML
-    }
-
-    createVideoCard(video) {
-        const card = document.createElement('div');
-        card.className = 'video-card';
-        card.onclick = () => this.openVideoModal(video);
-
-        card.innerHTML = `
-            <div class="video-thumbnail">
-                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNDQuNSA5MEwxNjUgMTAyLjU5VjU3LjQxTDE0NC41IDkwWiIgZmlsbD0iIzk0QTNBOCIvPgo8L3N2Zz4K';">
-                <span class="video-duration">${video.duration}</span>
-            </div>
-            <div class="video-info">
-                <h3 class="video-title">${video.title}</h3>
-                <div class="channel-info">
-                    <img class="channel-avatar" src="${video.avatar}" alt="${video.channel}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiNGM0Y0RjYiLz4KPGF0aCBkPSJNMzIgMTZDMzguNjI3NyAxNiA0NCAyMS4zNzIzIDQ0IDI4QzQ0IDM0LjYyNzcgMzguNjI3NyA0MCAzMiA0MEMyNS4zNzIzIDQwIDIwIDM0LjYyNzcgMjAgMjhDMjAgMjEuMzcyMyAyNS4zNzIzIDE2IDMyIDE2WiIgZmlsbD0iIzk0QTNBOCIvPgo8L3N2Zz4K';">
-                    <span class="channel-name">${video.channel}</span>
-                </div>
-                <div class="video-stats">${video.views} • ${video.uploadTime}</div>
-            </div>
-        `;
-
-        return card;
-    }
-
-    openVideoModal(video) {
-        this.currentVideo = video;
-        this.currentPlaylist = [...this.videos];
-        this.currentVideoIndex = this.currentPlaylist.findIndex(v => v.id === video.id);
-        this.isShuffleOn = false;
-        this.isRepeatOn = false;
-
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
-
-        // Update video player
-        player.src = video.videoUrl;
-
-        // Update video info
-        document.getElementById('modalVideoTitle').textContent = video.title;
-        document.getElementById('modalChannelName').textContent = video.channel;
-        document.getElementById('modalChannelAvatar').src = video.avatar;
-        document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
-        document.getElementById('modalVideoDescription').textContent = video.description;
-        document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
-
-        // Initialize modal subscribe and bell buttons
-        const modalSubscribeBtn = document.getElementById('modalSubscribeBtn');
-        const modalBellBtn = document.getElementById('modalBellBtn');
-
-        // Reset subscribe button state
-        modalSubscribeBtn.classList.remove('subscribed');
-        modalSubscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
-        modalBellBtn.style.display = 'none';
-        modalBellBtn.classList.remove('active');
-
-        // Update like button state
-        const likeBtn = document.getElementById('likeBtn');
-        if (this.likedVideos.includes(video.id)) {
-            likeBtn.classList.add('active');
-        } else {
-            likeBtn.classList.remove('active');
-        }
-
-        // Update save button state
-        const saveBtn = document.getElementById('saveBtn');
-        if (this.savedVideos.includes(video.id)) {
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-            saveBtn.classList.add('active');
-        } else {
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
-            saveBtn.classList.remove('active');
-        }
-
-        // Load comments
-        this.loadComments(video.id);
-
-        // Load recommended videos
-        this.loadRecommendedVideos(video);
-
-        // Load playlist
-        this.loadVideoPlaylist();
-
-        modal.classList.add('active');
-
-        // Auto-play if enabled
-        if (this.settings.autoPlay) {
-            player.play();
-        }
-    }
-
-    closeVideoModal() {
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
-
-        modal.classList.remove('active', 'minimized', 'theater');
-        player.pause();        player.src = '';
-
-        // Reset control states
-```text
-        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
-        document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
-        document.getElementById('speedBtn').textContent = '1x';
-        document.getElementById('progressFill').style.width = '0%';
-        document.getElementById('volumeFill').style.width = '80%';
-
-        this.currentVideo = null;
-    }
-
-    loadComments(videoId) {
-        const commentsList = document.getElementById('commentsList');
-        const videoComments = this.comments[videoId] || [];
-
-        commentsList.innerHTML = '';
-
-        if (videoComments.length === 0) {
-            commentsList.innerHTML = `
-                <div class="empty-state">
-                    <p>No comments yet</p>
-                    <span>Be the first to comment!</span>
-                </div>
-            `;
-            return;
-        }
-
-        videoComments.forEach(comment => {
-            const commentElement = this.createCommentElement(comment);
-            commentsList.appendChild(commentElement);
-        });
-
-        document.getElementById('commentCount').textContent = videoComments.length;
-    }
-
-    createCommentElement(comment) {
-        const element = document.createElement('div');
-        element.className = 'comment-item';
-
-        element.innerHTML = `
-            <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
-            <div class="comment-content">
-                <div class="comment-author">
-                    ${comment.author}
-                    <span class="comment-time">${comment.time}</span>
-                </div>
-                <div class="comment-text">${comment.text}</div>
-                <div class="comment-actions-bar">
-                    <button class="comment-like-btn">
-                        <i class="fas fa-thumbs-up"></i>
-                        ${comment.likes || 0}
-                    </button>
-                    <button class="comment-reply-btn">Reply</button>
-                </div>
-            </div>
-        `;
-
-        return element;
-    }
-
-    loadRecommendedVideos(currentVideo) {
-        const recommendedList = document.getElementById('recommendedList');
-        recommendedList.innerHTML = '';
-
-        // Get videos from same category or random videos
-        const recommendations = this.videos
-            .filter(video => video.id !== currentVideo.id)
-            .slice(0, 5);
-
-        recommendations.forEach(video => {
-            const item = document.createElement('div');
-            item.className = 'recommended-item';
-            item.onclick = () => {
-                this.closeVideoModal();
-                setTimeout(() => this.openVideoModal(video), 100);
-            };
-
-            item.innerHTML = `
-                <img class="recommended-thumbnail" src="${video.thumbnail}" alt="${video.title}">
-                <div class="recommended-info">
-                    <div class="recommended-title">${video.title}</div>
-                    <div class="recommended-stats">${video.channel} • ${video.views}</div>
-                </div>
-            `;
-
-            recommendedList.appendChild(item);
-        });
-    }
-
-    loadVideoPlaylist() {
-        const playlistContent = document.getElementById('playlistContent');
-        const playlistInfo = document.getElementById('playlistInfo');
-
-        playlistContent.innerHTML = '';
-
-        // Update playlist info
-        playlistInfo.textContent = `${this.currentVideoIndex + 1} / ${this.currentPlaylist.length}`;
-
-        // Load playlist items
-        this.currentPlaylist.forEach((video, index) => {
-            const item = document.createElement('div');
-            item.className = `playlist-item ${index === this.currentVideoIndex ? 'current' : ''}`;
-            item.onclick = () => this.playVideoFromPlaylist(index);
-
-            item.innerHTML = `
-                <div class="playlist-item-index">${index + 1}</div>
-                <img class="playlist-thumbnail" src="${video.thumbnail}" alt="${video.title}">
-                <div class="playlist-item-duration">${video.duration}</div>
-                <div class="playlist-item-info">
-                    <h5 class="playlist-item-title">${video.title}</h5>
-                    <p class="playlist-item-channel">${video.channel}</p>
-                    <p class="playlist-item-stats">${video.views}</p>
-                </div>
-            `;
-
-            playlistContent.appendChild(item);
-        });
-
-        // Scroll current video into view
-        setTimeout(() => {
-            const currentItem = playlistContent.querySelector('.playlist-item.current');
-            if (currentItem) {
-                currentItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 100);
-    }
-
-    playVideoFromPlaylist(index) {
-        if (index < 0 || index >= this.currentPlaylist.length) return;
-
-        const video = this.currentPlaylist[index];
-        this.currentVideoIndex = index;
-        this.switchToVideo(video);
-        this.loadVideoPlaylist();
-    }
-
-    playNextVideo() {
-        if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-
-        let nextIndex;
-
-        if (this.isShuffleOn) {
-            // Random next video
-            do {
-                nextIndex = Math.floor(Math.random() * this.currentPlaylist.length);
-            } while (nextIndex === this.currentVideoIndex && this.currentPlaylist.length > 1);
-        } else {
-            nextIndex = this.currentVideoIndex + 1;
-
-            if (nextIndex >= this.currentPlaylist.length) {
-                if (this.isRepeatOn) {
-                    nextIndex = 0;
-                } else {
-                    this.showToast('Playlist ended', 'info');
-                    return;
-                }
-            }
-        }
-
-        this.playVideoFromPlaylist(nextIndex);
-        this.showToast('Playing next video', 'info');
-    }
-
-    playPreviousVideo() {
-        if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-
-        let prevIndex = this.currentVideoIndex - 1;
-
-        if (prevIndex < 0) {
-            if (this.isRepeatOn) {
-                prevIndex = this.currentPlaylist.length - 1;
-            } else {
-                this.showToast('This is the first video', 'info');
-                return;
-            }
-        }
-
-        this.playVideoFromPlaylist(prevIndex);
-        this.showToast('Playing previous video', 'info');
-    }
-
-    toggleShuffle() {
-        this.isShuffleOn = !this.isShuffleOn;
-        const shuffleBtn = document.getElementById('shuffleBtn');
-        shuffleBtn.classList.toggle('active', this.isShuffleOn);
-
-        this.showToast(this.isShuffleOn ? 'Shuffle enabled' : 'Shuffle disabled', 'info');
-    }
-
-    toggleRepeat() {
-        this.isRepeatOn = !this.isRepeatOn;
-        const repeatBtn = document.getElementById('repeatBtn');
-        repeatBtn.classList.toggle('active', this.isRepeatOn);
-
-        this.showToast(this.isRepeatOn ? 'Repeat enabled' : 'Repeat disabled', 'info');
-    }
-
-    togglePlaylistAutoplay() {
-        this.settings.autoPlay = !this.settings.autoPlay;
-        const autoplayToggle = document.getElementById('playlistAutoplayToggle');
-        const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
-
-        autoplayToggle.classList.toggle('active', this.settings.autoPlay);
-        if (autoplayToggleBtn) {
-            autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
-        }
-
-        const playlistInfo = document.getElementById('playlistInfo');
-        playlistInfo.textContent = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
-
-        this.saveSettings();
-        this.showToast(this.settings.autoPlay ? 'Autoplay enabled' : 'Autoplay disabled', 'info');
-    }
-
-    performSearch() {
-        const query = document.getElementById('searchInput').value.trim().toLowerCase();
-
-        if (!query) return;
-
-        this.showLoading();
-
-        // Simulate search delay
-        setTimeout(() => {
-            const results = this.videos.filter(video => 
-                video.title.toLowerCase().includes(query) ||
-                video.channel.toLowerCase().includes(query) ||
-                video.description.toLowerCase().includes(query)
-            );
-
-            this.displaySearchResults(results, query);
-            this.hideLoading();
-        }, 500);
-    }
-
-    displaySearchResults(results, query) {
-        const grid = document.getElementById('videoGrid');
-        grid.innerHTML = '';
-
-        if (results.length === 0) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <p>No results for "${query}"</p>
-                    <span>Try different keywords</span>
-                </div>
-            `;
-            return;
-        }
-
-        results.forEach(video => {
-            const videoCard = this.createVideoCard(video);
-            grid.appendChild(videoCard);
-        });
-
-        // Update page title
-        const homeTitle = document.querySelector('#homePage h2');
-        if (!homeTitle) {
-            const title = document.createElement('h2');
-            title.textContent = `Search results for "${query}"`;
-            document.getElementById('homePage').insertBefore(title, grid);
-        } else {
-            homeTitle.textContent = `Search results for "${query}"`;
-        }
-
-        // Navigate to home page to show results
-        this.navigateToPage('home');
-    }
-
-    addToHistory(video) {
-        // Remove if already exists
-        this.watchHistory = this.watchHistory.filter(id => id !== video.id);
-
-        // Add to beginning
-        this.watchHistory.unshift(video.id);
-
-        // Keep only last 50 videos
-        if (this.watchHistory.length > 50) {
-            this.watchHistory = this.watchHistory.slice(0, 50);
-        }
-
-        this.saveWatchHistory();
-    }
-
-    toggleLike() {
-        if (!this.currentVideo) return;
-
-        const likeBtn = document.getElementById('likeBtn');
-        const videoId = this.currentVideo.id;
-
-        if (this.likedVideos.includes(videoId)) {
-            // Unlike
-            this.likedVideos = this.likedVideos.filter(id => id !== videoId);
-            likeBtn.classList.remove('active');
-            this.showToast('Removed from liked videos', 'info');
-        } else {
-            // Like
-            this.likedVideos.push(videoId);
-            likeBtn.classList.add('active');
-            this.showToast('Added to liked videos', 'success');
-        }
-
-        this.saveLikedVideos();
-    }
-
-    toggleDislike() {
-        const dislikeBtn = document.getElementById('dislikeBtn');
-
-        if (dislikeBtn.classList.contains('active')) {
-            dislikeBtn.classList.remove('active');
-        } else {
-            dislikeBtn.classList.add('active');
-            // Remove from liked if disliked
-            if (this.currentVideo && this.likedVideos.includes(this.currentVideo.id)) {
-                this.toggleLike();
-            }
-        }
-    }
-
-    shareVideo() {
-        if (!this.currentVideo) return;
-
-        const url = `${window.location.origin}?video=${this.currentVideo.id}`;
-
-        if (navigator.share) {
-            navigator.share({
-                title: this.currentVideo.title,
-                text: `Check out this video: ${this.currentVideo.title}`,
-                url: url
-            });
-        } else {
-            // Fallback to clipboard
-            navigator.clipboard.writeText(url).then(() => {
-                this.showToast('Link copied to clipboard', 'success');
-            });
-        }
-    }
-
-    toggleSave() {
-        if (!this.currentVideo) return;
-
-        const saveBtn = document.getElementById('saveBtn');
-        const videoId = this.currentVideo.id;
-
-        if (this.savedVideos.includes(videoId)) {
-            // Remove from saved
-            this.savedVideos = this.savedVideos.filter(id => id !== videoId);
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
-            saveBtn.classList.remove('active');
-            this.showToast('Removed from saved videos', 'info');
-        } else {
-            // Add to saved
-            this.savedVideos.push(videoId);
-            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-            saveBtn.classList.add('active');
-            this.showToast('Saved to watch later', 'success');
-        }
-
-        this.saveSavedVideos();
-    }
-
-    downloadVideo() {
-        if (!this.currentVideo) return;
-
-        this.showToast('Download started', 'success');
-
-        // Simulate download
-        const link = document.createElement('a');
-        link.href = this.currentVideo.videoUrl;
-        link.download = `${this.currentVideo.title}.mp4`;
-        link.click();
-    }
-
-    showCommentActions() {
-        document.querySelector('.comment-actions').style.display = 'flex';
-    }
-
-    hideCommentActions() {
-        document.querySelector('.comment-actions').style.display = 'none';
-        document.getElementById('commentInput').value = '';
-    }
-
-    submitComment() {
-        const commentInput = document.getElementById('commentInput');
-        const commentText = commentInput.value.trim();
-
-        if (!commentText || !this.currentVideo) return;
-
-        const newComment = {
-            id: Date.now(),
-            author: 'You',
-            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
-            text: commentText,
-            time: 'now',
-            likes: 0
-        };
-
-        if (!this.comments[this.currentVideo.id]) {
-            this.comments[this.currentVideo.id] = [];
-        }
-
-        this.comments[this.currentVideo.id].unshift(newComment);
-        this.saveComments();
-
-        // Refresh comments
-        this.loadComments(this.currentVideo.id);
-
-        // Clear input and hide actions
-        this.hideCommentActions();
-
-        this.showToast('Comment added', 'success');
-    }
-
-    openCreateModal() {
-        document.getElementById('createModal').classList.add('active');
-    }
-
-    closeCreateModal() {
-        document.getElementById('createModal').classList.remove('active');
-    }
-
-    openUploadModal() {
-        document.getElementById('uploadModal').classList.add('active');
-    }
-
-    closeUploadModal() {
-        document.getElementById('uploadModal').classList.remove('active');
-        this.resetUploadForm();
-    }
-
-    resetUploadForm() {
-        document.getElementById('uploadArea').style.display = 'block';
-        document.getElementById('uploadForm').style.display = 'none';
-        document.getElementById('videoTitle').value = '';
-        document.getElementById('videoDescription').value = '';
-        document.getElementById('videoCategory').value = 'general';
-        document.getElementById('videoFileInput').value = '';
-    }
-
-    handleVideoFileSelect(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (!file.type.startsWith('video/')) {
-            this.showToast('Please select a video file', 'error');
-            return;
-        }
-
-        document.getElementById('uploadArea').style.display = 'none';
-        document.getElementById('uploadForm').style.display = 'block';
-        document.getElementById('videoTitle').value = file.name.replace(/\.[^/.]+$/, '');
-    }
-
-    publishVideo() {
-        const title = document.getElementById('videoTitle').value.trim();
-        const description = document.getElementById('videoDescription').value.trim();
-        const category = document.getElementById('videoCategory').value;
-
-        if (!title) {
-            this.showToast('Please enter a title', 'error');
-            return;
-        }
-
-        // Create new video object
-        const newVideo = {
-            id: Date.now().toString(),
-            title: title,
-            channel: this.channelData.name,
-            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
-            thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
-            duration: '0:00',
-            views: '0 views',
-            uploadTime: 'now',
-            likes: 0,
-            description: description,
-            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            category: category
-        };
-
-        // Add to user's videos
-        this.myVideos.push(newVideo);
-        this.saveMyVideos();
-
-        // Update channel stats
-        this.channelData.videoCount = this.myVideos.length;
-        this.saveChannelData();
-
-        this.closeUploadModal();
-        this.showToast('Video uploaded successfully!', 'success');
-
-        // Refresh channel page if currently viewing
-        if (this.currentPage === 'library') {
-            this.loadLibraryPage();
-        }
-    }
-
-    openChannelEditModal() {
-        const modal = document.getElementById('channelEditModal');
-
-        // Populate current values
-        document.getElementById('editChannelName').value = this.channelData.name;
-        document.getElementById('editChannelDescription').value = this.channelData.description;
-
-        modal.classList.add('active');
-    }
-
-    closeChannelEditModal() {
-        document.getElementById('channelEditModal').classList.remove('active');
-    }
-
-    saveChannelChanges() {
-        const name = document.getElementById('editChannelName').value.trim();
-        const description = document.getElementById('editChannelDescription').value.trim();
-
-        if (!name) {
-            this.showToast('Please enter a channel name', 'error');
-            return;
-        }
-
-        this.channelData.name = name;
-        this.channelData.description = description;
-
-        this.saveChannelData();
-        this.closeChannelEditModal();
-        this.showToast('Channel updated successfully!', 'success');
-
-        // Refresh if on library page
-        if (this.currentPage === 'library') {
-            this.loadLibraryPage();
-        }
-    }
-
-    switchChannelTab(tab) {
-        // Remove active class from all tabs and contents
-        document.querySelectorAll('.channel-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-        // Add active class to selected tab and content
-        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-        document.getElementById(`${tab}Tab`).classList.add('active');
-    }
-
-    openShortModal() {
-        document.getElementById('shortModal').classList.add('active');
-    }
-
-    closeShortModal() {
-        document.getElementById('shortModal').classList.remove('active');
-        this.resetShortForm();
-    }
-
-    resetShortForm() {
-        document.getElementById('shortUploadArea').style.display = 'block';
-        document.getElementById('shortForm').style.display = 'none';
-        document.getElementById('shortTitle').value = '';
-        document.getElementById('shortDescription').value = '';
-        document.getElementById('shortCategory').value = 'general';
-        document.getElementById('shortFileInput').value = '';
-    }
-
-    handleShortFileSelect(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (!file.type.startsWith('video/')) {
-            this.showToast('Please select a video file', 'error');
-            return;
-        }
-
-        // Create video preview
-        const preview = document.getElementById('shortPreview');
-        preview.src = URL.createObjectURL(file);
-
-        document.getElementById('shortUploadArea').style.display = 'none';
-        document.getElementById('shortForm').style.display = 'flex';
-        document.getElementById('shortTitle').value = file.name.replace(/\.[^/.]+$/, '');
-    }
-
-    publishShort() {
-        const title = document.getElementById('shortTitle').value.trim();
-        const description = document.getElementById('shortDescription').value.trim();
-        const category = document.getElementById('shortCategory').value;
-
-        if (!title) {
-            this.showToast('Please enter a title', 'error');
-            return;
-        }
-
-        // Create new short object
-        const newShort = {
-            id: Date.now().toString(),
-            title: title,
-            channel: this.channelData.name,
-            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
-            thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
-            duration: '0:30',
-            views: '0 views',
-            uploadTime: 'now',
-            likes: 0,
-            description: description,
-            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            category: category,
-            isShort: true
-        };
-
-        // Add to user's shorts
-        this.myShorts.push(newShort);
-        this.saveMyShorts();
-
-        // Update channel stats
-        this.channelData.videoCount = this.myVideos.length + this.myShorts.length;
-        this.saveChannelData();
-
-        this.closeShortModal();
-        this.showToast('Short published successfully!', 'success');
-
-        // Refresh channel page if currently viewing
-        if (this.currentPage === 'library') {
-            this.loadLibraryPage();
-        }
-    }
-
-    openLiveModal() {
-        document.getElementById('liveModal').classList.add('active');
-        this.initializeCamera();
-    }
-
-    closeLiveModal() {
-        document.getElementById('liveModal').classList.remove('active');
-        this.stopCamera();
-        this.resetLiveForm();
-    }
-
-    resetLiveForm() {
-        document.getElementById('liveTitle').value = '';
-        document.getElementById('liveDescription').value = '';
-        document.getElementById('liveCategory').value = 'gaming';
-        document.querySelector('input[name="livePrivacy"][value="public"]').checked = true;
-    }
-
-    async initializeCamera() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            const preview = document.getElementById('cameraPreview');
-            preview.srcObject = stream;
-            this.cameraStream = stream;
-            this.isCameraOn = true;
-            this.isMicOn = true;
-        } catch (error) {
-            console.error('Error accessing camera:', error);
-            this.showToast('Camera access denied', 'error');
-        }
-    }
-
-    stopCamera() {
-        if (this.cameraStream) {
-            this.cameraStream.getTracks().forEach(track => track.stop());
-            this.cameraStream = null;
-            this.isCameraOn = false;
-            this.isMicOn = false;
-        }
-    }
-
-    toggleCamera() {
-        if (!this.cameraStream) return;
-
-        const videoTracks = this.cameraStream.getVideoTracks();
-        videoTracks.forEach(track => {
-            track.enabled = !track.enabled;
-        });
-
-        this.isCameraOn = !this.isCameraOn;
-        const btn = document.getElementById('toggleCameraBtn');
-        btn.innerHTML = this.isCameraOn ? '<i class="fas fa-video"></i> Camera' : '<i class="fas fa-video-slash"></i> Camera';
-    }
-
-    toggleMicrophone() {
-        if (!this.cameraStream) return;
-
-        const audioTracks = this.cameraStream.getAudioTracks();
-        audioTracks.forEach(track => {
-            track.enabled = !track.enabled;
-        });
-
-        this.isMicOn = !this.isMicOn;
-        const btn = document.getElementById('toggleMicBtn');
-        btn.innerHTML = this.isMicOn ? '<i class="fas fa-microphone"></i> Microphone' : '<i class="fas fa-microphone-slash"></i> Microphone';
-    }
-
-    startLiveStream() {
-        const title = document.getElementById('liveTitle').value.trim();
-        const description = document.getElementById('liveDescription').value.trim();
-        const category = document.getElementById('liveCategory').value;
-        const privacy = document.querySelector('input[name="livePrivacy"]:checked').value;
-
-        if (!title) {
-            this.showToast('Please enter a stream title', 'error');
-            return;
-        }
-
-        // Create new live stream object
-        const newLiveStream = {
-            id: Date.now().toString(),
-            title: title,
-            channel: this.channelData.name,
-            avatar: 'https://pixabay.com/get/g1882a617f55023cde87198feea9e830686b0a69ae7f315295cebe2b111a575a3d2dd94672359c9d34b332edd722a8e7d502b680acae2e35040353fd2a2ee0f9a_1280.jpg',
-            thumbnail: 'https://pixabay.com/get/g2d6e4de48b7bd3a87afab6e869007196adcc1cb3dfd663e6e585bcffd24c3260ab24ba71895df36ec3dc5902cba221c21d6918c76ffa1876e8ac616c437334eb_1280.jpg',
-            description: description,
-            category: category,
-            privacy: privacy,
-            startTime: new Date().toISOString(),
-            viewers: 0,
-            isLive: true
-        };
-
-        // Add to live streams
-        this.liveStreams.push(newLiveStream);
-        this.saveLiveStreams();
-
-        this.closeLiveModal();
-        this.showToast('Live stream started successfully!', 'success');
-
-        // In a real app, this would connect to a streaming server
-        setTimeout(() => {
-            this.showToast('Live stream ended', 'info');
-        }, 5000);
-    }
-
-    clearHistory() {
-        this.watchHistory = [];
-        this.saveWatchHistory();
-        this.showToast('Watch history cleared', 'success');
-
-        if (this.currentPage === 'history') {
-            this.loadHistoryPage();
-        }
-    }
-
-    resetSettings() {
-        this.settings = {
-            theme: 'light',
-            autoPlay: true,
-            showDescriptions: true,
-            videosPerPage: 20
-        };
-        this.saveSettings();
-        this.applyTheme();
-        this.updateAdminSettings();
-        this.showToast('Settings reset to default', 'success');
-    }
-
-    saveSettings() {
-        localStorage.setItem('tiktik_settings', JSON.stringify(this.settings));
-        this.showToast('Settings saved', 'success');
-    }
-
-    saveChannelData() {
-        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
-    }
-
-    // Data persistence methods
-    loadSettings() {
-        const saved = localStorage.getItem('tiktik_settings');
-        return saved ? JSON.parse(saved) : {
-            theme: 'light',
-            autoPlay: true,
-            showDescriptions: true,
-            videosPerPage: 20
-        };
-    }
-
-    loadWatchHistory() {
-        const saved = localStorage.getItem('tiktik_history');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveWatchHistory() {
-        localStorage.setItem('tiktik_history', JSON.stringify(this.watchHistory));
-    }
-
-    loadLikedVideos() {
-        const saved = localStorage.getItem('tiktik_liked');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveLikedVideos() {
-        localStorage.setItem('tiktik_liked', JSON.stringify(this.likedVideos));
-    }
-
-    loadSavedVideos() {
-        const saved = localStorage.getItem('tiktik_saved_videos');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveSavedVideos() {
-        localStorage.setItem('tiktik_saved_videos', JSON.stringify(this.savedVideos));
-    }
-
-    loadComments() {
-        const saved = localStorage.getItem('tiktik_comments');
-        return saved ? JSON.parse(saved) : {};
-    }
-
-    saveComments() {
-        localStorage.setItem('tiktik_comments', JSON.stringify(this.comments));
-    }
-
-    loadMyVideos() {
-        const saved = localStorage.getItem('tiktik_my_videos');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveMyVideos() {
-        localStorage.setItem('tiktik_my_videos', JSON.stringify(this.myVideos));
-    }
-
-    loadChannelData() {
-        const saved = localStorage.getItem('tiktik_channel_data');
-        return saved ? JSON.parse(saved) : {
-            name: 'My Channel',
-            description: 'Welcome to my channel! Here you\'ll find amazing content.',
-            subscribers: 0,
-            videoCount: 0,
-            joinDate: new Date().toLocaleDateString(),
-            totalViews: 0
-        };
-    }
-
-    saveChannelData() {
-        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
-    }
-
-    loadMyShorts() {
-        const saved = localStorage.getItem('tiktik_my_shorts');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveMyShorts() {
-        localStorage.setItem('tiktik_my_shorts', JSON.stringify(this.myShorts));
-    }
-
-    loadLiveStreams() {
-        const saved = localStorage.getItem('tiktik_live_streams');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    saveLiveStreams() {
-        localStorage.setItem('tiktik_live_streams', JSON.stringify(this.liveStreams));
-    }
-
-    formatNumber(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M';
-        } else if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K';
-        }
-        return num.toString();
-    }
-
-    toggleCaptions(show) {
-        const videoPlayer = document.getElementById('videoPlayer');
-
-        if (show) {
-            // Enable captions/subtitles
-            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
-                for (let track of videoPlayer.textTracks) {
-                    track.mode = 'showing';
-                }
-            }
-            this.showToast('Captions enabled', 'info');
-        } else {
-            // Disable captions/subtitles
-            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
-                for (let track of videoPlayer.textTracks) {
-                    track.mode = 'hidden';
-                }
-            }
-            this.showToast('Captions disabled', 'info');
-        }
-    }
-
-    handleSettingChange(setting) {
-        switch(setting) {
-            case 'quality':
-                this.showQualityMenu();
-                break;
-            case 'speed':
-                this.showSpeedMenu();
-                break;
-            case 'captions':
-                this.showCaptionsMenu();
-                break;
-        }
-    }
-
-    showQualityMenu() {
-        const qualities = ['Auto', '2160p', '1440p', '1080p', '720p', '480p', '360p', '240p'];
-        this.showSubMenu('Quality', qualities, 'Auto', (quality) => {
-            document.getElementById('currentQuality').textContent = quality;
-            this.setVideoQuality(quality);
-        });
-    }
-
-    showSpeedMenu() {
-        const speeds = ['0.25', '0.5', '0.75', 'Normal', '1.25', '1.5', '1.75', '2'];
-        this.showSubMenu('Playback speed', speeds, 'Normal', (speed) => {
-            document.getElementById('currentSpeed').textContent = speed;
-            this.setPlaybackSpeed(speed);
-        });
-    }
-
-    showCaptionsMenu() {
-        const options = ['Off', 'English', 'Hindi', 'Spanish', 'French'];
-        this.showSubMenu('Subtitles/CC', options, 'Off', (option) => {
-            document.getElementById('captionsStatus').textContent = option;
-            this.setCaptionLanguage(option);
-        });
-    }
-
-    showSubMenu(title, options, current, callback) {
-        const dropdown = document.getElementById('settingsDropdown');
-        dropdown.innerHTML = `
-            <div class="settings-item" onclick="this.parentElement.classList.remove('active')">
-                <i class="fas fa-chevron-left"></i>
-                <span>${title}</span>
-            </div>
-            ${options.map(option => `
-                <div class="settings-item" data-value="${option}">
-                    <span>${option}</span>
-                    ${option === current ? '<i class="fas fa-check"></i>' : ''}
-                </div>
-            `).join('')}
-        `;
-
-        dropdown.querySelectorAll('[data-value]').forEach(item => {
-            item.addEventListener('click', () => {
-                callback(item.dataset.value);
-                dropdown.classList.remove('active');
-            });
-        });
-    }
-
-    setVideoQuality(quality) {
-        this.showToast(`Video quality set to ${quality}`, 'info');
-    }
-
-    setPlaybackSpeed(speed) {
-        const videoPlayer = document.getElementById('videoPlayer');
-        const speedValue = speed === 'Normal' ? 1 : parseFloat(speed);
-        videoPlayer.playbackRate = speedValue;
-        this.showToast(`Playback speed set to ${speed}`, 'info');
-    }
-
-    setCaptionLanguage(language) {
-        if (language === 'Off') {
-            this.toggleCaptions(false);
-            document.getElementById('captionsBtn').classList.remove('active');
-        } else {
-            this.toggleCaptions(true);
-            document.getElementById('captionsBtn').classList.add('active');
-        }
-    }
-
-    showToast(message, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-
-        container.appendChild(toast);
-
-        // Auto remove after 3 seconds
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
-    }
-
-    showLoading() {
-        document.getElementById('loadingSpinner').classList.add('active');
-    }
-
-    hideLoading() {
-        document.getElementById('loadingSpinner').classList.remove('active');
-    }
-
-    openTikTikStudio() {
-        document.getElementById('studioModal').classList.add('active');
-        this.loadStudioData();
-        if (typeof toggleProfileMenu === 'function') {
-            toggleProfileMenu();
-        }
-    }
-
-    closeTikTikStudio() {
-        document.getElementById('studioModal').classList.remove('active');
-    }
-
-    switchStudioTab(tabName) {
-        // Remove active class from all tabs and contents
-        document.querySelectorAll('.studio-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.studio-tab-content').forEach(content => content.classList.remove('active'));
-
-        // Add active class to selected tab and content
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        document.getElementById(`${tabName}-tab`).classList.add('active');
-
-        // Load tab-specific data
-        this.loadStudioTabData(tabName);
-    }
-
-    loadStudioData() {
-        // Update dashboard stats
-        document.getElementById('total-videos-stat').textContent = this.myVideos.length;
-        document.getElementById('total-views-stat').textContent = this.formatNumber(this.channelData.totalViews);
-        document.getElementById('subscribers-stat').textContent = this.formatNumber(this.channelData.subscribers);
-
-        const totalLikes = this.myVideos.reduce((sum, video) => sum + (video.likes || 0), 0);
-        document.getElementById('total-likes-stat').textContent = this.formatNumber(totalLikes);
-    }
-
-    loadStudioTabData(tabName) {
-        switch(tabName) {
-            case 'videos':
-                this.loadStudioVideos();
-                break;
-            case 'comments':
-                this.loadStudioComments();
-                break;
-            case 'analytics':
-                this.loadStudioAnalytics();
-                break;
-            case 'monetization':
-                this.loadStudioMonetization();
-                break;
-        }
-    }
-
-    loadStudioVideos() {
-        const videosList = document.getElementById('studio-videos-list');
-        videosList.innerHTML = '';
-
-        if (this.myVideos.length === 0) {
-            videosList.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        No videos uploaded yet. Start creating content!
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        this.myVideos.forEach((video, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>
-                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail-small">
-                </td>
-                <td>
-                    <div style="max-width: 200px;">
-                        <strong>${video.title}</strong>
-                        <br>
-                        <small style="color: var(--text-secondary);">${video.description || 'No description'}</small>
-                    </div>
-                </td>
-                <td>${video.views}</td>
-                <td>${this.formatNumber(video.likes || 0)}</td>
-                <td>${video.uploadTime}</td>
-                <td>
-                    <div class="video-actions">
-                        <button class="action-btn-small edit" onclick="app.editVideo('${video.id}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn-small delete" onclick="app.deleteVideo('${video.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            videosList.appendChild(row);
-        });
-    }
-
-    loadStudioComments() {
-        const commentsList = document.getElementById('studio-comments-list');
-        commentsList.innerHTML = '';
-
-        const allComments = [];
-        Object.keys(this.comments).forEach(videoId => {
-            const video = this.myVideos.find(v => v.id === videoId);
-            if (video && this.comments[videoId]) {
-                this.comments[videoId].forEach(comment => {
-                    allComments.push({
-                        ...comment,
-                        videoTitle: video.title,
-                        videoId: videoId
-                    });
-                });
-            }
-        });
-
-        if (allComments.length === 0) {
-            commentsList.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                    No comments on your videos yet.
-                </div>
-            `;
-            return;
-        }
-
-        allComments.forEach(comment => {
-            const commentDiv = document.createElement('div');
-            commentDiv.className = 'comment-item-studio';
-            commentDiv.innerHTML = `
-                <div class="comment-content-studio">
-                    <div class="comment-author-studio">${comment.author}</div>
-                    <div class="comment-text-studio">${comment.text}</div>
-                    <small style="color: var(--text-muted);">On: ${comment.videoTitle}</small>
-                </div>
-                <div class="comment-actions-studio">
-                    <button class="action-btn-small" onclick="app.replyToComment('${comment.id}')">
-                        <i class="fas fa-reply"></i>
-                    </button>
-                    <button class="action-btn-small delete" onclick="app.deleteComment('${comment.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            commentsList.appendChild(commentDiv);
-        });
-    }
-
-    loadStudioAnalytics() {
-        // Analytics functionality would be implemented here
-        console.log('Loading analytics data...');
-    }
-
-    loadStudioMonetization() {
-        // Monetization functionality would be implemented here
-        console.log('Loading monetization data...');
-    }
-
-    editVideo(videoId) {
-        this.showToast('Video editing feature coming soon', 'info');
-    }
-
-    deleteVideo(videoId) {
-        if (confirm('Are you sure you want to delete this video?')) {
-            this.myVideos = this.myVideos.filter(video => video.id !== videoId);
-            this.saveMyVideos();
-            this.loadStudioVideos();
-            this.showToast('Video deleted successfully', 'success');
-        }
-    }
-
-    replyToComment(commentId) {
-        this.showToast('Comment reply feature coming soon', 'info');
-    }
-
-    deleteComment(commentId) {
-        if (confirm('Are you sure you want to delete this comment?')) {
-            // Find and delete comment
-            Object.keys(this.comments).forEach(videoId => {
-                this.comments[videoId] = this.comments[videoId].filter(comment => comment.id !== commentId);
-            });
-            this.saveComments();
-            this.loadStudioComments();
-            this.showToast('Comment deleted successfully', 'success');
-        }
-    }
-
-    openTikTikStudio() {
-        document.getElementById('studioModal').classList.add('active');
-        this.loadStudioData();
-        if (typeof toggleProfileMenu === 'function') {
-            toggleProfileMenu();
-        }
-    }
-
-    closeTikTikStudio() {
-        document.getElementById('studioModal').classList.remove('active');
-    }
-
-    switchStudioTab(tabName) {
-        // Remove active class from all tabs and contents
-        document.querySelectorAll('.studio-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.studio-tab-content').forEach(content => content.classList.remove('active'));
-
-        // Add active class to selected tab and content
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        document.getElementById(`${tabName}-tab`).classList.add('active');
-
-        // Load tab-specific data
-        this.loadStudioTabData(tabName);
-    }
-
-    loadStudioData() {
-        // Update dashboard stats
-        document.getElementById('total-videos-stat').textContent = this.myVideos.length;
-        document.getElementById('total-views-stat').textContent = this.formatNumber(this.channelData.totalViews);
-        document.getElementById('subscribers-stat').textContent = this.formatNumber(this.channelData.subscribers);
-
-        const totalLikes = this.myVideos.reduce((sum, video) => sum + (video.likes || 0), 0);
-        document.getElementById('total-likes-stat').textContent = this.formatNumber(totalLikes);
-    }
-
-    loadStudioTabData(tabName) {
-        switch(tabName) {
-            case 'videos':
-                this.loadStudioVideos();
-                break;
-            case 'comments':
-                this.loadStudioComments();
-                break;
-            case 'analytics':
-                this.loadStudioAnalytics();
-                break;
-            case 'monetization':
-                this.loadStudioMonetization();
-                break;
-        }
-    }
-
-    loadStudioVideos() {
-        const videosList = document.getElementById('studio-videos-list');
-        videosList.innerHTML = '';
-
-        if (this.myVideos.length === 0) {
-            videosList.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        No videos uploaded yet. Start creating content!
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        this.myVideos.forEach((video, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>
-                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail-small">
-                </td>
-                <td>
-                    <div style="max-width: 200px;">
-                        <strong>${video.title}</strong>
-                        <br>
-                        <small style="color: var(--text-secondary);">${video.description || 'No description'}</small>
-                    </div>
-                </td>
-                <td>${video.views}</td>
-                <td>${this.formatNumber(video.likes || 0)}</td>
-                <td>${video.uploadTime}</td>
-                <td>
-                    <div class="video-actions">
-                        <button class="action-btn-small edit" onclick="app.editVideo('${video.id}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn-small delete" onclick="app.deleteVideo('${video.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            videosList.appendChild(row);
-        });
-    }
-
-    loadStudioComments() {
-        const commentsList = document.getElementById('studio-comments-list');
-        commentsList.innerHTML = '';
-
-        const allComments = [];
-        Object.keys(this.comments).forEach(videoId => {
-            const video = this.myVideos.find(v => v.id === videoId);
-            if (video && this.comments[videoId]) {
-                this.comments[videoId].forEach(comment => {
-                    allComments.push({
-                        ...comment,
-                        videoTitle: video.title,
-                        videoId: videoId
-                    });
-                });
-            }
-        });
-
-        if (allComments.length === 0) {
-            commentsList.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                    No comments on your videos yet.
-                </div>
-            `;
-            return;
-        }
-
-        allComments.forEach(comment => {
-            const commentDiv = document.createElement('div');
-            commentDiv.className = 'comment-item-studio';
-            commentDiv.innerHTML = `
-                <div class="comment-content-studio">
-                    <div class="comment-author-studio">${comment.author}</div>
-                    <div class="comment-text-studio">${comment.text}</div>
-                    <small style="color: var(--text-muted);">On: ${comment.videoTitle}</small>
-                </div>
-                <div class="comment-actions-studio">
-                    <button class="action-btn-small" onclick="app.replyToComment('${comment.id}')">
-                        <i class="fas fa-reply"></i>
-                    </button>
-                    <button class="action-btn-small delete" onclick="app.deleteComment('${comment.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            commentsList.appendChild(commentDiv);
-        });
-    }
-
-    loadStudioAnalytics() {
-        // Analytics functionality would be implemented here
-        console.log('Loading analytics data...');
-    }
-
-    loadStudioMonetization() {
-        // Monetization functionality would be implemented here
-        console.log('Loading monetization data...');
-    }
-
-    editVideo(videoId) {
-        this.showToast('Video editing feature coming soon', 'info');
-    }
-
-    deleteVideo(videoId) {
-        if (confirm('Are you sure you want to delete this video?')) {
-            this.myVideos = this.myVideos.filter(video => video.id !== videoId);
-            this.saveMyVideos();
-            this.loadStudioVideos();
-            this.showToast('Video deleted successfully', 'success');
-        }
-    }
-
-    replyToComment(commentId) {
-        this.showToast('Comment reply feature coming soon', 'info');
-    }
-
-    deleteComment(commentId) {
-        if (confirm('Are you sure you want to delete this comment?')) {
-            // Find and delete comment
-            Object.keys(this.comments).forEach(videoId => {
-                this.comments[videoId] = this.comments[videoId].filter(comment => comment.id !== commentId);
-            });
-            this.saveComments();
-            this.loadStudioComments();
-            this.showToast('Comment deleted successfully', 'success');
-        }
-    }
+/* CSS Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-// Enhanced Google Authentication Integration
-let auth;
-let user = null;
-
-// Initialize Firebase Auth (you'll need to add your Firebase config)
-function initializeAuth() {
-    // Firebase configuration would go here
-    console.log('Auth initialized');
+:root {
+    /* Light Theme Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9f9f9;
+    --bg-tertiary: #f1f1f1;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --border-color: #e0e0e0;
+    --accent-color: #ff0000;
+    --accent-hover: #cc0000;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --shadow-hover: rgba(0, 0, 0, 0.2);
+    
+    /* Sizing */
+    --header-height: 60px;
+    --sidebar-width: 250px;
+    --sidebar-collapsed: 70px;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
 }
 
-// Google Sign In function
-async function signInWithGoogle() {
-    try {
-        const loginBtn = document.getElementById('googleLoginBtn');
-
-        // Add loading state
-        loginBtn.innerHTML = `
-            <div class="login-btn-content">
-                <i class="fas fa-spinner fa-spin google-icon"></i>
-                <span class="login-text">Signing in...</span>
-            </div>
-            <div class="login-btn-ripple"></div>
-        `;
-
-        // Simulate authentication (replace with actual Firebase auth)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Mock user data (replace with actual user data from Firebase)
-        const mockUser = {
-            uid: 'user_' + Date.now(),
-            displayName: 'John Doe',
-            email: 'john.doe@gmail.com',
-            photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face',
-            emailVerified: true,
-            createdAt: new Date().toISOString()
-        };
-
-        // Set user and update UI
-        user = mockUser;
-        updateUserInterface();
-        showToast('Successfully signed in with Google! 🎉', 'success');
-
-    } catch (error) {
-        console.error('Login failed:', error);
-        showToast('Login failed. Please try again.', 'error');
-
-        // Reset button
-        const loginBtn = document.getElementById('googleLoginBtn');
-        loginBtn.innerHTML = `
-            <div class="login-btn-content">
-                <i class="fab fa-google google-icon"></i>
-                <span class="login-text">Sign in with Google</span>
-            </div>
-            <div class="login-btn-ripple"></div>
-        `;
-    }
+[data-theme="dark"] {
+    /* Dark Theme Colors */
+    --bg-primary: #181818;
+    --bg-secondary: #212121;
+    --bg-tertiary: #303030;
+    --text-primary: #ffffff;
+    --text-secondary: #aaaaaa;
+    --text-muted: #777777;
+    --border-color: #404040;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --shadow-hover: rgba(0, 0, 0, 0.5);
 }
 
-// Update UI after successful login
-function updateUserInterface() {
-    if (!user) return;
-
-    // Hide login button and show profile
-    document.querySelector('.login-section').style.display = 'none';
-    document.getElementById('profile-container').style.display = 'inline-block';
-
-    // Update profile information
-    document.getElementById('profile-pic').src = user.photoURL;
-    document.getElementById('profile-avatar').src = user.photoURL;
-    document.getElementById('profile-name').textContent = user.displayName;
-    document.getElementById('profile-email').textContent = user.email;
-
-    // Update subscriber count (mock data)
-    document.getElementById('profile-subscribers').textContent = `${Math.floor(Math.random() * 1000)} subscribers`;
-
-    // Add welcome animation
-    const profileContainer = document.getElementById('profile-container');
-    profileContainer.style.animation = 'profileWelcome 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: var(--transition);
 }
 
-// Toggle profile menu with enhanced animations
-function toggleProfileMenu() {
-    const menu = document.getElementById('profile-menu');
-    const isVisible = menu.style.display === 'block';
-
-    if (isVisible) {
-        // Hide with animation
-        menu.style.animation = 'menuSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        setTimeout(() => {
-            menu.style.display = 'none';
-        }, 300);
-    } else {
-        // Show with animation
-        menu.style.display = 'block';
-        menu.style.animation = 'menuSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-    }
+/* Header Styles */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+    transition: var(--transition);
 }
 
-// Enhanced logout function
-function logout() {
-    if (confirm('Are you sure you want to sign out?')) {
-        // Add logout animation
-        const profileContainer = document.getElementById('profile-container');
-        profileContainer.style.animation = 'profileFadeOut 0.5s ease-in';
-
-        setTimeout(() => {
-            // Reset user state
-            user = null;
-
-            // Show login button and hide profile
-            document.querySelector('.login-section').style.display = 'flex';
-            document.getElementById('profile-container').style.display = 'none';
-            document.getElementById('profile-menu').style.display = 'none';
-
-            // Reset profile data
-            document.getElementById('profile-pic').src = '';
-            document.getElementById('profile-avatar').src = '';
-            document.getElementById('profile-name').textContent = '';
-            document.getElementById('profile-email').textContent = '';
-
-            showToast('Successfully signed out', 'info');
-        }, 500);
-    }
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-// Account switching functionality
-function switchAccount() {
-    showToast('Account switching feature coming soon!', 'info');
-    toggleProfileMenu();
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
 }
 
-// Enhanced menu functions
-function openTikTikStudio() {
-    if (typeof app !== 'undefined' && app.openTikTikStudio) {
-        app.openTikTikStudio();
-    } else {
-        showToast('Opening TikTik Studio...', 'info');
-    }
-    toggleProfileMenu();
+.menu-btn:hover {
+    background-color: var(--bg-tertiary);
 }
 
-function openCreatorAcademy() {
-    showToast('Opening Creator Academy...', 'info');
-    toggleProfileMenu();
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent-color);
+    text-decoration: none;
 }
 
-function openAppearance() {
-    showToast('Opening Appearance settings...', 'info');
-    toggleProfileMenu();
+.header-center {
+    flex: 1;
+    max-width: 600px;
+    margin: 0 40px;
 }
 
-function openLanguage() {
-    showToast('Opening Language settings...', 'info');
-    toggleProfileMenu();
+.search-container {
+    display: flex;
+    position: relative;
 }
 
-function openLocation() {
-    showToast('Opening Location settings...', 'info');
-    toggleProfileMenu();
+.search-input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 16px;
+    outline: none;
+    transition: var(--transition);
 }
 
-function openSettings() {
-    if (typeof app !== 'undefined' && app.navigateToPage) {
-        app.navigateToPage('settings');
-    } else {
-        showToast('Opening Settings...', 'info');
-    }
-    toggleProfileMenu();
+.search-input:focus {
+    border-color: var(--accent-color);
 }
 
-function openHelp() {
-    if (typeof app !== 'undefined' && app.navigateToPage) {
-        app.navigateToPage('help');
-    } else {
-        showToast('Opening Help...', 'info');
-    }
-    toggleProfileMenu();
+.search-btn {
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-left: none;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
 }
 
-function sendFeedback() {
-    if (typeof app !== 'undefined' && app.navigateToPage) {
-        app.navigateToPage('feedback');
-    } else {
-        showToast('Opening Feedback...', 'info');
-    }
-    toggleProfileMenu();
+.search-btn:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
-function openPrivacyPolicy() {
-    showToast('Opening Privacy Policy...', 'info');
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-function openTerms() {
-    showToast('Opening Terms of Service...', 'info');
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: var(--transition);
 }
 
-function openPolicies() {
-    showToast('Opening Policies...', 'info');
+.icon-btn:hover {
+    background-color: var(--bg-tertiary);
 }
 
-// Enhanced toast notification system
-function showToast(message, type = 'info') {
-    // Create or get toast container
-    let container = document.getElementById('toastContainer');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-    }
-
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-
-    // Add icon based on type
-    const icons = {
-        success: 'fas fa-check-circle',
-        error: 'fas fa-exclamation-circle',
-        warning: 'fas fa-exclamation-triangle',
-        info: 'fas fa-info-circle'
-    };
-
-    toast.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <i class="${icons[type]}" style="color: var(--accent-color);"></i>
-            <span>${message}</span>
-        </div>
-    `;
-
-    container.appendChild(toast);
-
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-        toast.style.animation = 'slideOutRight 0.3s ease';
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-        }, 300);
-    }, 4000);
+.user-avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-// Add enhanced animations to CSS
-const enhancedStyles = `
-@keyframes profileWelcome {
-    0% {
+/* Profile Dropdown Styles */
+.profile-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-pic {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.profile-menu {
+    display: none;
+    position: absolute;
+    top: 42px;
+    right: 0;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    z-index: 100;
+    width: 200px;
+    box-shadow: 0 2px 8px var(--shadow);
+    border-radius: 8px;
+}
+
+.profile-menu p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.profile-menu button {
+    padding: 6px 12px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 4px;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
+    background-color: var(--bg-primary);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    transition: var(--transition);
+    z-index: 999;
+}
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed);
+}
+
+.sidebar-nav {
+    padding: 12px 0;
+}
+
+.nav-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 12px 0;
+}
+
+.nav-section-title {
+    padding: 8px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.nav-item.active {
+    background-color: var(--bg-secondary);
+    border-left-color: var(--accent-color);
+    font-weight: 600;
+}
+
+.nav-item i {
+    font-size: 20px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar.collapsed .nav-item span {
+    display: none;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    padding: 20px;
+    min-height: calc(100vh - var(--header-height));
+    transition: var(--transition);
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: var(--sidebar-collapsed);
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Video Grid */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 16px 0;
+}
+
+/* Video Card */
+.video-card {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.video-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--shadow-hover);
+}
+
+/* Thumbnail Section */
+.video-thumbnail {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background-color: #ddd;
+}
+
+.video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.video-card:hover .video-thumbnail img {
+    transform: scale(1.05);
+}
+
+/* Duration */
+.video-duration {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Info Section */
+.video-info {
+    padding: 10px 12px;
+}
+
+.video-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 6px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Channel Info */
+.channel-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.channel-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #ccc;
+}
+
+.channel-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Video Stats */
+.video-stats {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Video Modal */
+.video-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-modal.active {
+    display: flex;
+}
+
+.video-modal-content {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
+    width: 95%;
+    max-width: 1200px;
+    max-height: 95vh;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: white;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.video-player-container {
+    position: relative;
+    background: #000;
+}
+
+.video-player {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+}
+
+.video-info {
+    padding: 20px;
+}
+
+.video-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.video-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.video-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.action-btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+.action-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.video-description {
+    background-color: var(--bg-secondary);
+    padding: 16px;
+    border-radius: var(--border-radius);
+    margin-top: 16px;
+    line-height: 1.5;
+}
+
+.recommended-videos {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.recommended-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recommended-item {
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.recommended-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.recommended-thumbnail {
+    width: 160px;
+    height: 90px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.recommended-info {
+    flex: 1;
+}
+
+.recommended-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.recommended-stats {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Admin Modal */
+.admin-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-modal.active {
+    display: flex;
+}
+
+.admin-modal-content {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.admin-body {
+    padding: 20px;
+}
+
+.admin-section {
+    margin-bottom: 24px;
+}
+
+.admin-section h4 {
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.setting-item {
+    margin-bottom: 12px;
+}
+
+.setting-item label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.setting-item input[type="checkbox"],
+.setting-item input[type="radio"] {
+    margin: 0;
+}
+
+.setting-item select {
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    margin-left: 8px;
+}
+
+.admin-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-secondary);
+}
+
+.btn-warning {
+    background-color: #ff9800;
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #f57c00;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.empty-state span {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3000;
+    color: var(--accent-color);
+    font-size: 32px;
+}
+
+.loading-spinner.active {
+    display: block;
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.toast {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 12px 16px;
+    max-width: 300px;
+    box-shadow: 0 4px 12px var(--shadow);
+    animation: slideInRight 0.3s ease;
+}
+
+.toast.success {
+    border-left: 4px solid #4caf50;
+}
+
+.toast.error {
+    border-left: 4px solid #f44336;
+}
+
+.toast.warning {
+    border-left: 4px solid #ff9800;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
         opacity: 0;
-        transform: scale(0.8) translateY(-10px);
     }
-    50% {
-        transform: scale(1.05) translateY(-2px);
-    }
-    100% {
+    to {
+        transform: translateX(0);
         opacity: 1;
-        transform: scale(1) translateY(0);
     }
 }
 
-@keyframes profileFadeOut {
-    0% {
-        opacity: 1;
-        transform: scale(1);
+/* Comments Section */
+.comments-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.comments-header h4 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.comments-header #commentCount {
+    color: var(--text-muted);
+    font-weight: normal;
+    margin-left: 8px;
+}
+
+.sort-comments select {
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.add-comment {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.user-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.comment-input-container {
+    flex: 1;
+}
+
+.comment-input-container input {
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
+    transition: var(--transition);
+}
+
+.comment-input-container input:focus {
+    border-bottom-color: var(--accent-color);
+}
+
+.comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.btn-cancel, .btn-comment {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.btn-cancel:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.btn-comment {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-comment:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-comment:disabled {
+    background-color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 12px;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-author {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.comment-time {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.comment-text {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.comment-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.comment-like-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.comment-like-btn:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.comment-like-btn.active {
+    color: var(--accent-color);
+}
+
+.comment-reply-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.comment-reply-btn:hover {
+    background-color: var(--bg-tertiary);
+}
+
+/* Channel Styles */
+.channel-header {
+    margin-bottom: 20px;
+}
+
+.channel-banner {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.channel-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.channel-info-header {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.channel-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.channel-details h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.channel-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.channel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.channel-tab {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.channel-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-color);
+}
+
+.channel-tab:hover {
+    color: var(--text-primary);
+}
+
+.channel-content {
+    margin-top: 20px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.upload-section {
+    text-align: center;
+    padding: 40px;
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.upload-prompt i {
+    font-size: 48px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.upload-prompt h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.upload-prompt p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.my-videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.about-section {
+    max-width: 600px;
+}
+
+.about-section h3 {
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.channel-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Settings Container */
+.settings-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.settings-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.settings-content {
+    flex: 1;
+    max-width: 800px;
+}
+
+.settings-category {
+    margin-bottom: 20px;
+}
+
+.settings-category h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 0 12px;
+}
+
+.settings-tab {
+    display: block;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: var(--transition);
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.settings-tab:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.settings-tab.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.settings-tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.settings-tab-content.active {
+    display: block;
+}
+
+.settings-tab-content h3 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.settings-section {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.settings-section h3 {
+    margin-bottom: 16px;
+    font-size: 18px;
+}
+
+.settings-section h4 {
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.setting-description {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+/* Account List */
+.account-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.account-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.account-item:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.account-item.active {
+    border-color: var(--accent-color);
+    background-color: var(--bg-tertiary);
+}
+
+.account-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.account-details h4 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+}
+
+.account-details p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.add-account-btn {
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+/* Family Centre */
+.family-centre-info {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.family-centre-info i {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.family-centre-info h4 {
+    margin-bottom: 8px;
+}
+
+.family-centre-info p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+/* Payment Methods */
+.payment-methods h4 {
+    margin-bottom: 16px;
+}
+
+/* History Actions */
+.history-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.history-actions button {
+    align-self: flex-start;
+}
+
+/* Data Info */
+.data-info {
+    margin-bottom: 20px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.data-info h4 {
+    margin-bottom: 8px;
+}
+
+.data-info p {
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+/* TV Info */
+.tv-info {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.tv-info i {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.tv-info h4 {
+    margin-bottom: 8px;
+}
+
+.tv-info p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+/* Help Links */
+.help-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.help-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.help-link:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.help-link i {
+    font-size: 18px;
+    color: var(--accent-color);
+    width: 20px;
+}
+
+/* Terms Content */
+.terms-content {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.terms-content h4 {
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.terms-content p {
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+/* Feedback Form */
+.feedback-form {
+    max-width: 500px;
+}
+
+.feedback-form .form-group {
+    margin-bottom: 20px;
+}
+
+.feedback-form textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+/* About Info */
+.about-info {
+    text-align: center;
+}
+
+.app-info {
+    margin-bottom: 20px;
+}
+
+.app-info h4 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.app-info p {
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.app-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.about-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.about-link:hover {
+    text-decoration: underline;
+}
+
+/* Enhanced Settings Styles */
+.time-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.time-range input[type="time"] {
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+    margin: 8px 0;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-tertiary);
+    outline: none;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+}
+
+.setting-item input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    border: none;
+}
+
+#font-size-value {
+    margin-left: 8px;
+    font-weight: 500;
+    color: var(--accent-color);
+}
+
+/* Accessibility Enhancements */
+.high-contrast {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #333333;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --border-color: #666666;
+    --accent-color: #ffff00;
+}
+
+.keyboard-nav *:focus {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.large-click-targets button,
+.large-click-targets .nav-item,
+.large-click-targets .video-card {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.sticky-hover *:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Enhanced Playback Controls */
+.video-player-container.ambient-mode::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    right: -50px;
+    bottom: -50px;
+    background: linear-gradient(45deg, var(--accent-color), transparent);
+    opacity: 0.1;
+    z-index: -1;
+    filter: blur(20px);
+}
+
+.video-player-container.theater-mode {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background: #000;
+}
+
+.miniplayer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    height: 169px;
+    z-index: 1000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.picture-in-picture {
+    position: fixed;
+    width: 320px;
+    height: 180px;
+    z-index: 2000;
+    border-radius: 8px;
+    overflow: hidden;
+    resize: both;
+    min-width: 200px;
+    min-height: 113px;
+}
+
+/* Motion Reduction */
+.reduce-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+
+/* Enhanced Video Player Controls */
+.video-player-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-player-container:hover .video-player-controls {
+    opacity: 1;
+}
+
+.speed-control {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.seek-preview {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.seek-preview.active {
+    opacity: 1;
+}
+
+.seek-preview.left {
+    left: 20px;
+}
+
+.seek-preview.right {
+    right: 20px;
+}
+
+/* Volume Slider */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.volume-slider {
+    width: 80px;
+    height: 4px;
+}
+
+/* Caption Styling */
+.video-captions {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: var(--caption-size, 16px);
+    text-align: center;
+    max-width: 80%;
+    line-height: 1.4;
+}
+
+/* Gesture Indicators */
+.gesture-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gesture-indicator.active {
+    opacity: 1;
+}
+
+/* Data Saver Indicator */
+.data-saver-indicator {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--accent-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Notification Styles */
+.notification-preview {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.notification-preview img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.notification-content h5 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.notification-content p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Responsive Design for Settings */
+@media (max-width: 768px) {
+    .settings-container {
+        flex-direction: column;
     }
-    100% {
-        opacity: 0;
-        transform: scale(0.9);
+    
+    .settings-sidebar {
+        width: 100%;
+        order: 2;
+    }
+    
+    .settings-content {
+        order: 1;
+    }
+    
+    .settings-category {
+        display: none;
+    }
+    
+    .settings-category.active {
+        display: block;
+    }
+    
+    .history-actions {
+        align-items: stretch;
+    }
+    
+    .history-actions button {
+        align-self: stretch;
+    }
+    
+    .app-links {
+        flex-direction: column;
+        gap: 10px;
     }
 }
 
-@keyframes menuSlideOut {
-    0% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-    }
+.help-container, .feedback-container {
+    max-width: 600px;
+    padding: 20px;
 }
 
-@keyframes slideOutRight {
-    0% {
-        opacity: 1;
+.help-section, .feedback-section {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+
+/* Create Modal */
+.create-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-modal.active {
+    display: flex;
+}
+
+.create-modal-content {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.create-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.create-options {
+    padding: 16px;
+}
+
+.create-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.create-option:hover {
+    background-color: var(--bg-secondary);
+}
+
+.create-option i {
+    font-size: 24px;
+    color: var(--accent-color);
+    width: 40px;
+    text-align: center;
+}
+
+.option-text h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+}
+
+.option-text p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Upload Modal */
+.upload-modal, .channel-edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-modal.active, .channel-edit-modal.active {
+    display: flex;
+}
+
+.upload-modal-content, .channel-edit-content {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.upload-header, .channel-edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.upload-body, .channel-edit-body {
+    padding: 20px;
+}
+
+.upload-area {
+    text-align: center;
+    padding: 40px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.upload-area i {
+    font-size: 48px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.upload-area h4 {
+    margin-bottom: 8px;
+}
+
+.upload-area p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.form-group textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.upload-actions, .channel-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Short Video Modal */
+.short-modal, .live-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.short-modal.active, .live-modal.active {
+    display: flex;
+}
+
+.short-modal-content, .live-modal-content {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.short-header, .live-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.short-body, .live-body {
+    padding: 20px;
+}
+
+.short-upload-area {
+    text-align: center;
+    padding: 40px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.short-upload-area i {
+    font-size: 48px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.short-form {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.short-preview {
+    flex-shrink: 0;
+}
+
+.short-details {
+    flex: 1;
+}
+
+.short-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Live Stream Modal */
+.live-setup {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.camera-preview {
+    position: relative;
+}
+
+.camera-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.camera-controls .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.live-details {
+    display: grid;
+    gap: 16px;
+}
+
+.live-privacy {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.live-privacy label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.live-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        padding: 0 16px;
+    }
+    
+    .header-center {
+        margin: 0 16px;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
         transform: translateX(0);
     }
-    100% {
-        opacity: 0;
-        transform: translateX(100%);
+    
+    .main-content {
+        margin-left: 0;
+        padding: 16px;
+    }
+    
+    .video-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+    
+    .video-modal-content {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    .video-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .recommended-item {
+        flex-direction: column;
+    }
+    
+    .recommended-thumbnail {
+        width: 100%;
+        height: 120px;
+    }
+    
+    .short-form {
+        flex-direction: column;
+    }
+    
+    .short-preview video {
+        width: 150px !important;
+        height: 267px !important;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .short-modal-content, .live-modal-content {
+        width: 95%;
+        margin: 10px;
     }
 }
-`;
 
-// Add enhanced styles to document
-const styleSheet = document.createElement('style');
-styleSheet.textContent = enhancedStyles;
-document.head.appendChild(styleSheet);
-
-// Close profile menu when clicking outside
-document.addEventListener('click', function(event) {
-    const profileContainer = document.getElementById('profile-container');
-    const profileMenu = document.getElementById('profile-menu');
-
-    if (profileContainer && !profileContainer.contains(event.target)) {
-        if (profileMenu && profileMenu.style.display === 'block') {
-            toggleProfileMenu();
-        }
+@media (max-width: 480px) {
+    .header-center {
+        display: none;
     }
-});
-
-// Restricted mode toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const restrictedToggle = document.getElementById('restricted-toggle');
-    if (restrictedToggle) {
-        restrictedToggle.addEventListener('change', function() {
-            const isRestricted = this.checked;
-            showToast(
-                isRestricted ? 'Restricted mode enabled' : 'Restricted mode disabled',
-                'info'
-            );
-        });
+    
+    .video-grid {
+        grid-template-columns: 1fr;
     }
-});
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    initializeAuth();
-
-    // Auto-login for demo (remove in production)
-    setTimeout(() => {
-        if (!user) {
-            console.log('Demo mode: Auto-login disabled. Click login button to sign in.');
-        }
-    }, 1000);
-});
-
-// Profile dropdown toggle function
-  function toggleProfileMenu() {
-    const menu = document.getElementById('profile-menu');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-  }
-
-  // Click outside to close dropdown
-  document.addEventListener('click', function(event) {
-    const container = document.getElementById('profile-container');
-    const menu = document.getElementById('profile-menu');
-    if (!container.contains(event.target)) {
-      menu.style.display = 'none';
+    
+    .admin-modal-content {
+        width: 95%;
+        margin: 10px;
     }
-  });
-
-  // Profile menu functions
-  function switchAccount() {
-    alert('Switch Account feature - You can add multiple accounts here');
-    toggleProfileMenu();
-  }
-
-  function openCreatorAcademy() {
-    alert('Opening Creator Academy - Learn content creation tips and tricks');
-    toggleProfileMenu();
-  }
-
-  function openPurchases() {
-    alert('Opening Purchases and Memberships - Manage your subscriptions');
-    toggleProfileMenu();
-  }
-
-  function openYourData() {
-    alert('Opening Your Data in TikTik - Download or delete your data');
-    toggleProfileMenu();
-  }
-
-  function openAppearance() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-
-    // Update theme icon
-    const themeIcon = document.querySelector('#themeToggle i');
-    themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-
-    alert(`Appearance changed to ${newTheme} theme`);
-    toggleProfileMenu();
-  }
-
-  function openLanguage() {
-    alert('Language Settings - Choose your preferred language');
-    toggleProfileMenu();
-  }
-
-  function openRestrictedMode() {
-    alert('Restricted Mode - Filter potentially mature content');
-    toggleProfileMenu();
-  }
-
-  function openLocation() {
-    alert('Location Settings - Set your country/region');
-    toggleProfileMenu();
-  }
-
-  function openKeyboardShortcuts() {
-    alert('Keyboard Shortcuts:\n\nSpace - Play/Pause\nArrow Left - Seek backward\nArrow Right - Seek forward\nM - Mute/Unmute\nF - Fullscreen\nT - Theater mode\nI - Miniplayer');
-    toggleProfileMenu();
-  }
-
-  function openSettings() {
-    // Navigate to settings page
-    if (window.tiktikApp) {
-      window.tiktikApp.navigateToPage('settings');
-    }
-    toggleProfileMenu();
-  }
-
-  function openHelp() {
-    // Navigate to help page
-    if (window.tiktikApp) {
-      window.tiktikApp.navigateToPage('help');
-    }
-    toggleProfileMenu();
-  }
-
-  function sendFeedback() {
-    // Navigate to feedback page
-    if (window.tiktikApp) {
-      window.tiktikApp.navigateToPage('feedback');
-    }
-    toggleProfileMenu();
-  }
-
-// Google Sign-in and Sign-out functionality
-function signInWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-
-  firebase.auth().signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-
-      // UI Update
-        document.getElementById("googleLoginBtn").style.display = "none";
-        document.getElementById("profile-container").style.display = "flex";
-        document.getElementById("profile-pic").src = user.photoURL;
-        document.getElementById("profile-avatar").src = user.photoURL;
-        document.getElementById("profile-name").innerText = user.displayName;
-        document.getElementById("profile-email").innerText = user.email;
-
-      console.log("Sign-in successful:", user);
-    }).catch((error) => {
-      console.error("Error signing in:", error);
-    });
 }
 
-function signOut() {
-  firebase.auth().signOut()
-    .then(() => {
-      // Sign-out successful.
-      console.log("Sign-out successful");
-
-      // UI update
-      document.getElementById("googleLoginBtn").style.display = "block";
-      document.getElementById("profile-container").style.display = "none";
-    }).catch((error) => {
-      // An error happened.
-      console.error("Error signing out:", error);
-    });
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-// Check if user is already signed-in
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-      document.getElementById("googleLoginBtn").style.display = "none";
-      document.getElementById("profile-container").style.display = "flex";
-      document.getElementById("profile-pic").src = user.photoURL;
-      document.getElementById("profile-avatar").src = user.photoURL;
-      document.getElementById("profile-name").innerText = user.displayName;
-      document.getElementById("profile-email").innerText = user.email;
-    }
-});
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
 
-// Initialize the application when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.tiktikApp = new TikTikApp();
-    window.app = window.tiktikApp;
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
 
-    // Register Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-                console.log('Service Worker registered successfully:', registration);
-            })
-            .catch((error) => {
-                console.error('Service Worker registration failed:', error);
-            });
-    }
-});
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Focus Styles */
+button:focus,
+input:focus,
+select:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Animation for theme transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
