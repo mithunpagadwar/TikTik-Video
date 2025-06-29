@@ -497,7 +497,7 @@
                         <a href="#" class="settings-tab" data-tab="video-quality">Video quality preferences</a>
                         <a href="#" class="settings-tab" data-tab="playback">Playback</a>
                         <a href="#" class="settings-tab" data-tab="captions">Captions</a>
-                        <a href="#" class="settings-tab" data-saving="data-saving">Data saving</a>
+                        <a href="#" class="settings-tab" data-tab="data-saving">Data saving</a>
                         <a href="#" class="settings-tab" data-tab="downloads">Downloads</a>
                         <a href="#" class="settings-tab" data-tab="live-chat">Live chat</a>
                         <a href="#" class="settings-tab" data-tab="accessibility">Accessibility</a>
@@ -842,7 +842,7 @@
                             <div class="setting-item">
                                 <label>
                                     <input type="checkbox" id="always-choose-quality">
-                                    I havea slow connection. Never play higher-quality video.
+                                    I have a slow connection. Never play higher-quality video.
                                 </label>
                                 <p class="setting-description">Prevents automatic quality upgrades</p>
                             </div>
@@ -1648,7 +1648,6 @@
                                     High contrast mode
                                 </label>
                                 <p class="setting-description">Increase contrast for better visibility</p>
-```python
                             </div>
                             <div class="setting-item">
                                 <label>Font size</label>
@@ -2159,52 +2158,46 @@
 
                 <div class="video-info-section">
                     <div class="video-info">
-                    <h3 class="video-title" id="modalVideoTitle">Video Title</h3>
-                    <div class="video-meta">
-                        <div class="video-stats" id="modalVideoStats">1.2M views • 2 days ago</div>
-                        <div class="video-actions">
-                            <button class="action-btn" id="likeBtn">
-                                <i class="fas fa-thumbs-up"></i>
-                                <span id="likeCount">24.5K</span>
-                            </button>
-                            <button class="action-btn" id="dislikeBtn">
-                                <i class="fas fa-thumbs-down"></i>
-                                Dislike
-                            </button>
-                            <button class="action-btn" id="shareBtn">
-                                <i class="fas fa-share"></i>
-                                Share
-                            </button>
-                            <button class="action-btn" id="saveBtn">
-                                <i class="fas fa-bookmark"></i>
-                                Save
-                            </button>
-                            <button class="action-btn" id="downloadBtn">
-                                <i class="fas fa-download"></i>
-                                Download
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Channel Info with Subscribe and Bell Button -->
-                    <div class="channel-info-section">
-                        <div class="channel-info-row">
-                            <img class="channel-avatar" id="modalChannelAvatar" src="" alt="Channel Avatar">
-                            <div class="channel-details">
-                                <h3 class="channel-name" id="modalChannelName">Channel Name</h3>
-                                <p class="subscriber-count">1.2M subscribers</p>
+                        <h3 class="video-title" id="modalVideoTitle"></h3>
+                        <div class="video-meta">
+                            <div class="channel-info">
+                                <img class="channel-avatar" id="modalChannelAvatar" src="" alt="Channel Avatar">
+                                <div class="channel-details">
+                                    <span class="channel-name" id="modalChannelName"></span>
+                                    <span class="video-stats" id="modalVideoStats"></span>
+                                </div>
+                                <div class="channel-actions">
+                                    <button class="btn btn-primary subscribe-btn" id="subscribeBtn">
+                                        <i class="fas fa-user-plus"></i>
+                                        Subscribe
+                                    </button>
+                                    <button class="btn btn-secondary bell-btn" id="bellBtn" title="Turn on notifications" style="display: none;">
+                                        <i class="fas fa-bell"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="channel-actions">
-                                <button class="btn subscribe-btn" id="modalSubscribeBtn">
-                                    <i class="fas fa-user-plus"></i>
-                                    Subscribe
+                            <div class="video-actions">
+                                <button class="action-btn like-btn" id="likeBtn">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span id="likeCount">0</span>
                                 </button>
-                                <button class="btn bell-btn" id="modalBellBtn" title="Turn on notifications" style="display: none;">
-                                    <i class="fas fa-bell"></i>
+                                <button class="action-btn dislike-btn" id="dislikeBtn">
+                                    <i class="fas fa-thumbs-down"></i>
+                                </button>
+                                <button class="action-btn share-btn" id="shareBtn">
+                                    <i class="fas fa-share"></i>
+                                    Share
+                                </button>
+                                <button class="action-btn save-btn" id="saveBtn">
+                                    <i class="fas fa-bookmark"></i>
+                                    Save
+                                </button>
+                                <button class="action-btn download-btn" id="downloadBtn">
+                                    <i class="fas fa-download"></i>
+                                    Download
                                 </button>
                             </div>
                         </div>
-                    </div>
                         <div class="video-description" id="modalVideoDescription"></div>
 
                         <!-- Comments Section -->
@@ -2517,7 +2510,7 @@
                             </select>
                         </div>
                         <div class="short-actions">
-                            <button class="btnbtn-secondary" id="cancelShortBtn">Cancel</button>
+                            <button class="btn btn-secondary" id="cancelShortBtn">Cancel</button>
                             <button class="btn btn-primary" id="publishShortBtn">Publish Short</button>
                         </div>
                     </div>
