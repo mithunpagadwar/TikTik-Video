@@ -1,4 +1,3 @@
-
 // TikTik - YouTube Clone Application
 // Pure JavaScript implementation with local storage persistence
 
@@ -172,6 +171,9 @@ class TikTikApp {
             }
         });
 
+        // Video player controls
+        this.setupVideoControls();
+
         // Like/Dislike buttons
         document.getElementById('likeBtn').addEventListener('click', () => {
             this.toggleLike();
@@ -318,6 +320,324 @@ class TikTikApp {
         });
 
         this.setupAdminControls();
+    }
+
+    setupVideoControls() {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const muteBtn = document.getElementById('muteBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeFill = document.getElementById('volumeFill');
+        const speedBtn = document.getElementById('speedBtn');
+        
+        // Player state controls
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const theaterBtn = document.getElementById('theaterBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const restoreBtn = document.getElementById('restoreBtn');
+        
+        // Navigation controls
+        const prevVideoBtn = document.getElementById('prevVideoBtn');
+        const nextVideoBtn = document.getElementById('nextVideoBtn');
+        
+        // Miniplayer controls
+        const miniplayerPlayBtn = document.getElementById('miniplayerPlayBtn');
+        
+        // Play/Pause functionality
+        playPauseBtn.addEventListener('click', () => {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                videoPlayer.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+        
+        miniplayerPlayBtn.addEventListener('click', () => {
+            playPauseBtn.click();
+        });
+        
+        // Video player events
+        videoPlayer.addEventListener('play', () => {
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        });
+        
+        videoPlayer.addEventListener('pause', () => {
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+        });
+        
+        // Progress bar
+        videoPlayer.addEventListener('timeupdate', () => {
+            if (videoPlayer.duration) {
+                const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                progressFill.style.width = progress + '%';
+                
+                const currentTime = this.formatTime(videoPlayer.currentTime);
+                const duration = this.formatTime(videoPlayer.duration);
+                timeDisplay.textContent = `${currentTime} / ${duration}`;
+            }
+        });
+        
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const progress = clickX / rect.width;
+            videoPlayer.currentTime = progress * videoPlayer.duration;
+        });
+        
+        // Volume controls
+        muteBtn.addEventListener('click', () => {
+            if (videoPlayer.muted) {
+                videoPlayer.muted = false;
+                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+            } else {
+                videoPlayer.muted = true;
+                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                volumeFill.style.width = '0%';
+            }
+        });
+        
+        volumeSlider.addEventListener('click', (e) => {
+            const rect = volumeSlider.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const volume = clickX / rect.width;
+            videoPlayer.volume = Math.max(0, Math.min(1, volume));
+            volumeFill.style.width = (volume * 100) + '%';
+            videoPlayer.muted = false;
+            muteBtn.innerHTML = volume > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+        });
+        
+        // Speed control
+        let currentSpeed = 1;
+        const speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+        speedBtn.addEventListener('click', () => {
+            const currentIndex = speeds.indexOf(currentSpeed);
+            const nextIndex = (currentIndex + 1) % speeds.length;
+            currentSpeed = speeds[nextIndex];
+            videoPlayer.playbackRate = currentSpeed;
+            speedBtn.textContent = currentSpeed + 'x';
+        });
+        
+        // Player state controls
+        minimizeBtn.addEventListener('click', () => {
+            this.minimizeVideo();
+        });
+        
+        theaterBtn.addEventListener('click', () => {
+            this.toggleTheaterMode();
+        });
+        
+        fullscreenBtn.addEventListener('click', () => {
+            this.toggleFullscreen();
+        });
+        
+        restoreBtn.addEventListener('click', () => {
+            this.restoreVideo();
+        });
+        
+        // Navigation controls
+        prevVideoBtn.addEventListener('click', () => {
+            this.playPreviousVideo();
+        });
+        
+        nextVideoBtn.addEventListener('click', () => {
+            this.playNextVideo();
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (this.currentVideo && document.getElementById('videoModal').classList.contains('active')) {
+                switch(e.code) {
+                    case 'Space':
+                        e.preventDefault();
+                        playPauseBtn.click();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
+                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
+                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+                        break;
+                    case 'KeyM':
+                        e.preventDefault();
+                        muteBtn.click();
+                        break;
+                    case 'KeyF':
+                        e.preventDefault();
+                        fullscreenBtn.click();
+                        break;
+                    case 'KeyT':
+                        e.preventDefault();
+                        theaterBtn.click();
+                        break;
+                    case 'KeyI':
+                        e.preventDefault();
+                        minimizeBtn.click();
+                        break;
+                }
+            }
+        });
+    }
+
+    formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    minimizeVideo() {
+        const modal = document.getElementById('videoModal');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const miniplayerTitle = document.getElementById('miniplayerTitle');
+        
+        if (modal.classList.contains('minimized')) {
+            return;
+        }
+        
+        modal.classList.add('minimized');
+        minimizeBtn.innerHTML = '<i class="fas fa-expand"></i>';
+        minimizeBtn.title = 'Restore';
+        
+        if (this.currentVideo) {
+            miniplayerTitle.textContent = this.currentVideo.title;
+        }
+        
+        this.showToast('Video minimized. Click to restore.', 'info');
+    }
+
+    restoreVideo() {
+        const modal = document.getElementById('videoModal');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        
+        modal.classList.remove('minimized');
+        modal.classList.remove('theater');
+        minimizeBtn.innerHTML = '<i class="fas fa-compress"></i>';
+        minimizeBtn.title = 'Minimize';
+        
+        this.showToast('Video restored', 'info');
+    }
+
+    toggleTheaterMode() {
+        const modal = document.getElementById('videoModal');
+        const theaterBtn = document.getElementById('theaterBtn');
+        
+        if (modal.classList.contains('theater')) {
+            modal.classList.remove('theater');
+            theaterBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            theaterBtn.title = 'Theater mode';
+            this.showToast('Theater mode disabled', 'info');
+        } else {
+            modal.classList.remove('minimized');
+            modal.classList.add('theater');
+            theaterBtn.innerHTML = '<i class="fas fa-compress"></i>';
+            theaterBtn.title = 'Exit theater mode';
+            this.showToast('Theater mode enabled', 'info');
+        }
+    }
+
+    toggleFullscreen() {
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        if (!document.fullscreenElement) {
+            videoPlayer.requestFullscreen().catch(err => {
+                this.showToast('Fullscreen not supported', 'error');
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    playPreviousVideo() {
+        if (!this.currentVideo) return;
+        
+        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
+        if (currentIndex > 0) {
+            const prevVideo = this.videos[currentIndex - 1];
+            this.switchToVideo(prevVideo);
+            this.showToast('Playing previous video', 'info');
+        } else {
+            this.showToast('This is the first video', 'info');
+        }
+    }
+
+    playNextVideo() {
+        if (!this.currentVideo) return;
+        
+        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
+        if (currentIndex < this.videos.length - 1) {
+            const nextVideo = this.videos[currentIndex + 1];
+            this.switchToVideo(nextVideo);
+            this.showToast('Playing next video', 'info');
+        } else {
+            this.showToast('This is the last video', 'info');
+        }
+    }
+
+    switchToVideo(video) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const wasPlaying = !videoPlayer.paused;
+        
+        this.currentVideo = video;
+        
+        // Update video source
+        videoPlayer.src = video.videoUrl;
+        
+        // Update video info
+        document.getElementById('modalVideoTitle').textContent = video.title;
+        document.getElementById('modalChannelName').textContent = video.channel;
+        document.getElementById('modalChannelAvatar').src = video.avatar;
+        document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
+        document.getElementById('modalVideoDescription').textContent = video.description;
+        document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
+        document.getElementById('miniplayerTitle').textContent = video.title;
+        
+        // Update like button state
+        const likeBtn = document.getElementById('likeBtn');
+        if (this.likedVideos.includes(video.id)) {
+            likeBtn.classList.add('active');
+        } else {
+            likeBtn.classList.remove('active');
+        }
+        
+        // Update save button state
+        const saveBtn = document.getElementById('saveBtn');
+        if (this.savedVideos.includes(video.id)) {
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+            saveBtn.classList.add('active');
+        } else {
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
+            saveBtn.classList.remove('active');
+        }
+        
+        // Auto-play if was playing or autoplay is enabled
+        if (wasPlaying || this.settings.autoPlay) {
+            videoPlayer.play();
+        }
+        
+        // Load comments and recommendations
+        this.loadComments(video.id);
+        this.loadRecommendedVideos(video);
     }
 
     setupAdminControls() {
@@ -1257,9 +1577,18 @@ class TikTikApp {
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
         
-        modal.classList.remove('active');
+        modal.classList.remove('active', 'minimized', 'theater');
         player.pause();
         player.src = '';
+        
+        // Reset control states
+        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
+        document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
+        document.getElementById('speedBtn').textContent = '1x';
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('volumeFill').style.width = '80%';
         
         this.currentVideo = null;
     }
