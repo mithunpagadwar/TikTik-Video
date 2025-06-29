@@ -1,4 +1,3 @@
-
 // TikTik - YouTube Clone Application
 // Pure JavaScript implementation with local storage persistence
 
@@ -172,6 +171,9 @@ class TikTikApp {
             }
         });
 
+        // Video player controls
+        this.setupVideoControls();
+
         // Like/Dislike buttons
         document.getElementById('likeBtn').addEventListener('click', () => {
             this.toggleLike();
@@ -318,6 +320,364 @@ class TikTikApp {
         });
 
         this.setupAdminControls();
+    }
+
+    setupVideoControls() {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const muteBtn = document.getElementById('muteBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeFill = document.getElementById('volumeFill');
+        
+        // New YouTube-style controls
+        const nextVideoBtn = document.getElementById('nextVideoBtn');
+        const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
+        const captionsBtn = document.getElementById('captionsBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsDropdown = document.getElementById('settingsDropdown');
+        const miniplayerBtn = document.getElementById('miniplayerBtn');
+        const theaterModeBtn = document.getElementById('theaterModeBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        
+        // Player state controls
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const theaterBtn = document.getElementById('theaterBtn');
+        const restoreBtn = document.getElementById('restoreBtn');
+        
+        // Navigation controls
+        const prevVideoBtn = document.getElementById('prevVideoBtn');
+        
+        // Miniplayer controls
+        const miniplayerPlayBtn = document.getElementById('miniplayerPlayBtn');
+        
+        // Play/Pause functionality
+        playPauseBtn.addEventListener('click', () => {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                videoPlayer.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+        
+        miniplayerPlayBtn.addEventListener('click', () => {
+            playPauseBtn.click();
+        });
+        
+        // Video player events
+        videoPlayer.addEventListener('play', () => {
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            miniplayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        });
+        
+        videoPlayer.addEventListener('pause', () => {
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            miniplayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+        });
+        
+        // Progress bar
+        videoPlayer.addEventListener('timeupdate', () => {
+            if (videoPlayer.duration) {
+                const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                progressFill.style.width = progress + '%';
+                
+                const currentTime = this.formatTime(videoPlayer.currentTime);
+                const duration = this.formatTime(videoPlayer.duration);
+                timeDisplay.textContent = `${currentTime} / ${duration}`;
+            }
+        });
+        
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const progress = clickX / rect.width;
+            videoPlayer.currentTime = progress * videoPlayer.duration;
+        });
+        
+        // Volume controls
+        muteBtn.addEventListener('click', () => {
+            if (videoPlayer.muted) {
+                videoPlayer.muted = false;
+                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+            } else {
+                videoPlayer.muted = true;
+                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                volumeFill.style.width = '0%';
+            }
+        });
+        
+        volumeSlider.addEventListener('click', (e) => {
+            const rect = volumeSlider.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const volume = clickX / rect.width;
+            videoPlayer.volume = Math.max(0, Math.min(1, volume));
+            volumeFill.style.width = (volume * 100) + '%';
+            videoPlayer.muted = false;
+            muteBtn.innerHTML = volume > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+        });
+        
+        // Autoplay toggle
+        autoplayToggleBtn.addEventListener('click', () => {
+            this.settings.autoPlay = !this.settings.autoPlay;
+            autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
+            autoplayToggleBtn.title = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
+            this.saveSettings();
+        });
+        
+        // Captions toggle
+        captionsBtn.addEventListener('click', () => {
+            const isActive = captionsBtn.classList.toggle('active');
+            document.getElementById('captionsStatus').textContent = isActive ? 'On' : 'Off';
+            this.toggleCaptions(isActive);
+        });
+        
+        // Settings dropdown
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+        
+        // Close settings dropdown when clicking outside
+        document.addEventListener('click', () => {
+            settingsDropdown.classList.remove('active');
+        });
+        
+        // Settings items
+        document.querySelectorAll('.settings-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const setting = e.currentTarget.dataset.setting;
+                this.handleSettingChange(setting);
+            });
+        });
+        
+        // Miniplayer button
+        miniplayerBtn.addEventListener('click', () => {
+            this.minimizeVideo();
+        });
+        
+        // Theater mode button
+        theaterModeBtn.addEventListener('click', () => {
+            this.toggleTheaterMode();
+        });
+        
+        // Player state controls
+        minimizeBtn.addEventListener('click', () => {
+            this.minimizeVideo();
+        });
+        
+        theaterBtn.addEventListener('click', () => {
+            this.toggleTheaterMode();
+        });
+        
+        fullscreenBtn.addEventListener('click', () => {
+            this.toggleFullscreen();
+        });
+        
+        restoreBtn.addEventListener('click', () => {
+            this.restoreVideo();
+        });
+        
+        // Navigation controls
+        prevVideoBtn.addEventListener('click', () => {
+            this.playPreviousVideo();
+        });
+        
+        nextVideoBtn.addEventListener('click', () => {
+            this.playNextVideo();
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (this.currentVideo && document.getElementById('videoModal').classList.contains('active')) {
+                switch(e.code) {
+                    case 'Space':
+                        e.preventDefault();
+                        playPauseBtn.click();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
+                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
+                        volumeFill.style.width = (videoPlayer.volume * 100) + '%';
+                        break;
+                    case 'KeyM':
+                        e.preventDefault();
+                        muteBtn.click();
+                        break;
+                    case 'KeyF':
+                        e.preventDefault();
+                        fullscreenBtn.click();
+                        break;
+                    case 'KeyT':
+                        e.preventDefault();
+                        theaterBtn.click();
+                        break;
+                    case 'KeyI':
+                        e.preventDefault();
+                        minimizeBtn.click();
+                        break;
+                }
+            }
+        });
+    }
+
+    formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    minimizeVideo() {
+        const modal = document.getElementById('videoModal');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const miniplayerTitle = document.getElementById('miniplayerTitle');
+        
+        if (modal.classList.contains('minimized')) {
+            return;
+        }
+        
+        modal.classList.add('minimized');
+        minimizeBtn.innerHTML = '<i class="fas fa-expand"></i>';
+        minimizeBtn.title = 'Restore';
+        
+        if (this.currentVideo) {
+            miniplayerTitle.textContent = this.currentVideo.title;
+        }
+        
+        this.showToast('Video minimized. Click to restore.', 'info');
+    }
+
+    restoreVideo() {
+        const modal = document.getElementById('videoModal');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        
+        modal.classList.remove('minimized');
+        modal.classList.remove('theater');
+        minimizeBtn.innerHTML = '<i class="fas fa-compress"></i>';
+        minimizeBtn.title = 'Minimize';
+        
+        this.showToast('Video restored', 'info');
+    }
+
+    toggleTheaterMode() {
+        const modal = document.getElementById('videoModal');
+        const theaterBtn = document.getElementById('theaterBtn');
+        
+        if (modal.classList.contains('theater')) {
+            modal.classList.remove('theater');
+            theaterBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            theaterBtn.title = 'Theater mode';
+            this.showToast('Theater mode disabled', 'info');
+        } else {
+            modal.classList.remove('minimized');
+            modal.classList.add('theater');
+            theaterBtn.innerHTML = '<i class="fas fa-compress"></i>';
+            theaterBtn.title = 'Exit theater mode';
+            this.showToast('Theater mode enabled', 'info');
+        }
+    }
+
+    toggleFullscreen() {
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        if (!document.fullscreenElement) {
+            videoPlayer.requestFullscreen().catch(err => {
+                this.showToast('Fullscreen not supported', 'error');
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    playPreviousVideo() {
+        if (!this.currentVideo) return;
+        
+        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
+        if (currentIndex > 0) {
+            const prevVideo = this.videos[currentIndex - 1];
+            this.switchToVideo(prevVideo);
+            this.showToast('Playing previous video', 'info');
+        } else {
+            this.showToast('This is the first video', 'info');
+        }
+    }
+
+    playNextVideo() {
+        if (!this.currentVideo) return;
+        
+        const currentIndex = this.videos.findIndex(v => v.id === this.currentVideo.id);
+        if (currentIndex < this.videos.length - 1) {
+            const nextVideo = this.videos[currentIndex + 1];
+            this.switchToVideo(nextVideo);
+            this.showToast('Playing next video', 'info');
+        } else {
+            this.showToast('This is the last video', 'info');
+        }
+    }
+
+    switchToVideo(video) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const wasPlaying = !videoPlayer.paused;
+        
+        this.currentVideo = video;
+        
+        // Update video source
+        videoPlayer.src = video.videoUrl;
+        
+        // Update video info
+        document.getElementById('modalVideoTitle').textContent = video.title;
+        document.getElementById('modalChannelName').textContent = video.channel;
+        document.getElementById('modalChannelAvatar').src = video.avatar;
+        document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
+        document.getElementById('modalVideoDescription').textContent = video.description;
+        document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
+        document.getElementById('miniplayerTitle').textContent = video.title;
+        
+        // Update like button state
+        const likeBtn = document.getElementById('likeBtn');
+        if (this.likedVideos.includes(video.id)) {
+            likeBtn.classList.add('active');
+        } else {
+            likeBtn.classList.remove('active');
+        }
+        
+        // Update save button state
+        const saveBtn = document.getElementById('saveBtn');
+        if (this.savedVideos.includes(video.id)) {
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+            saveBtn.classList.add('active');
+        } else {
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save';
+            saveBtn.classList.remove('active');
+        }
+        
+        // Auto-play if was playing or autoplay is enabled
+        if (wasPlaying || this.settings.autoPlay) {
+            videoPlayer.play();
+        }
+        
+        // Load comments and recommendations
+        this.loadComments(video.id);
+        this.loadRecommendedVideos(video);
     }
 
     setupAdminControls() {
@@ -1257,9 +1617,18 @@ class TikTikApp {
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
         
-        modal.classList.remove('active');
+        modal.classList.remove('active', 'minimized', 'theater');
         player.pause();
         player.src = '';
+        
+        // Reset control states
+        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
+        document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
+        document.getElementById('speedBtn').textContent = '1x';
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('volumeFill').style.width = '80%';
         
         this.currentVideo = null;
     }
@@ -1980,6 +2349,110 @@ class TikTikApp {
             return (num / 1000).toFixed(1) + 'K';
         }
         return num.toString();
+    }
+
+    toggleCaptions(show) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        if (show) {
+            // Enable captions/subtitles
+            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
+                for (let track of videoPlayer.textTracks) {
+                    track.mode = 'showing';
+                }
+            }
+            this.showToast('Captions enabled', 'info');
+        } else {
+            // Disable captions/subtitles
+            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
+                for (let track of videoPlayer.textTracks) {
+                    track.mode = 'hidden';
+                }
+            }
+            this.showToast('Captions disabled', 'info');
+        }
+    }
+    
+    handleSettingChange(setting) {
+        switch(setting) {
+            case 'quality':
+                this.showQualityMenu();
+                break;
+            case 'speed':
+                this.showSpeedMenu();
+                break;
+            case 'captions':
+                this.showCaptionsMenu();
+                break;
+        }
+    }
+    
+    showQualityMenu() {
+        const qualities = ['Auto', '2160p', '1440p', '1080p', '720p', '480p', '360p', '240p'];
+        this.showSubMenu('Quality', qualities, 'Auto', (quality) => {
+            document.getElementById('currentQuality').textContent = quality;
+            this.setVideoQuality(quality);
+        });
+    }
+    
+    showSpeedMenu() {
+        const speeds = ['0.25', '0.5', '0.75', 'Normal', '1.25', '1.5', '1.75', '2'];
+        this.showSubMenu('Playback speed', speeds, 'Normal', (speed) => {
+            document.getElementById('currentSpeed').textContent = speed;
+            this.setPlaybackSpeed(speed);
+        });
+    }
+    
+    showCaptionsMenu() {
+        const options = ['Off', 'English', 'Hindi', 'Spanish', 'French'];
+        this.showSubMenu('Subtitles/CC', options, 'Off', (option) => {
+            document.getElementById('captionsStatus').textContent = option;
+            this.setCaptionLanguage(option);
+        });
+    }
+    
+    showSubMenu(title, options, current, callback) {
+        const dropdown = document.getElementById('settingsDropdown');
+        dropdown.innerHTML = `
+            <div class="settings-item" onclick="this.parentElement.classList.remove('active')">
+                <i class="fas fa-chevron-left"></i>
+                <span>${title}</span>
+            </div>
+            ${options.map(option => `
+                <div class="settings-item" data-value="${option}">
+                    <span>${option}</span>
+                    ${option === current ? '<i class="fas fa-check"></i>' : ''}
+                </div>
+            `).join('')}
+        `;
+        
+        dropdown.querySelectorAll('[data-value]').forEach(item => {
+            item.addEventListener('click', () => {
+                callback(item.dataset.value);
+                dropdown.classList.remove('active');
+            });
+        });
+    }
+    
+    setVideoQuality(quality) {
+        this.showToast(`Video quality set to ${quality}`, 'info');
+    }
+    
+    setPlaybackSpeed(speed) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const speedValue = speed === 'Normal' ? 1 : parseFloat(speed);
+        videoPlayer.playbackRate = speedValue;
+        this.showToast(`Playback speed set to ${speed}`, 'info');
+    }
+    
+    setCaptionLanguage(language) {
+        if (language === 'Off') {
+            this.toggleCaptions(false);
+            document.getElementById('captionsBtn').classList.remove('active');
+        } else {
+            this.toggleCaptions(true);
+            document.getElementById('captionsBtn').classList.add('active');
+        }
     }
 
     showToast(message, type = 'info') {
