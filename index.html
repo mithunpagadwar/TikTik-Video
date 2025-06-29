@@ -18,20 +18,6 @@
 
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- GitHub Pages SPA routing -->
-    <script type="text/javascript">
-        (function(l) {
-            if (l.search[1] === '/' ) {
-                var decoded = l.search.slice(1).split('&').map(function(s) { 
-                    return s.replace(/~and~/g, '&')
-                }).join('?');
-                window.history.replaceState(null, null,
-                    l.pathname.slice(0, -1) + decoded + l.hash
-                );
-            }
-        }(window.location))
-    </script>
 </head>
 <body>
     <!-- Header -->
@@ -65,109 +51,221 @@
             <button class="icon-btn" id="adminPanelBtn" title="Admin Panel">
                 <i class="fas fa-cog"></i>
              </button>
-           <!-- Google Login Button -->
-<button id="googleLoginBtn" onclick="signInWithGoogle()">Login with Google</button>
+           <!-- Enhanced Google Login Button -->
+<div class="login-section">
+  <button id="googleLoginBtn" class="google-login-btn" onclick="signInWithGoogle()">
+    <div class="login-btn-content">
+      <i class="fab fa-google google-icon"></i>
+      <span class="login-text">Sign in with Google</span>
+    </div>
+    <div class="login-btn-ripple"></div>
+  </button>
+</div>
 
-<!-- YouTube-Style Profile Dropdown -->
+<!-- Enhanced Profile Dropdown -->
 <div id="profile-container" class="profile-container" style="display: none;">
-  <img id="profile-pic" class="profile-pic" src="" alt="Profile" onclick="toggleProfileMenu()" />
+  <div class="profile-pic-wrapper">
+    <img id="profile-pic" class="profile-pic" src="" alt="Profile" onclick="toggleProfileMenu()" />
+    <div class="profile-status-indicator"></div>
+  </div>
+  
   <div id="profile-menu" class="profile-menu">
-    <div class="profile-section">
+    <!-- Profile Header Section -->
+    <div class="profile-header">
+      <div class="profile-banner"></div>
       <div class="profile-info">
-        <img id="profile-avatar" class="profile-avatar" src="" alt="Profile" />
+        <div class="profile-avatar-wrapper">
+          <img id="profile-avatar" class="profile-avatar" src="" alt="Profile" />
+          <div class="avatar-border"></div>
+        </div>
         <div class="profile-details">
-          <p id="profile-name" class="profile-name"></p>
-          <p id="profile-email" class="profile-email"></p>
-          <a href="#" class="profile-link">Create a channel</a>
+          <h3 id="profile-name" class="profile-name">Loading...</h3>
+          <p id="profile-email" class="profile-email">Loading...</p>
+          <div class="profile-stats">
+            <span class="stat-item">
+              <i class="fas fa-users"></i>
+              <span id="profile-subscribers">0 subscribers</span>
+            </span>
+          </div>
+          <a href="#" class="profile-link">
+            <i class="fas fa-plus"></i>
+            Create a channel
+          </a>
         </div>
       </div>
     </div>
 
     <div class="menu-divider"></div>
 
-    <div class="menu-item" onclick="window.open('https://accounts.google.com', '_blank')">
-      <i class="fab fa-google"></i>
-      <span>Google Account</span>
-    </div>
+    <!-- Quick Actions -->
+    <div class="menu-section">
+      <div class="menu-item highlight" onclick="window.open('https://accounts.google.com', '_blank')">
+        <div class="menu-icon">
+          <i class="fab fa-google"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Google Account</span>
+          <span class="menu-subtitle">Manage your account</span>
+        </div>
+        <i class="fas fa-external-link-alt menu-arrow"></i>
+      </div>
 
-    <div class="menu-item" onclick="switchAccount()">
-      <i class="fas fa-users"></i>
-      <span>Switch account</span>
-    </div>
-
-    <div class="menu-item" onclick="logout()">
-      <i class="fas fa-sign-out-alt"></i>
-      <span>Sign out</span>
-    </div>
-
-    <div class="menu-divider"></div>
-
-    <div class="menu-item" onclick="openTikTikStudio()">
-      <i class="fas fa-video"></i>
-      <span>TikTik Studio</span>
-    </div>
-
-    <div class="menu-item" onclick="openCreatorAcademy()">
-      <i class="fas fa-graduation-cap"></i>
-      <span>Creator Academy</span>
-    </div>
-
-    <div class="menu-divider"></div>
-
-    <div class="menu-item" onclick="openPurchases()">
-      <i class="fas fa-shopping-bag"></i>
-      <span>Purchases and memberships</span>
-    </div>
-
-    <div class="menu-item" onclick="openYourData()">
-      <i class="fas fa-database"></i>
-      <span>Your data in TikTik</span>
-    </div>
-
-    <div class="menu-item" onclick="openAppearance()">
-      <i class="fas fa-palette"></i>
-      <span>Appearance: Device theme</span>
-      <i class="fas fa-chevron-right"></i>
-    </div>
-
-    <div class="menu-item" onclick="openLanguage()">
-      <i class="fas fa-language"></i>
-      <span>Language: English</span>
-      <i class="fas fa-chevron-right"></i>
-    </div>
-
-    <div class="menu-item" onclick="openRestrictedMode()">
-      <i class="fas fa-shield-alt"></i>
-      <span>Restricted Mode: Off</span>
-      <i class="fas fa-chevron-right"></i>
-    </div>
-
-    <div class="menu-item" onclick="openLocation()">
-      <i class="fas fa-map-marker-alt"></i>
-      <span>Location: India</span>
-      <i class="fas fa-chevron-right"></i>
-    </div>
-
-    <div class="menu-item" onclick="openKeyboardShortcuts()">
-      <i class="fas fa-keyboard"></i>
-      <span>Keyboard shortcuts</span>
+      <div class="menu-item" onclick="switchAccount()">
+        <div class="menu-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Switch account</span>
+          <span class="menu-subtitle">Change to another account</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
     </div>
 
     <div class="menu-divider"></div>
 
-    <div class="menu-item" onclick="openSettings()">
-      <i class="fas fa-cog"></i>
-      <span>Settings</span>
+    <!-- Creator Tools -->
+    <div class="menu-section">
+      <div class="section-header">
+        <i class="fas fa-video"></i>
+        <span>Creator Tools</span>
+      </div>
+      
+      <div class="menu-item" onclick="openTikTikStudio()">
+        <div class="menu-icon creator">
+          <i class="fas fa-video"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">TikTik Studio</span>
+          <span class="menu-subtitle">Manage videos & analytics</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
+
+      <div class="menu-item" onclick="openCreatorAcademy()">
+        <div class="menu-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Creator Academy</span>
+          <span class="menu-subtitle">Learn & grow your channel</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
     </div>
 
-    <div class="menu-item" onclick="openHelp()">
-      <i class="fas fa-question-circle"></i>
-      <span>Help</span>
+    <div class="menu-divider"></div>
+
+    <!-- Settings & Preferences -->
+    <div class="menu-section">
+      <div class="menu-item" onclick="openAppearance()">
+        <div class="menu-icon">
+          <i class="fas fa-palette"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Appearance</span>
+          <span class="menu-subtitle">Device theme</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
+
+      <div class="menu-item" onclick="openLanguage()">
+        <div class="menu-icon">
+          <i class="fas fa-language"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Language</span>
+          <span class="menu-subtitle">English</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
+
+      <div class="menu-item" onclick="openLocation()">
+        <div class="menu-icon">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Location</span>
+          <span class="menu-subtitle">India</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
+
+      <div class="menu-item" onclick="openRestrictedMode()">
+        <div class="menu-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Restricted Mode</span>
+          <span class="menu-subtitle">Off</span>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="restricted-toggle">
+          <label for="restricted-toggle"></label>
+        </div>
+      </div>
     </div>
 
-    <div class="menu-item" onclick="sendFeedback()">
-      <i class="fas fa-flag"></i>
-      <span>Send feedback</span>
+    <div class="menu-divider"></div>
+
+    <!-- Help & Support -->
+    <div class="menu-section">
+      <div class="menu-item" onclick="openSettings()">
+        <div class="menu-icon">
+          <i class="fas fa-cog"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Settings</span>
+          <span class="menu-subtitle">Customize your experience</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
+
+      <div class="menu-item" onclick="openHelp()">
+        <div class="menu-icon">
+          <i class="fas fa-question-circle"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Help</span>
+          <span class="menu-subtitle">Get support</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
+
+      <div class="menu-item" onclick="sendFeedback()">
+        <div class="menu-icon">
+          <i class="fas fa-flag"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Send feedback</span>
+          <span class="menu-subtitle">Help us improve</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+      </div>
+    </div>
+
+    <div class="menu-divider"></div>
+
+    <!-- Logout Section -->
+    <div class="menu-section">
+      <div class="menu-item logout" onclick="logout()">
+        <div class="menu-icon logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </div>
+        <div class="menu-content">
+          <span class="menu-title">Sign out</span>
+          <span class="menu-subtitle">Sign out of your account</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Footer -->
+    <div class="menu-footer">
+      <div class="footer-links">
+        <a href="#" onclick="openPrivacyPolicy()">Privacy</a>
+        <a href="#" onclick="openTerms()">Terms</a>
+        <a href="#" onclick="openPolicies()">Policies</a>
+      </div>
     </div>
   </div>
 </div>
@@ -295,10 +393,19 @@
                             <span id="subscriberCount">0 subscribers</span>
                             <span id="videoCount">0 videos</span>
                         </div>
-                        <button class="btn btn-primary" id="editChannelBtn">
-                            <i class="fas fa-edit"></i>
-                            Edit Channel
-                        </button>
+                        <div class="channel-actions">
+                            <button class="btn btn-primary subscribe-btn" id="subscribeBtn">
+                                <i class="fas fa-user-plus"></i>
+                                Subscribe
+                            </button>
+                            <button class="btn btn-secondary bell-btn" id="bellBtn" title="Turn on notifications">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                            <button class="btn btn-secondary" id="editChannelBtn">
+                                <i class="fas fa-edit"></i>
+                                Edit Channel
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="channel-tabs">
@@ -502,7 +609,7 @@
                         <a href="#" class="settings-tab" data-tab="video-quality">Video quality preferences</a>
                         <a href="#" class="settings-tab" data-tab="playback">Playback</a>
                         <a href="#" class="settings-tab" data-tab="captions">Captions</a>
-                        <a href="#" class="settings-tab" data-tab="data-saving">Data saving</a>
+                        <a href="#" class="settings-tab" data-saving="data-saving">Data saving</a>
                         <a href="#" class="settings-tab" data-tab="downloads">Downloads</a>
                         <a href="#" class="settings-tab" data-tab="live-chat">Live chat</a>
                         <a href="#" class="settings-tab" data-tab="accessibility">Accessibility</a>
@@ -847,7 +954,7 @@
                             <div class="setting-item">
                                 <label>
                                     <input type="checkbox" id="always-choose-quality">
-                                    I have a slow connection. Never play higher-quality video.
+                                    I havea slow connection. Never play higher-quality video.
                                 </label>
                                 <p class="setting-description">Prevents automatic quality upgrades</p>
                             </div>
@@ -1653,6 +1760,7 @@
                                     High contrast mode
                                 </label>
                                 <p class="setting-description">Increase contrast for better visibility</p>
+```python
                             </div>
                             <div class="setting-item">
                                 <label>Font size</label>
@@ -2163,37 +2271,52 @@
 
                 <div class="video-info-section">
                     <div class="video-info">
-                        <h3 class="video-title" id="modalVideoTitle"></h3>
-                        <div class="video-meta">
-                            <div class="channel-info">
-                                <img class="channel-avatar" id="modalChannelAvatar" src="" alt="Channel Avatar">
-                                <div class="channel-details">
-                                    <span class="channel-name" id="modalChannelName"></span>
-                                    <span class="video-stats" id="modalVideoStats"></span>
-                                </div>
+                    <h3 class="video-title" id="modalVideoTitle">Video Title</h3>
+                    <div class="video-meta">
+                        <div class="video-stats" id="modalVideoStats">1.2M views • 2 days ago</div>
+                        <div class="video-actions">
+                            <button class="action-btn" id="likeBtn">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span id="likeCount">24.5K</span>
+                            </button>
+                            <button class="action-btn" id="dislikeBtn">
+                                <i class="fas fa-thumbs-down"></i>
+                                Dislike
+                            </button>
+                            <button class="action-btn" id="shareBtn">
+                                <i class="fas fa-share"></i>
+                                Share
+                            </button>
+                            <button class="action-btn" id="saveBtn">
+                                <i class="fas fa-bookmark"></i>
+                                Save
+                            </button>
+                            <button class="action-btn" id="downloadBtn">
+                                <i class="fas fa-download"></i>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Channel Info with Subscribe and Bell Button -->
+                    <div class="channel-info-section">
+                        <div class="channel-info-row">
+                            <img class="channel-avatar" id="modalChannelAvatar" src="" alt="Channel Avatar">
+                            <div class="channel-details">
+                                <h3 class="channel-name" id="modalChannelName">Channel Name</h3>
+                                <p class="subscriber-count">1.2M subscribers</p>
                             </div>
-                            <div class="video-actions">
-                                <button class="action-btn like-btn" id="likeBtn">
-                                    <i class="fas fa-thumbs-up"></i>
-                                    <span id="likeCount">0</span>
+                            <div class="channel-actions">
+                                <button class="btn subscribe-btn" id="modalSubscribeBtn">
+                                    <i class="fas fa-user-plus"></i>
+                                    Subscribe
                                 </button>
-                                <button class="action-btn dislike-btn" id="dislikeBtn">
-                                    <i class="fas fa-thumbs-down"></i>
-                                </button>
-                                <button class="action-btn share-btn" id="shareBtn">
-                                    <i class="fas fa-share"></i>
-                                    Share
-                                </button>
-                                <button class="action-btn save-btn" id="saveBtn">
-                                    <i class="fas fa-bookmark"></i>
-                                    Save
-                                </button>
-                                <button class="action-btn download-btn" id="downloadBtn">
-                                    <i class="fas fa-download"></i>
-                                    Download
+                                <button class="btn bell-btn" id="modalBellBtn" title="Turn on notifications" style="display: none;">
+                                    <i class="fas fa-bell"></i>
                                 </button>
                             </div>
                         </div>
+                    </div>
                         <div class="video-description" id="modalVideoDescription"></div>
 
                         <!-- Comments Section -->
@@ -2506,7 +2629,7 @@
                             </select>
                         </div>
                         <div class="short-actions">
-                            <button class="btn btn-secondary" id="cancelShortBtn">Cancel</button>
+                            <button class="btnbtn-secondary" id="cancelShortBtn">Cancel</button>
                             <button class="btn btn-primary" id="publishShortBtn">Publish Short</button>
                         </div>
                     </div>
