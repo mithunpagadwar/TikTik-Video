@@ -904,6 +904,7 @@ class TikTikApp {
 
         const isActive = bellBtn.classList.contains('active');
 
+```text
         if (isActive) {
             bellBtn.classList.remove('active');
             bellBtn.title = 'Turn on notifications';
@@ -1827,75 +1828,74 @@ class TikTikApp {
         }
     }
 
-   closeVideoModal() {
-    const modal = document.getElementById('videoModal');
-    const player = document.getElementById('videoPlayer');
+    closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
 
-    modal.classList.remove('active', 'minimized', 'theater');
-    player.pause();
-    player.src = '';
+        modal.classList.remove('active', 'minimized', 'theater');
+        player.pause();        player.src = '';
 
-    // Reset control states
-    document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
-    document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
-    document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
-    document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
-    document.getElementById('speedBtn').textContent = '1x';
-    document.getElementById('progressFill').style.width = '0%';
-    document.getElementById('volumeFill').style.width = '80%';
+        // Reset control states
+        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
+        document.getElementById('theaterBtn').innerHTML = '<i class="fas fa-expand"></i>';
+        document.getElementById('speedBtn').textContent = '1x';
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('volumeFill').style.width = '80%';
 
-    this.currentVideo = null;
-}
-
-loadComments(videoId) {
-    const commentsList = document.getElementById('commentsList');
-    const videoComments = this.comments[videoId] || [];
-
-    commentsList.innerHTML = '';
-
-    if (videoComments.length === 0) {
-        commentsList.innerHTML = `
-            <div class="empty-state">
-                <p>No comments yet</p>
-                <span>Be the first to comment!</span>
-            </div>
-        `;
-        return;
+        this.currentVideo = null;
     }
 
-    videoComments.forEach(comment => {
-        const commentElement = this.createCommentElement(comment);
-        commentsList.appendChild(commentElement);
-    });
+    loadComments(videoId) {
+        const commentsList = document.getElementById('commentsList');
+        const videoComments = this.comments[videoId] || [];
 
-    document.getElementById('commentCount').textContent = videoComments.length;
-}
+        commentsList.innerHTML = '';
 
-createCommentElement(comment) {
-    const element = document.createElement('div');
-    element.className = 'comment-item';
+        if (videoComments.length === 0) {
+            commentsList.innerHTML = `
+                <div class="empty-state">
+                    <p>No comments yet</p>
+                    <span>Be the first to comment!</span>
+                </div>
+            `;
+            return;
+        }
 
-    element.innerHTML = `
-        <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
-        <div class="comment-content">
-            <div class="comment-author">
-                ${comment.author}
-                <span class="comment-time">${comment.time}</span>
+        videoComments.forEach(comment => {
+            const commentElement = this.createCommentElement(comment);
+            commentsList.appendChild(commentElement);
+        });
+
+        document.getElementById('commentCount').textContent = videoComments.length;
+    }
+
+    createCommentElement(comment) {
+        const element = document.createElement('div');
+        element.className = 'comment-item';
+
+        element.innerHTML = `
+            <img class="user-avatar-small" src="${comment.avatar}" alt="${comment.author}">
+            <div class="comment-content">
+                <div class="comment-author">
+                    ${comment.author}
+                    <span class="comment-time">${comment.time}</span>
+                </div>
+                <div class="comment-text">${comment.text}</div>
+                <div class="comment-actions-bar">
+                    <button class="comment-like-btn">
+                        <i class="fas fa-thumbs-up"></i>
+                        ${comment.likes || 0}
+                    </button>
+                    <button class="comment-reply-btn">Reply</button>
+                </div>
             </div>
-            <div class="comment-text">${comment.text}</div>
-            <div class="comment-actions-bar">
-                <button class="comment-like-btn">
-                    <i class="fas fa-thumbs-up"></i>
-                    ${comment.likes || 0}
-                </button>
-                <button class="comment-reply-btn">Reply</button>
-            </div>
-        </div>
-    `;
+        `;
 
-    return element;
-}
-    
+        return element;
+    }
+
     loadRecommendedVideos(currentVideo) {
         const recommendedList = document.getElementById('recommendedList');
         recommendedList.innerHTML = '';
@@ -3192,342 +3192,6 @@ createCommentElement(comment) {
         }
     }
 }
-
-// Enhanced Google Authentication Integration
-let auth;
-let user = null;
-
-// Initialize Firebase Auth (you'll need to add your Firebase config)
-function initializeAuth() {
-    // Firebase configuration would go here
-    console.log('Auth initialized');
-}
-
-// Google Sign In function
-async function signInWithGoogle() {
-    try {
-        const loginBtn = document.getElementById('googleLoginBtn');
-
-        // Add loading state
-        loginBtn.innerHTML = `
-            <div class="login-btn-content">
-                <i class="fas fa-spinner fa-spin google-icon"></i>
-                <span class="login-text">Signing in...</span>
-            </div>
-            <div class="login-btn-ripple"></div>
-        `;
-
-        // Simulate authentication (replace with actual Firebase auth)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Mock user data (replace with actual user data from Firebase)
-        const mockUser = {
-            uid: 'user_' + Date.now(),
-            displayName: 'John Doe',
-            email: 'john.doe@gmail.com',
-            photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face',
-            emailVerified: true,
-            createdAt: new Date().toISOString()
-        };
-
-        // Set user and update UI
-        user = mockUser;
-        updateUserInterface();
-        showToast('Successfully signed in with Google! 🎉', 'success');
-
-    } catch (error) {
-        console.error('Login failed:', error);
-        showToast('Login failed. Please try again.', 'error');
-
-        // Reset button
-        const loginBtn = document.getElementById('googleLoginBtn');
-        loginBtn.innerHTML = `
-            <div class="login-btn-content">
-                <i class="fab fa-google google-icon"></i>
-                <span class="login-text">Sign in with Google</span>
-            </div>
-            <div class="login-btn-ripple"></div>
-        `;
-    }
-}
-
-// Update UI after successful login
-function updateUserInterface() {
-    if (!user) return;
-
-    // Hide login button and show profile
-    document.querySelector('.login-section').style.display = 'none';
-    document.getElementById('profile-container').style.display = 'inline-block';
-
-    // Update profile information
-    document.getElementById('profile-pic').src = user.photoURL;
-    document.getElementById('profile-avatar').src = user.photoURL;
-    document.getElementById('profile-name').textContent = user.displayName;
-    document.getElementById('profile-email').textContent = user.email;
-
-    // Update subscriber count (mock data)
-    document.getElementById('profile-subscribers').textContent = `${Math.floor(Math.random() * 1000)} subscribers`;
-
-    // Add welcome animation
-    const profileContainer = document.getElementById('profile-container');
-    profileContainer.style.animation = 'profileWelcome 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-}
-
-// Toggle profile menu with enhanced animations
-function toggleProfileMenu() {
-    const menu = document.getElementById('profile-menu');
-    const isVisible = menu.style.display === 'block';
-
-    if (isVisible) {
-        // Hide with animation
-        menu.style.animation = 'menuSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        setTimeout(() => {
-            menu.style.display = 'none';
-        }, 300);
-    } else {
-        // Show with animation
-        menu.style.display = 'block';
-        menu.style.animation = 'menuSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-    }
-}
-
-// Enhanced logout function
-function logout() {
-    if (confirm('Are you sure you want to sign out?')) {
-        // Add logout animation
-        const profileContainer = document.getElementById('profile-container');
-        profileContainer.style.animation = 'profileFadeOut 0.5s ease-in';
-
-        setTimeout(() => {
-            // Reset user state
-            user = null;
-
-            // Show login button and hide profile
-            document.querySelector('.login-section').style.display = 'flex';
-            document.getElementById('profile-container').style.display = 'none';
-            document.getElementById('profile-menu').style.display = 'none';
-
-            // Reset profile data
-            document.getElementById('profile-pic').src = '';
-            document.getElementById('profile-avatar').src = '';
-            document.getElementById('profile-name').textContent = '';
-            document.getElementById('profile-email').textContent = '';
-
-            showToast('Successfully signed out', 'info');
-        }, 500);
-    }
-}
-
-// Account switching functionality
-function switchAccount() {
-    showToast('Account switching feature coming soon!', 'info');
-    toggleProfileMenu();
-}
-
-// Enhanced menu functions
-function openTikTikStudio() {
-    if (typeof app !== 'undefined' && app.openTikTikStudio) {
-        app.openTikTikStudio();
-    } else {
-        showToast('Opening TikTik Studio...', 'info');
-    }
-    toggleProfileMenu();
-}
-
-function openCreatorAcademy() {
-    showToast('Opening Creator Academy...', 'info');
-    toggleProfileMenu();
-}
-
-function openAppearance() {
-    showToast('Opening Appearance settings...', 'info');
-    toggleProfileMenu();
-}
-
-function openLanguage() {
-    showToast('Opening Language settings...', 'info');
-    toggleProfileMenu();
-}
-
-function openLocation() {
-    showToast('Opening Location settings...', 'info');
-    toggleProfileMenu();
-}
-
-function openSettings() {
-    if (typeof app !== 'undefined' && app.navigateToPage) {
-        app.navigateToPage('settings');
-    } else {
-        showToast('Opening Settings...', 'info');
-    }
-    toggleProfileMenu();
-}
-
-function openHelp() {
-    if (typeof app !== 'undefined' && app.navigateToPage) {
-        app.navigateToPage('help');
-    } else {
-        showToast('Opening Help...', 'info');
-    }
-    toggleProfileMenu();
-}
-
-function sendFeedback() {
-    if (typeof app !== 'undefined' && app.navigateToPage) {
-        app.navigateToPage('feedback');
-    } else {
-        showToast('Opening Feedback...', 'info');
-    }
-    toggleProfileMenu();
-}
-
-function openPrivacyPolicy() {
-    showToast('Opening Privacy Policy...', 'info');
-}
-
-function openTerms() {
-    showToast('Opening Terms of Service...', 'info');
-}
-
-function openPolicies() {
-    showToast('Opening Policies...', 'info');
-}
-
-// Enhanced toast notification system
-function showToast(message, type = 'info') {
-    // Create or get toast container
-    let container = document.getElementById('toastContainer');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-    }
-
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-
-    // Add icon based on type
-    const icons = {
-        success: 'fas fa-check-circle',
-        error: 'fas fa-exclamation-circle',
-        warning: 'fas fa-exclamation-triangle',
-        info: 'fas fa-info-circle'
-    };
-
-    toast.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <i class="${icons[type]}" style="color: var(--accent-color);"></i>
-            <span>${message}</span>
-        </div>
-    `;
-
-    container.appendChild(toast);
-
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-        toast.style.animation = 'slideOutRight 0.3s ease';
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-        }, 300);
-    }, 4000);
-}
-
-// Add enhanced animations to CSS
-const enhancedStyles = `
-@keyframes profileWelcome {
-    0% {
-        opacity: 0;
-        transform: scale(0.8) translateY(-10px);
-    }
-    50% {
-        transform: scale(1.05) translateY(-2px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-@keyframes profileFadeOut {
-    0% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-}
-
-@keyframes menuSlideOut {
-    0% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-    }
-}
-
-@keyframes slideOutRight {
-    0% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-}
-`;
-
-// Add enhanced styles to document
-const styleSheet = document.createElement('style');
-styleSheet.textContent = enhancedStyles;
-document.head.appendChild(styleSheet);
-
-// Close profile menu when clicking outside
-document.addEventListener('click', function(event) {
-    const profileContainer = document.getElementById('profile-container');
-    const profileMenu = document.getElementById('profile-menu');
-
-    if (profileContainer && !profileContainer.contains(event.target)) {
-        if (profileMenu && profileMenu.style.display === 'block') {
-            toggleProfileMenu();
-        }
-    }
-});
-
-// Restricted mode toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const restrictedToggle = document.getElementById('restricted-toggle');
-    if (restrictedToggle) {
-        restrictedToggle.addEventListener('change', function() {
-            const isRestricted = this.checked;
-            showToast(
-                isRestricted ? 'Restricted mode enabled' : 'Restricted mode disabled',
-                'info'
-            );
-        });
-    }
-});
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    initializeAuth();
-
-    // Auto-login for demo (remove in production)
-    setTimeout(() => {
-        if (!user) {
-            console.log('Demo mode: Auto-login disabled. Click login button to sign in.');
-        }
-    }, 1000);
-});
 
 // Profile dropdown toggle function
   function toggleProfileMenu() {
