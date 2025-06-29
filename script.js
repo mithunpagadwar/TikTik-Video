@@ -331,17 +331,24 @@ class TikTikApp {
         const muteBtn = document.getElementById('muteBtn');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeFill = document.getElementById('volumeFill');
-        const speedBtn = document.getElementById('speedBtn');
+        
+        // New YouTube-style controls
+        const nextVideoBtn = document.getElementById('nextVideoBtn');
+        const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
+        const captionsBtn = document.getElementById('captionsBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsDropdown = document.getElementById('settingsDropdown');
+        const miniplayerBtn = document.getElementById('miniplayerBtn');
+        const theaterModeBtn = document.getElementById('theaterModeBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
         
         // Player state controls
         const minimizeBtn = document.getElementById('minimizeBtn');
         const theaterBtn = document.getElementById('theaterBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
         const restoreBtn = document.getElementById('restoreBtn');
         
         // Navigation controls
         const prevVideoBtn = document.getElementById('prevVideoBtn');
-        const nextVideoBtn = document.getElementById('nextVideoBtn');
         
         // Miniplayer controls
         const miniplayerPlayBtn = document.getElementById('miniplayerPlayBtn');
@@ -416,15 +423,48 @@ class TikTikApp {
             muteBtn.innerHTML = volume > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
         });
         
-        // Speed control
-        let currentSpeed = 1;
-        const speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-        speedBtn.addEventListener('click', () => {
-            const currentIndex = speeds.indexOf(currentSpeed);
-            const nextIndex = (currentIndex + 1) % speeds.length;
-            currentSpeed = speeds[nextIndex];
-            videoPlayer.playbackRate = currentSpeed;
-            speedBtn.textContent = currentSpeed + 'x';
+        // Autoplay toggle
+        autoplayToggleBtn.addEventListener('click', () => {
+            this.settings.autoPlay = !this.settings.autoPlay;
+            autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
+            autoplayToggleBtn.title = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
+            this.saveSettings();
+        });
+        
+        // Captions toggle
+        captionsBtn.addEventListener('click', () => {
+            const isActive = captionsBtn.classList.toggle('active');
+            document.getElementById('captionsStatus').textContent = isActive ? 'On' : 'Off';
+            this.toggleCaptions(isActive);
+        });
+        
+        // Settings dropdown
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+        
+        // Close settings dropdown when clicking outside
+        document.addEventListener('click', () => {
+            settingsDropdown.classList.remove('active');
+        });
+        
+        // Settings items
+        document.querySelectorAll('.settings-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const setting = e.currentTarget.dataset.setting;
+                this.handleSettingChange(setting);
+            });
+        });
+        
+        // Miniplayer button
+        miniplayerBtn.addEventListener('click', () => {
+            this.minimizeVideo();
+        });
+        
+        // Theater mode button
+        theaterModeBtn.addEventListener('click', () => {
+            this.toggleTheaterMode();
         });
         
         // Player state controls
@@ -2309,6 +2349,110 @@ class TikTikApp {
             return (num / 1000).toFixed(1) + 'K';
         }
         return num.toString();
+    }
+
+    toggleCaptions(show) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        if (show) {
+            // Enable captions/subtitles
+            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
+                for (let track of videoPlayer.textTracks) {
+                    track.mode = 'showing';
+                }
+            }
+            this.showToast('Captions enabled', 'info');
+        } else {
+            // Disable captions/subtitles
+            if (videoPlayer.textTracks && videoPlayer.textTracks.length > 0) {
+                for (let track of videoPlayer.textTracks) {
+                    track.mode = 'hidden';
+                }
+            }
+            this.showToast('Captions disabled', 'info');
+        }
+    }
+    
+    handleSettingChange(setting) {
+        switch(setting) {
+            case 'quality':
+                this.showQualityMenu();
+                break;
+            case 'speed':
+                this.showSpeedMenu();
+                break;
+            case 'captions':
+                this.showCaptionsMenu();
+                break;
+        }
+    }
+    
+    showQualityMenu() {
+        const qualities = ['Auto', '2160p', '1440p', '1080p', '720p', '480p', '360p', '240p'];
+        this.showSubMenu('Quality', qualities, 'Auto', (quality) => {
+            document.getElementById('currentQuality').textContent = quality;
+            this.setVideoQuality(quality);
+        });
+    }
+    
+    showSpeedMenu() {
+        const speeds = ['0.25', '0.5', '0.75', 'Normal', '1.25', '1.5', '1.75', '2'];
+        this.showSubMenu('Playback speed', speeds, 'Normal', (speed) => {
+            document.getElementById('currentSpeed').textContent = speed;
+            this.setPlaybackSpeed(speed);
+        });
+    }
+    
+    showCaptionsMenu() {
+        const options = ['Off', 'English', 'Hindi', 'Spanish', 'French'];
+        this.showSubMenu('Subtitles/CC', options, 'Off', (option) => {
+            document.getElementById('captionsStatus').textContent = option;
+            this.setCaptionLanguage(option);
+        });
+    }
+    
+    showSubMenu(title, options, current, callback) {
+        const dropdown = document.getElementById('settingsDropdown');
+        dropdown.innerHTML = `
+            <div class="settings-item" onclick="this.parentElement.classList.remove('active')">
+                <i class="fas fa-chevron-left"></i>
+                <span>${title}</span>
+            </div>
+            ${options.map(option => `
+                <div class="settings-item" data-value="${option}">
+                    <span>${option}</span>
+                    ${option === current ? '<i class="fas fa-check"></i>' : ''}
+                </div>
+            `).join('')}
+        `;
+        
+        dropdown.querySelectorAll('[data-value]').forEach(item => {
+            item.addEventListener('click', () => {
+                callback(item.dataset.value);
+                dropdown.classList.remove('active');
+            });
+        });
+    }
+    
+    setVideoQuality(quality) {
+        this.showToast(`Video quality set to ${quality}`, 'info');
+    }
+    
+    setPlaybackSpeed(speed) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const speedValue = speed === 'Normal' ? 1 : parseFloat(speed);
+        videoPlayer.playbackRate = speedValue;
+        this.showToast(`Playback speed set to ${speed}`, 'info');
+    }
+    
+    setCaptionLanguage(language) {
+        if (language === 'Off') {
+            this.toggleCaptions(false);
+            document.getElementById('captionsBtn').classList.remove('active');
+        } else {
+            this.toggleCaptions(true);
+            document.getElementById('captionsBtn').classList.add('active');
+        }
     }
 
     showToast(message, type = 'info') {
