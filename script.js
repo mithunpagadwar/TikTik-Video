@@ -171,6 +171,19 @@ class TikTikApp {
             }
         });
 
+        // Auto play next video when current video ends
+        videoPlayer.addEventListener('ended', () => {
+            if (this.settings.autoPlay && this.currentPlaylist && this.currentVideoIndex < this.currentPlaylist.length - 1) {
+                setTimeout(() => {
+                    this.playNextVideo();
+                }, 1000); // 1 second delay before next video
+            } else if (this.settings.autoPlay && this.isRepeatOn) {
+                setTimeout(() => {
+                    this.playVideoFromPlaylist(0);
+                }, 1000);
+            }
+        });
+
         // Video player controls
         this.setupVideoControls();
 
@@ -908,6 +921,7 @@ class TikTikApp {
             const video = this.videos.find(v => v.id === videoId);
             if (video) {
                 const videoCard = this.createVideoCard(video);
+```text
                 grid.appendChild(videoCard);
             }
         });
@@ -2476,6 +2490,192 @@ class TikTikApp {
     hideLoading() {
         document.getElementById('loadingSpinner').classList.remove('active');
     }
+
+    openTikTikStudio() {
+        document.getElementById('studioModal').classList.add('active');
+        this.loadStudioData();
+        if (typeof toggleProfileMenu === 'function') {
+            toggleProfileMenu();
+        }
+    }
+
+    closeTikTikStudio() {
+        document.getElementById('studioModal').classList.remove('active');
+    }
+
+    switchStudioTab(tabName) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.studio-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.studio-tab-content').forEach(content => content.classList.remove('active'));
+
+        // Add active class to selected tab and content
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+
+        // Load tab-specific data
+        this.loadStudioTabData(tabName);
+    }
+
+    loadStudioData() {
+        // Update dashboard stats
+        document.getElementById('total-videos-stat').textContent = this.myVideos.length;
+        document.getElementById('total-views-stat').textContent = this.formatNumber(this.channelData.totalViews);
+        document.getElementById('subscribers-stat').textContent = this.formatNumber(this.channelData.subscribers);
+
+        const totalLikes = this.myVideos.reduce((sum, video) => sum + (video.likes || 0), 0);
+        document.getElementById('total-likes-stat').textContent = this.formatNumber(totalLikes);
+    }
+
+    loadStudioTabData(tabName) {
+        switch(tabName) {
+            case 'videos':
+                this.loadStudioVideos();
+                break;
+            case 'comments':
+                this.loadStudioComments();
+                break;
+            case 'analytics':
+                this.loadStudioAnalytics();
+                break;
+            case 'monetization':
+                this.loadStudioMonetization();
+                break;
+        }
+    }
+
+    loadStudioVideos() {
+        const videosList = document.getElementById('studio-videos-list');
+        videosList.innerHTML = '';
+
+        if (this.myVideos.length === 0) {
+            videosList.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        No videos uploaded yet. Start creating content!
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        this.myVideos.forEach((video, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail-small">
+                </td>
+                <td>
+                    <div style="max-width: 200px;">
+                        <strong>${video.title}</strong>
+                        <br>
+                        <small style="color: var(--text-secondary);">${video.description || 'No description'}</small>
+                    </div>
+                </td>
+                <td>${video.views}</td>
+                <td>${this.formatNumber(video.likes || 0)}</td>
+                <td>${video.uploadTime}</td>
+                <td>
+                    <div class="video-actions">
+                        <button class="action-btn-small edit" onclick="app.editVideo('${video.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn-small delete" onclick="app.deleteVideo('${video.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            videosList.appendChild(row);
+        });
+    }
+
+    loadStudioComments() {
+        const commentsList = document.getElementById('studio-comments-list');
+        commentsList.innerHTML = '';
+
+        const allComments = [];
+        Object.keys(this.comments).forEach(videoId => {
+            const video = this.myVideos.find(v => v.id === videoId);
+            if (video && this.comments[videoId]) {
+                this.comments[videoId].forEach(comment => {
+                    allComments.push({
+                        ...comment,
+                        videoTitle: video.title,
+                        videoId: videoId
+                    });
+                });
+            }
+        });
+
+        if (allComments.length === 0) {
+            commentsList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    No comments on your videos yet.
+                </div>
+            `;
+            return;
+        }
+
+        allComments.forEach(comment => {
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment-item-studio';
+            commentDiv.innerHTML = `
+                <div class="comment-content-studio">
+                    <div class="comment-author-studio">${comment.author}</div>
+                    <div class="comment-text-studio">${comment.text}</div>
+                    <small style="color: var(--text-muted);">On: ${comment.videoTitle}</small>
+                </div>
+                <div class="comment-actions-studio">
+                    <button class="action-btn-small" onclick="app.replyToComment('${comment.id}')">
+                        <i class="fas fa-reply"></i>
+                    </button>
+                    <button class="action-btn-small delete" onclick="app.deleteComment('${comment.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            commentsList.appendChild(commentDiv);
+        });
+    }
+
+    loadStudioAnalytics() {
+        // Analytics functionality would be implemented here
+        console.log('Loading analytics data...');
+    }
+
+    loadStudioMonetization() {
+        // Monetization functionality would be implemented here
+        console.log('Loading monetization data...');
+    }
+
+    editVideo(videoId) {
+        this.showToast('Video editing feature coming soon', 'info');
+    }
+
+    deleteVideo(videoId) {
+        if (confirm('Are you sure you want to delete this video?')) {
+            this.myVideos = this.myVideos.filter(video => video.id !== videoId);
+            this.saveMyVideos();
+            this.loadStudioVideos();
+            this.showToast('Video deleted successfully', 'success');
+        }
+    }
+
+    replyToComment(commentId) {
+        this.showToast('Comment reply feature coming soon', 'info');
+    }
+
+    deleteComment(commentId) {
+        if (confirm('Are you sure you want to delete this comment?')) {
+            // Find and delete comment
+            Object.keys(this.comments).forEach(videoId => {
+                this.comments[videoId] = this.comments[videoId].filter(comment => comment.id !== commentId);
+            });
+            this.saveComments();
+            this.loadStudioComments();
+            this.showToast('Comment deleted successfully', 'success');
+        }
+    }
 }
 
 // Profile dropdown toggle function
@@ -2496,11 +2696,6 @@ class TikTikApp {
   // Profile menu functions
   function switchAccount() {
     alert('Switch Account feature - You can add multiple accounts here');
-    toggleProfileMenu();
-  }
-
-  function openTikTikStudio() {
-    alert('Opening TikTik Studio - Content creation and analytics dashboard');
     toggleProfileMenu();
   }
 
@@ -2628,6 +2823,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.tiktikApp = new TikTikApp();
+    window.app = window.tiktikApp;
 
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
