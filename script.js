@@ -270,6 +270,24 @@ class TikTikApp {
             this.closeUploadModal();
         });
 
+        // Subscribe and Bell buttons
+        document.getElementById('subscribeBtn').addEventListener('click', () => {
+            this.toggleSubscribe();
+        });
+
+        document.getElementById('bellBtn').addEventListener('click', () => {
+            this.toggleNotifications();
+        });
+
+        // Modal Subscribe and Bell buttons
+        document.getElementById('modalSubscribeBtn').addEventListener('click', () => {
+            this.toggleModalSubscribe();
+        });
+
+        document.getElementById('modalBellBtn').addEventListener('click', () => {
+            this.toggleModalNotifications();
+        });
+
         // Channel edit modal
         document.getElementById('editChannelBtn').addEventListener('click', () => {
             this.openChannelEditModal();
@@ -778,6 +796,137 @@ class TikTikApp {
         }
     }
 
+    toggleSubscribe() {
+        const subscribeBtn = document.getElementById('subscribeBtn');
+        const bellBtn = document.getElementById('bellBtn');
+        const subscriberCount = document.getElementById('subscriberCount');
+
+        const isSubscribed = subscribeBtn.classList.contains('subscribed');
+
+        if (isSubscribed) {
+            // Unsubscribe
+            subscribeBtn.classList.remove('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
+            bellBtn.classList.remove('active');
+            bellBtn.style.display = 'none';
+
+            // Update subscriber count
+            let currentCount = parseInt(this.channelData.subscribers) || 0;
+            this.channelData.subscribers = Math.max(0, currentCount - 1);
+            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
+
+            this.showToast('Unsubscribed successfully', 'info');
+        } else {
+            // Subscribe
+            subscribeBtn.classList.add('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
+            bellBtn.style.display = 'flex';
+
+            // Update subscriber count
+            let currentCount = parseInt(this.channelData.subscribers) || 0;
+            this.channelData.subscribers = currentCount + 1;
+            subscriberCount.textContent = `${this.channelData.subscribers} subscribers`;
+
+            this.showToast('Subscribed successfully! 🎉', 'success');
+        }
+
+        this.saveChannelData();
+    }
+
+    toggleNotifications() {
+        const bellBtn = document.getElementById('bellBtn');
+        const subscribeBtn = document.getElementById('subscribeBtn');
+
+        // Only allow notification toggle if subscribed
+        if (!subscribeBtn.classList.contains('subscribed')) {
+            this.showToast('Please subscribe first to enable notifications', 'warning');
+            return;
+        }
+
+        const isActive = bellBtn.classList.contains('active');
+
+        if (isActive) {
+            bellBtn.classList.remove('active');
+            bellBtn.title = 'Turn on notifications';
+            this.showToast('Notifications turned off', 'info');
+        } else {
+            bellBtn.classList.add('active');
+            bellBtn.title = 'Turn off notifications';
+            this.showToast('Notifications turned on! 🔔', 'success');
+
+            // Request notification permission if not granted
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('TikTik Notifications', {
+                            body: 'You will now receive notifications from this channel!',
+                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
+                        });
+                    }
+                });
+            }
+        }
+    }
+
+    toggleModalSubscribe() {
+        const subscribeBtn = document.getElementById('modalSubscribeBtn');
+        const bellBtn = document.getElementById('modalBellBtn');
+
+        const isSubscribed = subscribeBtn.classList.contains('subscribed');
+
+        if (isSubscribed) {
+            // Unsubscribe
+            subscribeBtn.classList.remove('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
+            bellBtn.classList.remove('active');
+            bellBtn.style.display = 'none';
+
+            this.showToast('Unsubscribed successfully', 'info');
+        } else {
+            // Subscribe
+            subscribeBtn.classList.add('subscribed');
+            subscribeBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
+            bellBtn.style.display = 'flex';
+
+            this.showToast('Subscribed successfully! 🎉', 'success');
+        }
+    }
+
+    toggleModalNotifications() {
+        const bellBtn = document.getElementById('modalBellBtn');
+        const subscribeBtn = document.getElementById('modalSubscribeBtn');
+
+        // Only allow notification toggle if subscribed
+        if (!subscribeBtn.classList.contains('subscribed')) {
+            this.showToast('Please subscribe first to enable notifications', 'warning');
+            return;
+        }
+
+        const isActive = bellBtn.classList.contains('active');
+
+        if (isActive) {
+            bellBtn.classList.remove('active');
+            bellBtn.title = 'Turn on notifications';
+            this.showToast('Notifications turned off', 'info');
+        } else {
+            bellBtn.classList.add('active');
+            bellBtn.title = 'Turn off notifications';
+            this.showToast('Notifications turned on! 🔔', 'success');
+
+            // Request notification permission if not granted
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('TikTik Notifications', {
+                            body: 'You will now receive notifications from this channel!',
+                            icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff0000"/%3E%3Cpolygon points="40,35 40,65 65,50" fill="white"/%3E%3C/svg%3E'
+                        });
+                    }
+                });
+            }
+        }
+    }
+
     navigateToPage(page) {
         // Remove active class from all nav items and pages
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -955,7 +1104,6 @@ class TikTikApp {
             const video = this.videos.find(v => v.id === videoId);
             if (video) {
                 const videoCard = this.createVideoCard(video);
-```text
                 grid.appendChild(videoCard);
             }
         });
@@ -1619,7 +1767,7 @@ class TikTikApp {
         this.currentVideoIndex = this.currentPlaylist.findIndex(v => v.id === video.id);
         this.isShuffleOn = false;
         this.isRepeatOn = false;
-        
+
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
 
@@ -1633,6 +1781,16 @@ class TikTikApp {
         document.getElementById('modalVideoStats').textContent = `${video.views} • ${video.uploadTime}`;
         document.getElementById('modalVideoDescription').textContent = video.description;
         document.getElementById('likeCount').textContent = this.formatNumber(video.likes);
+
+        // Initialize modal subscribe and bell buttons
+        const modalSubscribeBtn = document.getElementById('modalSubscribeBtn');
+        const modalBellBtn = document.getElementById('modalBellBtn');
+
+        // Reset subscribe button state
+        modalSubscribeBtn.classList.remove('subscribed');
+        modalSubscribeBtn.innerHTML = '<i class="fas fa-user-plus"></i> Subscribe';
+        modalBellBtn.style.display = 'none';
+        modalBellBtn.classList.remove('active');
 
         // Update like button state
         const likeBtn = document.getElementById('likeBtn');
@@ -1657,7 +1815,7 @@ class TikTikApp {
 
         // Load recommended videos
         this.loadRecommendedVideos(video);
-        
+
         // Load playlist
         this.loadVideoPlaylist();
 
@@ -1674,10 +1832,10 @@ class TikTikApp {
         const player = document.getElementById('videoPlayer');
 
         modal.classList.remove('active', 'minimized', 'theater');
-        player.pause();
-        player.src = '';
+        player.pause();        player.src = '';
 
         // Reset control states
+```text
         document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
         document.getElementById('miniplayerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
         document.getElementById('minimizeBtn').innerHTML = '<i class="fas fa-compress"></i>';
@@ -1770,18 +1928,18 @@ class TikTikApp {
     loadVideoPlaylist() {
         const playlistContent = document.getElementById('playlistContent');
         const playlistInfo = document.getElementById('playlistInfo');
-        
+
         playlistContent.innerHTML = '';
-        
+
         // Update playlist info
         playlistInfo.textContent = `${this.currentVideoIndex + 1} / ${this.currentPlaylist.length}`;
-        
+
         // Load playlist items
         this.currentPlaylist.forEach((video, index) => {
             const item = document.createElement('div');
             item.className = `playlist-item ${index === this.currentVideoIndex ? 'current' : ''}`;
             item.onclick = () => this.playVideoFromPlaylist(index);
-            
+
             item.innerHTML = `
                 <div class="playlist-item-index">${index + 1}</div>
                 <img class="playlist-thumbnail" src="${video.thumbnail}" alt="${video.title}">
@@ -1792,10 +1950,10 @@ class TikTikApp {
                     <p class="playlist-item-stats">${video.views}</p>
                 </div>
             `;
-            
+
             playlistContent.appendChild(item);
         });
-        
+
         // Scroll current video into view
         setTimeout(() => {
             const currentItem = playlistContent.querySelector('.playlist-item.current');
@@ -1807,7 +1965,7 @@ class TikTikApp {
 
     playVideoFromPlaylist(index) {
         if (index < 0 || index >= this.currentPlaylist.length) return;
-        
+
         const video = this.currentPlaylist[index];
         this.currentVideoIndex = index;
         this.switchToVideo(video);
@@ -1816,9 +1974,9 @@ class TikTikApp {
 
     playNextVideo() {
         if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-        
+
         let nextIndex;
-        
+
         if (this.isShuffleOn) {
             // Random next video
             do {
@@ -1826,7 +1984,7 @@ class TikTikApp {
             } while (nextIndex === this.currentVideoIndex && this.currentPlaylist.length > 1);
         } else {
             nextIndex = this.currentVideoIndex + 1;
-            
+
             if (nextIndex >= this.currentPlaylist.length) {
                 if (this.isRepeatOn) {
                     nextIndex = 0;
@@ -1836,16 +1994,16 @@ class TikTikApp {
                 }
             }
         }
-        
+
         this.playVideoFromPlaylist(nextIndex);
         this.showToast('Playing next video', 'info');
     }
 
     playPreviousVideo() {
         if (!this.currentPlaylist || this.currentPlaylist.length === 0) return;
-        
+
         let prevIndex = this.currentVideoIndex - 1;
-        
+
         if (prevIndex < 0) {
             if (this.isRepeatOn) {
                 prevIndex = this.currentPlaylist.length - 1;
@@ -1854,7 +2012,7 @@ class TikTikApp {
                 return;
             }
         }
-        
+
         this.playVideoFromPlaylist(prevIndex);
         this.showToast('Playing previous video', 'info');
     }
@@ -1863,7 +2021,7 @@ class TikTikApp {
         this.isShuffleOn = !this.isShuffleOn;
         const shuffleBtn = document.getElementById('shuffleBtn');
         shuffleBtn.classList.toggle('active', this.isShuffleOn);
-        
+
         this.showToast(this.isShuffleOn ? 'Shuffle enabled' : 'Shuffle disabled', 'info');
     }
 
@@ -1871,7 +2029,7 @@ class TikTikApp {
         this.isRepeatOn = !this.isRepeatOn;
         const repeatBtn = document.getElementById('repeatBtn');
         repeatBtn.classList.toggle('active', this.isRepeatOn);
-        
+
         this.showToast(this.isRepeatOn ? 'Repeat enabled' : 'Repeat disabled', 'info');
     }
 
@@ -1879,15 +2037,15 @@ class TikTikApp {
         this.settings.autoPlay = !this.settings.autoPlay;
         const autoplayToggle = document.getElementById('playlistAutoplayToggle');
         const autoplayToggleBtn = document.getElementById('autoplayToggleBtn');
-        
+
         autoplayToggle.classList.toggle('active', this.settings.autoPlay);
         if (autoplayToggleBtn) {
             autoplayToggleBtn.classList.toggle('active', this.settings.autoPlay);
         }
-        
+
         const playlistInfo = document.getElementById('playlistInfo');
         playlistInfo.textContent = this.settings.autoPlay ? 'Autoplay is on' : 'Autoplay is off';
-        
+
         this.saveSettings();
         this.showToast(this.settings.autoPlay ? 'Autoplay enabled' : 'Autoplay disabled', 'info');
     }
@@ -2431,6 +2589,10 @@ class TikTikApp {
     saveSettings() {
         localStorage.setItem('tiktik_settings', JSON.stringify(this.settings));
         this.showToast('Settings saved', 'success');
+    }
+
+    saveChannelData() {
+        localStorage.setItem('tiktik_channel_data', JSON.stringify(this.channelData));
     }
 
     // Data persistence methods
@@ -3017,7 +3179,355 @@ class TikTikApp {
     replyToComment(commentId) {
         this.showToast('Comment reply feature coming soon', 'info');
     }
+
+    deleteComment(commentId) {
+        if (confirm('Are you sure you want to delete this comment?')) {
+            // Find and delete comment
+            Object.keys(this.comments).forEach(videoId => {
+                this.comments[videoId] = this.comments[videoId].filter(comment => comment.id !== commentId);
+            });
+            this.saveComments();
+            this.loadStudioComments();
+            this.showToast('Comment deleted successfully', 'success');
+        }
+    }
 }
+
+// Enhanced Google Authentication Integration
+let auth;
+let user = null;
+
+// Initialize Firebase Auth (you'll need to add your Firebase config)
+function initializeAuth() {
+    // Firebase configuration would go here
+    console.log('Auth initialized');
+}
+
+// Google Sign In function
+async function signInWithGoogle() {
+    try {
+        const loginBtn = document.getElementById('googleLoginBtn');
+
+        // Add loading state
+        loginBtn.innerHTML = `
+            <div class="login-btn-content">
+                <i class="fas fa-spinner fa-spin google-icon"></i>
+                <span class="login-text">Signing in...</span>
+            </div>
+            <div class="login-btn-ripple"></div>
+        `;
+
+        // Simulate authentication (replace with actual Firebase auth)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Mock user data (replace with actual user data from Firebase)
+        const mockUser = {
+            uid: 'user_' + Date.now(),
+            displayName: 'John Doe',
+            email: 'john.doe@gmail.com',
+            photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face',
+            emailVerified: true,
+            createdAt: new Date().toISOString()
+        };
+
+        // Set user and update UI
+        user = mockUser;
+        updateUserInterface();
+        showToast('Successfully signed in with Google! 🎉', 'success');
+
+    } catch (error) {
+        console.error('Login failed:', error);
+        showToast('Login failed. Please try again.', 'error');
+
+        // Reset button
+        const loginBtn = document.getElementById('googleLoginBtn');
+        loginBtn.innerHTML = `
+            <div class="login-btn-content">
+                <i class="fab fa-google google-icon"></i>
+                <span class="login-text">Sign in with Google</span>
+            </div>
+            <div class="login-btn-ripple"></div>
+        `;
+    }
+}
+
+// Update UI after successful login
+function updateUserInterface() {
+    if (!user) return;
+
+    // Hide login button and show profile
+    document.querySelector('.login-section').style.display = 'none';
+    document.getElementById('profile-container').style.display = 'inline-block';
+
+    // Update profile information
+    document.getElementById('profile-pic').src = user.photoURL;
+    document.getElementById('profile-avatar').src = user.photoURL;
+    document.getElementById('profile-name').textContent = user.displayName;
+    document.getElementById('profile-email').textContent = user.email;
+
+    // Update subscriber count (mock data)
+    document.getElementById('profile-subscribers').textContent = `${Math.floor(Math.random() * 1000)} subscribers`;
+
+    // Add welcome animation
+    const profileContainer = document.getElementById('profile-container');
+    profileContainer.style.animation = 'profileWelcome 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+}
+
+// Toggle profile menu with enhanced animations
+function toggleProfileMenu() {
+    const menu = document.getElementById('profile-menu');
+    const isVisible = menu.style.display === 'block';
+
+    if (isVisible) {
+        // Hide with animation
+        menu.style.animation = 'menuSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        setTimeout(() => {
+            menu.style.display = 'none';
+        }, 300);
+    } else {
+        // Show with animation
+        menu.style.display = 'block';
+        menu.style.animation = 'menuSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+}
+
+// Enhanced logout function
+function logout() {
+    if (confirm('Are you sure you want to sign out?')) {
+        // Add logout animation
+        const profileContainer = document.getElementById('profile-container');
+        profileContainer.style.animation = 'profileFadeOut 0.5s ease-in';
+
+        setTimeout(() => {
+            // Reset user state
+            user = null;
+
+            // Show login button and hide profile
+            document.querySelector('.login-section').style.display = 'flex';
+            document.getElementById('profile-container').style.display = 'none';
+            document.getElementById('profile-menu').style.display = 'none';
+
+            // Reset profile data
+            document.getElementById('profile-pic').src = '';
+            document.getElementById('profile-avatar').src = '';
+            document.getElementById('profile-name').textContent = '';
+            document.getElementById('profile-email').textContent = '';
+
+            showToast('Successfully signed out', 'info');
+        }, 500);
+    }
+}
+
+// Account switching functionality
+function switchAccount() {
+    showToast('Account switching feature coming soon!', 'info');
+    toggleProfileMenu();
+}
+
+// Enhanced menu functions
+function openTikTikStudio() {
+    if (typeof app !== 'undefined' && app.openTikTikStudio) {
+        app.openTikTikStudio();
+    } else {
+        showToast('Opening TikTik Studio...', 'info');
+    }
+    toggleProfileMenu();
+}
+
+function openCreatorAcademy() {
+    showToast('Opening Creator Academy...', 'info');
+    toggleProfileMenu();
+}
+
+function openAppearance() {
+    showToast('Opening Appearance settings...', 'info');
+    toggleProfileMenu();
+}
+
+function openLanguage() {
+    showToast('Opening Language settings...', 'info');
+    toggleProfileMenu();
+}
+
+function openLocation() {
+    showToast('Opening Location settings...', 'info');
+    toggleProfileMenu();
+}
+
+function openSettings() {
+    if (typeof app !== 'undefined' && app.navigateToPage) {
+        app.navigateToPage('settings');
+    } else {
+        showToast('Opening Settings...', 'info');
+    }
+    toggleProfileMenu();
+}
+
+function openHelp() {
+    if (typeof app !== 'undefined' && app.navigateToPage) {
+        app.navigateToPage('help');
+    } else {
+        showToast('Opening Help...', 'info');
+    }
+    toggleProfileMenu();
+}
+
+function sendFeedback() {
+    if (typeof app !== 'undefined' && app.navigateToPage) {
+        app.navigateToPage('feedback');
+    } else {
+        showToast('Opening Feedback...', 'info');
+    }
+    toggleProfileMenu();
+}
+
+function openPrivacyPolicy() {
+    showToast('Opening Privacy Policy...', 'info');
+}
+
+function openTerms() {
+    showToast('Opening Terms of Service...', 'info');
+}
+
+function openPolicies() {
+    showToast('Opening Policies...', 'info');
+}
+
+// Enhanced toast notification system
+function showToast(message, type = 'info') {
+    // Create or get toast container
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    // Add icon based on type
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-info-circle'
+    };
+
+    toast.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="${icons[type]}" style="color: var(--accent-color);"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 300);
+    }, 4000);
+}
+
+// Add enhanced animations to CSS
+const enhancedStyles = `
+@keyframes profileWelcome {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-10px);
+    }
+    50% {
+        transform: scale(1.05) translateY(-2px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes profileFadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+@keyframes menuSlideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+}
+
+@keyframes slideOutRight {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+`;
+
+// Add enhanced styles to document
+const styleSheet = document.createElement('style');
+styleSheet.textContent = enhancedStyles;
+document.head.appendChild(styleSheet);
+
+// Close profile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const profileContainer = document.getElementById('profile-container');
+    const profileMenu = document.getElementById('profile-menu');
+
+    if (profileContainer && !profileContainer.contains(event.target)) {
+        if (profileMenu && profileMenu.style.display === 'block') {
+            toggleProfileMenu();
+        }
+    }
+});
+
+// Restricted mode toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const restrictedToggle = document.getElementById('restricted-toggle');
+    if (restrictedToggle) {
+        restrictedToggle.addEventListener('change', function() {
+            const isRestricted = this.checked;
+            showToast(
+                isRestricted ? 'Restricted mode enabled' : 'Restricted mode disabled',
+                'info'
+            );
+        });
+    }
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initializeAuth();
+
+    // Auto-login for demo (remove in production)
+    setTimeout(() => {
+        if (!user) {
+            console.log('Demo mode: Auto-login disabled. Click login button to sign in.');
+        }
+    }, 1000);
+});
 
 // Profile dropdown toggle function
   function toggleProfileMenu() {
